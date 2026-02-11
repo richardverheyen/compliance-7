@@ -1,0 +1,10 @@
+⏺ source .venv/bin/activate
+  python main.py groups runs/1/nodes.json
+
+  Or as a one-liner:
+
+  source .venv/bin/activate && python main.py groups runs/1/nodes.json
+
+  For the full PDF scrape pipeline (which now also generates groups):
+
+  source .venv/bin/activate && python main.py scrape chapter4.pdf
