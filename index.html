@@ -14,7 +14,26 @@
   * { margin: 0; padding: 0; box-sizing: border-box; }
   body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: var(--bg); color: var(--text); line-height: 1.6; }
 
-  /* Fixed diagram panel (right side) */
+
+  /* Radial Diagram Specifics */
+  .arc-path { fill: none; stroke: #334155; stroke-width: 3; stroke-linecap: round; }
+  .arc-label { 
+    fill: #94a3b8; 
+    font-size: 11px; 
+    font-weight: 800; 
+    text-transform: uppercase; 
+    letter-spacing: 0.12em;
+    pointer-events: none;
+  }
+  .compliance-path { 
+    fill: none; 
+    stroke: #3182ce; 
+    stroke-width: 2.5; 
+    stroke-linecap: round; 
+    stroke-linejoin: round;
+    opacity: 0.8;
+  }
+    /* Fixed diagram panel (right side) */
   .diagram-panel {
     position: fixed;
     top: 0;
@@ -28,6 +47,42 @@
     border-left: 1px solid #1e293b;
     box-shadow: -4px 0 15px rgba(0,0,0,0.3);
     overflow-y: auto;
+  }
+
+  #sidebar-process-list {
+    padding: 20px;
+    border-top: 1px solid #1e293b;
+    background: rgba(15, 23, 42, 0.9);
+  }
+  .sidebar-section-title {
+    color: #64748b;
+    font-size: 0.75rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 15px;
+  }
+  .sidebar-process-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 0;
+    font-size: 0.8rem;
+    border-bottom: 1px solid #1e293b;
+    color: #e2e8f0;
+  }
+  .sidebar-process-item:last-child { border-bottom: none; }
+  .sidebar-process-name { flex: 1; }
+  .sidebar-process-id { color: #64748b; font-size: 0.7rem; }
+
+  /* Adjusting existing badges for sidebar */
+  .badge-sidebar {
+    font-size: 0.65rem;
+    font-weight: 700;
+    padding: 1px 6px;
+    border-radius: 4px;
+    min-width: 55px;
+    text-align: center;
   }
 
   /* --- SVG Aesthetic Styling --- */
@@ -105,15 +160,16 @@
 </head>
 <body>
 
-<div id="diagram" class="diagram-panel"></div>
+<div id="sidebar" class="diagram-panel">
+  <div id="diagram-svg-container"></div>
+  <div id="sidebar-process-list"></div>
+</div>
 
 <div class="container">
   <h1>Chapter 4 — Introduction &amp; Scoping</h1>
   <p class="subtitle">Answer these questions to determine which detailed compliance sections and business processes apply to your organisation.</p>
 
   <div id="form"></div>
-  <div id="scoping-summary"></div>
-
   <details class="output">
     <summary>Raw Data Output</summary>
     <pre id="json-output">{}</pre>
@@ -192,12 +248,14 @@ const ALWAYS_ACTIVE = {
 };
 
 const PROCESSES = {
-  "PROC-AML-001":  { name:"Customer Agents",             parent:null },
-  "PROC-AML-002":  { name:"Customer Due Diligence",      parent:null },
+  "PROC-AML-000":  { name:"Know Your Customer (KYC)",          parent:null },
+  "PROC-AML-001":  { name:"Customer Agents",             parent:"PROC-AML-000" },
+  "PROC-AML-002":  { name:"Customer Due Diligence (CDD)",      parent:"PROC-AML-000" },
   "PROC-AML-002a": { name:"Onboarding",                  parent:"PROC-AML-002" },
   "PROC-AML-002b": { name:"Verification",                parent:"PROC-AML-002" },
   "PROC-AML-002c": { name:"Risk Assessment",             parent:"PROC-AML-002" },
-  "PROC-AML-003":  { name:"Enhanced CDD",                parent:null },
+  "PROC-AML-003":  { name:"Enhanced CDD",                parent:"PROC-AML-000" },
+  "PROC-AML-006":  { name:"Ongoing CDD",                 parent:null },
   "PROC-AML-003a": { name:"Beneficial Ownership",        parent:"PROC-AML-003" },
   "PROC-AML-003b": { name:"Politically Exposed Persons", parent:"PROC-AML-003" },
   "PROC-AML-003c": { name:"Verification (Enhanced)",     parent:"PROC-AML-003" },
@@ -285,155 +343,175 @@ function getControlGroupScore(groupId) {
 }
 
 // ─── RAILWAY DIAGRAM (fixed right panel, top-to-bottom, tube-map style) ─────
+
 function renderDiagram() {
-  const el = document.getElementById("diagram");
+  const el = document.getElementById("diagram-svg-container");
   const d = getDerived();
 
-  // --- Configuration ---
-  const R = 7;                   // Node radius
-  const NODE_GAP = 52;           // Vertical spacing between stations
-  const SECTION_GAP = 20;        // Spacing between major blocks
-  const TRACK_X = 65;            // Shifted left to provide 275px for labels
-  const SIDING_X = TRACK_X + 45; // X-offset for the Ongoing CDD siding
-  const LABEL_OFFSET = 20;       // Distance from node to text
-  const FONT = '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
-
-  // --- Colors (Matched to CSS Variables) ---
-  const COL_MAIN = "#3182ce";    // Blue (Active/Onboarding)
-  const COL_ONGOING = "#ed8936"; // Orange (Maintenance)
-  const COL_TRACK = "#334155";   // Slate (Inactive tracks)
-  const COL_LABEL = "#e2e8f0";   // Light gray text
-  const COL_SECTION_BG = "rgba(30, 41, 59, 0.4)";
-  const COL_SECTION_BORDER = "#1e293b";
-
-  let y = 30;
-  const sections = [];
-
-  // 1. Designated Services (Always Present)
-  sections.push({
-    id: "services", title: null,
-    nodes: [{ id: "services", label: "Designated Services", x: TRACK_X, y, color: COL_MAIN }],
-    top: y - 10, bottom: y + 10
-  });
-  y += NODE_GAP + SECTION_GAP;
-
-  // 2. Customer Due Diligence Section
-  const cddNodes = [];
-  if (d.hasAgent) cddNodes.push({ id: "agent", label: "Agent Onboarding", x: TRACK_X, y: 0, color: COL_MAIN });
-  if (d.hasAnyCustomer) cddNodes.push({ id: "customer", label: `Customer (${d.customerCount})`, x: TRACK_X, y: 0, color: COL_MAIN });
-  
-  if (cddNodes.length > 0) {
-    const sTop = y - 15;
-    cddNodes.forEach(n => { n.y = y; y += NODE_GAP; });
-    sections.push({ id: "cdd", title: "Customer Due Diligence", nodes: cddNodes, top: sTop, bottom: y - (NODE_GAP - 15) });
-    y += SECTION_GAP;
-  }
-
-  // 3. Enhanced CDD Section
-  const ecddNodes = [];
-  if (d.hasBO) ecddNodes.push({ id: "bo", label: "Beneficial Owners", x: TRACK_X, y: 0, color: COL_MAIN });
-  
-  if (ecddNodes.length > 0) {
-    const sTop = y - 15;
-    ecddNodes.forEach(n => { n.y = y; y += NODE_GAP; });
-    sections.push({ id: "ecdd", title: "Enhanced CDD", nodes: ecddNodes, top: sTop, bottom: y - (NODE_GAP - 15) });
-    y += SECTION_GAP;
-  }
-
-  // 4. Ongoing CDD (Siding / Bypass Track)
-  const ongoingProcs = Object.entries(PROCESSES)
-    .filter(([id]) => id.startsWith("PROC-AML-004"))
-    .sort(([a],[b]) => a.localeCompare(b));
-
-  const sidingTopY = y + 10;
-  const ongoingNodes = ongoingProcs.map(([, p], i) => ({
-    label: p.name, x: SIDING_X, y: sidingTopY + 25 + (i * NODE_GAP), color: COL_ONGOING
-  }));
-  const sidingBottomY = ongoingNodes[ongoingNodes.length - 1].y + 25;
-  
-  sections.push({
-    id: "ongoing", title: "Ongoing Compliance",
-    nodes: ongoingNodes, top: y - 5, bottom: sidingBottomY + 10, isSiding: true
-  });
-
+  const cx = 170; 
+  const cy = -40; 
   const svgW = 340;
-  const svgH = sidingBottomY + 100;
+  const svgH = 550;
+  
+  const startAngle = 65;
+  const endAngle = 115;
+  const midAngle = 90;
 
-  // --- SVG Construction ---
-  let svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${svgW}" height="${svgH}" viewBox="0 -60 ${svgW} ${svgH}">`;
+  const GROUPS_RADIAL = [
+    { id: "core", label: "Core", rStart: 0, rEnd: 70, active: true },
+    { id: "cdd", label: "Customer Due Diligence", rStart: 100, rEnd: 200, active: d.hasAnyCustomer || d.hasAgent },
+    { id: "ecdd", label: "Enhanced CDD", rStart: 230, rEnd: 330, active: d.hasBO || d.hasPEP },
+    { id: "ongoing", label: "Ongoing Compliance", rStart: 360, rEnd: 480, active: true }
+  ];
 
-  // Draw Section Backgrounds
-  sections.forEach(s => {
-    const boxX = TRACK_X - 25;
-    const boxW = svgW - boxX - 15;
-    svg += `<rect x="${boxX}" y="${s.top}" width="${boxW}" height="${s.bottom - s.top}" rx="8" fill="${COL_SECTION_BG}" stroke="${COL_SECTION_BORDER}" stroke-width="1"/>`;
-    if (s.title) {
-      svg += `<text x="${boxX + 40}" y="${s.top - 6}" fill="#64748b" font-size="9" font-weight="800" font-family="${FONT}" text-transform="uppercase" letter-spacing="0.05em">${s.title}</text>`;
-    }
-  });
+  const polarToCartesian = (r, angleDeg) => {
+    const angleRad = (angleDeg * Math.PI) / 180;
+    return { x: cx + r * Math.cos(angleRad), y: cy + r * Math.sin(angleRad) };
+  };
 
-  // Draw Main Track Line
-  const mainNodes = sections.filter(s => !s.isSiding).flatMap(s => s.nodes);
-  if (mainNodes.length > 0) {
-    svg += `<line x1="${TRACK_X}" y1="${mainNodes[0].y}" x2="${TRACK_X}" y2="${sidingBottomY + 0}" stroke="${COL_TRACK}" stroke-width="4" stroke-linecap="round"/>`;
-  }
+  const describeArc = (r, startA, endA, reverse = false) => {
+    const start = polarToCartesian(r, reverse ? endA : startA);
+    const end = polarToCartesian(r, reverse ? startA : endA);
+    const sweep = reverse ? 0 : 1;
+    return `M ${start.x} ${start.y} A ${r} ${r} 0 0 ${sweep} ${end.x} ${end.y}`;
+  };
 
-  // Draw Siding Track (Trapezium/Rectilinear)
-  const entryY = sidingTopY;
-  const exitY = sidingBottomY;
-  svg += `<path d="M ${TRACK_X} ${entryY} L ${SIDING_X} ${entryY + 20} L ${SIDING_X} ${exitY - 20} L ${TRACK_X} ${exitY}" fill="none" stroke="${COL_ONGOING}" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" />`;
-
-  // Draw Nodes and Labels
-  sections.flatMap(s => s.nodes).forEach(n => {
-    // Station Dot
-    svg += `<circle cx="${n.x}" cy="${n.y}" r="${R + 3}" fill="rgba(15,23,42,0.8)" stroke="${n.color}" stroke-width="1.5" />`;
-    svg += `<circle cx="${n.x}" cy="${n.y}" r="${R}" fill="${n.color}" style="filter: drop-shadow(0 0 3px ${n.color}88)" />`;
+  let svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${svgW}" height="${svgH}" viewBox="0 0 ${svgW} ${svgH}">
+    <defs>`;
+  
+  GROUPS_RADIAL.forEach(g => {
+    // Bold visible border stays narrow (startAngle to endAngle)
+    svg += `<path d="${describeArc(g.rStart, 65, 115)}" class="arc-path" />`;
     
-    // Standard Station Text
-    const lx = n.x + LABEL_OFFSET;
-    const ly = n.y + 4;
-    svg += `<text x="${lx}" y="${ly}" fill="${COL_LABEL}" font-size="10" font-weight="600" font-family="${FONT}">${n.label}</text>`;
+    // Invisible text path is widened (30 to 150) to prevent clipping
+    svg += `<path id="path-${g.id}" d="${describeArc(g.rStart + 15, 30, 150, true)}" />`;
+  });
+  
+  svg += `</defs>`;
+
+  GROUPS_RADIAL.forEach(g => {
+    if (!g.active) return;
+    svg += `<path d="${describeArc(g.rStart, startAngle, endAngle)}" class="arc-path" />`;
+    if (g.id !== "core") {
+        svg += `
+        <text class="arc-label">
+            <textPath href="#path-${g.id}" startOffset="50%" text-anchor="middle">${g.label}</textPath>
+        </text>`;
+    }
   });
 
-  // --- PEP Branches (Updated to use station styling and 45/20 diagonal angle) ---
-  if (d.hasAnyCustomer || d.hasBO) {
-    const pepTargets = [];
-    if (d.hasAnyCustomer) {
-      const c = mainNodes.find(n => n.id === "customer");
-      if (c) pepTargets.push(c);
-    }
-    if (d.hasBO) {
-      const b = mainNodes.find(n => n.id === "bo");
-      if (b) pepTargets.push(b);
-    }
+  const nodePositions = {};
+  const activeNodes = [];
 
-    pepTargets.forEach(p => {
-      const pepX = p.x + 45; // Match SIDING_X offset
-      const pepY = p.y + 20; // Match diagonal entry slope
-      
-      // Branch Line
-      svg += `<line x1="${p.x}" y1="${p.y}" x2="${pepX}" y2="${pepY}" stroke="${COL_TRACK}" stroke-width="2" stroke-linecap="round" />`;
-      
-      // Node Outer Ring
-      svg += `<circle cx="${pepX}" cy="${pepY}" r="${R + 3}" fill="rgba(15,23,42,0.8)" stroke="${COL_MAIN}" stroke-width="1.5" />`;
-      // Node Main Fill & Shadow
-      svg += `<circle cx="${pepX}" cy="${pepY}" r="${R}" fill="${COL_MAIN}" style="filter: drop-shadow(0 0 3px ${COL_MAIN}88)" />`;
-      
-      // PEP Label (Blue theme)
-      const lx = pepX + LABEL_OFFSET;
-      const ly = pepY + 4;
-      svg += `<text x="${lx}" y="${ly}" fill="${COL_MAIN}" font-size="10" font-weight="600" font-family="${FONT}">PEP Screening</text>`;
-    });
+  nodePositions["ds"] = polarToCartesian(45, midAngle);
+  activeNodes.push({ id: "ds", label: "Designated Services", color: "#3182ce", ...nodePositions["ds"] });
+
+  if (d.hasAgent) {
+    nodePositions["agent"] = polarToCartesian(150, midAngle - 10);
+    activeNodes.push({ id: "agent", label: "Agents", color: "#3182ce", ...nodePositions["agent"] });
   }
+  if (d.hasAnyCustomer) {
+    nodePositions["cust"] = polarToCartesian(150, midAngle + 10);
+    activeNodes.push({ id: "cust", label: `Customers (${d.customerCount})`, color: "#3182ce", ...nodePositions["cust"] });
+  }
+
+  if (d.hasBO) {
+    nodePositions["bo"] = polarToCartesian(280, midAngle - 12);
+    activeNodes.push({ id: "bo", label: "Beneficial Owners", color: "#3182ce", ...nodePositions["bo"] });
+  }
+  if (d.hasPEP) {
+    nodePositions["pep"] = polarToCartesian(280, midAngle + 12);
+    activeNodes.push({ id: "pep", label: "PEP Screening", color: "#3182ce", ...nodePositions["pep"] });
+  }
+
+  const ongoingProcs = Object.entries(PROCESSES).filter(([id]) => id.startsWith("PROC-AML-004"));
+  ongoingProcs.forEach(([id, p], i) => {
+    const angleStep = 8;
+    const start = midAngle - ((ongoingProcs.length - 1) * angleStep / 2);
+    const pos = polarToCartesian(420, start + (i * angleStep));
+    activeNodes.push({ id, label: p.name, color: "#ed8936", ...pos });
+  });
+
+  const drawLine = (p1, p2) => {
+    if (!p1 || !p2) return "";
+    return `<line x1="${p1.x}" y1="${p1.y}" x2="${p2.x}" y2="${p2.y}" class="compliance-path" />`;
+  };
+
+  if (d.hasAgent) {
+    svg += drawLine(nodePositions["ds"], nodePositions["agent"]);
+    if (d.hasAnyCustomer) svg += drawLine(nodePositions["agent"], nodePositions["cust"]);
+  } else if (d.hasAnyCustomer) {
+    svg += drawLine(nodePositions["ds"], nodePositions["cust"]);
+  }
+
+  if (d.hasNonIndividual && nodePositions["bo"] && d.hasAnyCustomer) {
+    svg += drawLine(nodePositions["cust"], nodePositions["bo"]);
+  }
+
+  if (d.hasIndividual && nodePositions["pep"] && d.hasAnyCustomer) {
+    svg += drawLine(nodePositions["cust"], nodePositions["pep"]);
+  }
+  if (d.hasNonIndividual && nodePositions["bo"] && nodePositions["pep"]) {
+    svg += drawLine(nodePositions["bo"], nodePositions["pep"]);
+  }
+
+  activeNodes.forEach(n => {
+    svg += `
+      <circle cx="${n.x}" cy="${n.y}" r="7" fill="rgba(15,23,42,1)" stroke="${n.color}" stroke-width="2" />
+      <circle cx="${n.x}" cy="${n.y}" r="4" fill="${n.color}" style="filter: drop-shadow(0 0 4px ${n.color})" />
+    `;
+    
+    let ly = n.y + 16;
+    if (n.id === "ds") ly = n.y + 18;
+    
+    svg += `<text x="${n.x}" y="${ly}" fill="#e2e8f0" 
+            font-size="9" font-weight="600" text-anchor="middle" 
+            font-family="sans-serif">${n.label}</text>`;
+  });
 
   svg += `</svg>`;
   el.innerHTML = svg;
+}
+function renderProcessSidebar() {
+  const el = document.getElementById("sidebar-process-list");
+  const activeProcessIds = new Set();
+
+  ALWAYS_ACTIVE.processes.forEach(p => activeProcessIds.add(p.id));
+
+  Object.entries(SCOPING).forEach(([controlId, scope]) => {
+    if (answers[controlId] === "Yes") {
+      scope.processes.forEach(pId => activeProcessIds.add(pId));
+    }
+  });
+
+  const allProcessEntries = Object.entries(PROCESSES).map(([id, p]) => ({
+    id, name: p.name, parent: p.parent,
+    active: activeProcessIds.has(id),
+    alwaysActive: ALWAYS_ACTIVE.processes.some(ap => ap.id === id)
+  })).sort((a,b) => a.id.localeCompare(b.id));
+
+  el.innerHTML = `
+    <div class="sidebar-section-title">Business Processes</div>
+    ${allProcessEntries.map(p => {
+      const indent = p.parent ? "margin-left:15px;" : "";
+      const badgeClass = p.alwaysActive ? "badge-always" : p.active ? "badge-active" : "badge-inactive";
+      const badgeLabel = p.alwaysActive ? "ALWAYS" : p.active ? "ACTIVE" : "—";
+      return `
+        <div class="sidebar-process-item" style="${indent}">
+          <span class="badge-sidebar ${badgeClass}">${badgeLabel}</span>
+          <span class="sidebar-process-name">${p.name}</span>
+          <span class="sidebar-process-id">${p.id}</span>
+        </div>
+      `;
+    }).join("")}
+  `;
 }
 
 // ─── FORM RENDER ────────────────────────────────────────────────────────────
 function render() {
   syncAnswers();
   renderDiagram();
+  renderProcessSidebar();
 
   const formEl = document.getElementById("form");
   formEl.innerHTML = "";
