@@ -1,0 +1,35 @@
+flowchart LR
+    Targeting[<b>Customer Targeting</b>, eg: <br>Individuals,<br>Companies,<br>Trusts,<br>Partnerships,<br>Associations,<br>Co-operatives,<br>Governments]
+    subgraph KYC
+        ID_Check[100 Points of I.D.]
+        doc_verification[Document Verification]
+        Customer_Onboarding[Onboarding<br>unique per targeted customer]
+        
+        subgraph Risk_Assessment
+            Other[source of funds,<br>purpose of businesss,<br>control structures,<br>services provided,<br>service delivery methods,<br>foreign jurisdictions]
+            PEP_Assessment
+            BO_Assessment
+        end
+
+        subgraph Customer
+
+        end
+        subgraph Customer Agent
+            NameCheck[Name Check]
+            AuthCheck[Authorisation Check]
+        end
+        subgraph Beneficial Owner
+            subgraph Politically Exposed Person
+                Exemptions[Chapter 14 Exemptions]
+                SMA[Senior Management Approval]
+                SourceFunds[Source of Funds]
+                AltId[Alternative ID]
+            end
+        end
+    
+    end
+    Provision[Provision of Designated Services]
+
+    OCDD --> ECDD
+    Targeting --> KYC
+    KYC --> Provision

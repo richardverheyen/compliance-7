@@ -1,0 +1,26 @@
+flowchart TD
+    A[Pre Commencement]
+    subgraph KYC[Know Your Customer]
+        subgraph B[Customer Due Diligence]
+        end
+        B --> C{CDD Verification}
+        subgraph D[Enhanced Customer Due Diligence]
+
+        end
+        C --> D
+        D --> E{ECDD Verification}
+    end
+    subgraph OCDD
+        G[Transaction Monitoring]
+        H[Periodic Customer Information Review]
+        I[Suspicious Activity Investigation]
+    end
+    J[Suspicious Activity Reporting]
+
+    A --> B
+    
+    
+    C --> OCDD
+    E --> OCDD
+
+    I --> J

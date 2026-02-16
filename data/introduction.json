@@ -1,0 +1,152 @@
+{
+  "controls": [
+    {
+      "id": "4_1_3_1",
+      "label": "Does your business consider the risk posed by different customer types when identifying ML/TF risk?",
+      "detail-required": true,
+      "correct-option": "Yes",
+      "detail-label": "Which types of customers do you consider?",
+      "process-id": "PROC-AML-002c"
+    },
+    {
+      "id": "4_1_3_1_a",
+      "label": "Does your risk identification process specifically consider the beneficial owners of customers?",
+      "detail-required": false,
+      "correct-option": "Yes",
+      "process-id": "PROC-AML-003a"
+    },
+    {
+      "id": "4_1_3_1_b",
+      "label": "Does your risk identification process specifically consider any politically exposed persons (PEPs)?",
+      "detail-required": false,
+      "correct-option": "Yes",
+      "process-id": "PROC-AML-003b"
+    },
+    {
+      "id": "4_1_3_2",
+      "label": "Does your business consider its customers' sources of funds and wealth?",
+      "detail-required": true,
+      "correct-option": "Yes",
+      "detail-label": "Describe how you consider customers' sources of funds and wealth.",
+      "process-id": "PROC-AML-002c"
+    },
+    {
+      "id": "4_1_3_3",
+      "label": "Does your business consider the nature and purpose of the business relationship with its customers?",
+      "detail-required": true,
+      "correct-option": "Yes",
+      "detail-label": "Describe how you consider the nature and purpose of the business relationship.",
+      "process-id": "PROC-AML-002c"
+    },
+    {
+      "id": "4_1_3_4",
+      "label": "Does your business consider the control structure of its non-individual customers?",
+      "detail-required": true,
+      "correct-option": "Yes",
+      "detail-label": "Describe how you consider the control structure of non-individual customers.",
+      "process-id": "PROC-AML-002c"
+    },
+    {
+      "id": "4_1_3_5",
+      "label": "Does your business consider the types of designated services it provides?",
+      "detail-required": true,
+      "correct-option": "Yes",
+      "detail-label": "Describe how you consider the risks posed by the designated services you provide.",
+      "process-id": "PROC-AML-002c"
+    },
+    {
+      "id": "4_1_3_6",
+      "label": "Does your business consider the methods by which it delivers designated services?",
+      "detail-required": true,
+      "correct-option": "Yes",
+      "detail-label": "Describe how you consider the risks posed by your delivery methods.",
+      "process-id": "PROC-AML-002c"
+    },
+    {
+      "id": "4_1_3_7",
+      "label": "Does your business consider the foreign jurisdictions with which it deals?",
+      "detail-required": true,
+      "correct-option": "Yes",
+      "detail-label": "Describe how you consider the risks posed by foreign jurisdictions.",
+      "process-id": "PROC-AML-002c"
+    }
+  ],
+  "groups": [
+    {
+      "id": "4_1",
+      "title": "Part 4.1: Introduction",
+      "description": "This introduction determines which parts of Chapter 4 apply to your business. Your answers here will scope the detailed compliance forms you need to complete."
+    },
+    {
+      "id": "4_1_3",
+      "title": "ML/TF Risk Identification Factors",
+      "description": "Mandatory factors a reporting entity must consider when identifying its ML/TF risk."
+    },
+    {
+      "id": "4_1_4",
+      "title": "Customer Categories",
+      "description": "Select the types of customers your business provides designated services to. This determines which identification, verification and record-keeping rules apply to your program."
+    },
+    {
+      "id": "4_1_8",
+      "title": "Agents",
+      "description": "Select if your business deals with agents acting on behalf of customers."
+    }
+  ],
+  "rules": [
+    { "target": "4_1_3_1_a", "scope": "4_1_3_1", "effect": "SHOW", "schema": { "const": "Yes" } },
+    { "target": "4_1_3_1_b", "scope": "4_1_3_1", "effect": "SHOW", "schema": { "const": "Yes" } }
+  ],
+  "buttonGroups": {
+    "4_1_4": {
+      "label": "What types of customers does your business serve?",
+      "multi": true,
+      "options": [
+        { "key": "individuals",       "label": "Individuals",                "controlId": "4_1_4_1" },
+        { "key": "domestic_companies", "label": "Domestic Companies",         "controlId": "4_1_4_2" },
+        { "key": "foreign_companies",  "label": "Foreign Companies",          "controlId": "4_1_4_2" },
+        { "key": "trusts",            "label": "Trusts",                     "controlId": "4_1_4_3" },
+        { "key": "partnerships",      "label": "Partnerships",               "controlId": "4_1_4_4" },
+        { "key": "incorporated_assoc","label": "Incorporated Associations",  "controlId": "4_1_4_5" },
+        { "key": "unincorporated_assoc","label": "Unincorporated Associations","controlId": "4_1_4_5" },
+        { "key": "cooperatives",      "label": "Co-operatives",              "controlId": "4_1_4_6" },
+        { "key": "government_bodies", "label": "Government Bodies",          "controlId": "4_1_4_7" }
+      ]
+    },
+    "4_1_8": {
+      "label": "Does your business deal with customer agents?",
+      "multi": true,
+      "options": [
+        { "key": "agents", "label": "Customer Agents", "controlId": "4_1_8" }
+      ]
+    }
+  },
+  "derived": {
+    "4_1_5_1": {
+      "label": "Beneficial Owners",
+      "condition": "any non-individual customer type selected",
+      "appliesTo": ["4_1_4_2", "4_1_4_3", "4_1_4_4", "4_1_4_5", "4_1_4_6", "4_1_4_7"]
+    },
+    "4_1_5_2": {
+      "label": "Politically Exposed Persons",
+      "condition": "any customer type selected (individuals and beneficial owners)",
+      "appliesTo": ["4_1_4_1", "4_1_4_2", "4_1_4_3", "4_1_4_4", "4_1_4_5", "4_1_4_6", "4_1_4_7"]
+    }
+  },
+  "scoping": {
+    "4_1_4_1": { "sections": ["4_2"], "processes": ["PROC-AML-002", "PROC-AML-002a", "PROC-AML-002b"] },
+    "4_1_4_2": { "sections": ["4_3"], "processes": ["PROC-AML-002", "PROC-AML-002a", "PROC-AML-002b"] },
+    "4_1_4_3": { "sections": ["4_4"], "processes": ["PROC-AML-002", "PROC-AML-002a", "PROC-AML-002b"] },
+    "4_1_4_4": { "sections": ["4_5"], "processes": ["PROC-AML-002", "PROC-AML-002a", "PROC-AML-002b"] },
+    "4_1_4_5": { "sections": ["4_6"], "processes": ["PROC-AML-002", "PROC-AML-002a", "PROC-AML-002b"] },
+    "4_1_4_6": { "sections": ["4_7"], "processes": ["PROC-AML-002", "PROC-AML-002a", "PROC-AML-002b"] },
+    "4_1_4_7": { "sections": ["4_8"], "processes": ["PROC-AML-002", "PROC-AML-002a", "PROC-AML-002b"] },
+    "4_1_5_1": { "sections": ["4_12"], "processes": ["PROC-AML-003", "PROC-AML-003a", "PROC-AML-003c"] },
+    "4_1_5_2": { "sections": ["4_13"], "processes": ["PROC-AML-003", "PROC-AML-003b", "PROC-AML-003c"] },
+    "4_1_8":   { "sections": ["4_11"], "processes": ["PROC-AML-001"] }
+  },
+  "alwaysActive": {
+    "sections": ["4_1", "4_9", "4_10", "4_14", "4_15"],
+    "processes": ["PROC-AML-002c", "PROC-AML-004", "PROC-AML-004a", "PROC-AML-004b"]
+  }
+}

@@ -1,0 +1,750 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chapter 4 — Introduction &amp; Scoping</title>
+<style>
+  :root {
+    --bg: #f8fafc; --surface: #ffffff; --border: #e2e8f0;
+    --text: #1a202c; --muted: #718096; --accent: #3182ce;
+    --green: #48bb78; --yellow: #ecc94b; --red: #f56565; --orange: #ed8936;
+    --pending-bg: #ebf8ff; --success-bg: #f0fff4; --warning-bg: #fffff0; --error-bg: #fff5f5;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: var(--bg); color: var(--text); line-height: 1.6; }
+
+  /* Fixed diagram panel (right side) */
+  .diagram-panel {
+    position: fixed;
+    top: 0;
+    right: 0;
+    width: 340px;
+    height: 100vh;
+    background: #0f172a; /* Deep slate background */
+    z-index: 100;
+    display: flex;
+    flex-direction: column;
+    border-left: 1px solid #1e293b;
+    box-shadow: -4px 0 15px rgba(0,0,0,0.3);
+    overflow-y: auto;
+  }
+
+  /* --- SVG Aesthetic Styling --- */
+  .track-line { stroke: #334155; stroke-width: 4; stroke-linecap: round; fill: none; }
+  .ongoing-track { stroke: #ed8936; stroke-width: 3; stroke-dasharray: 0; fill: none; }
+  .node-outer { stroke: rgba(255,255,255,0.2); stroke-width: 1; }
+  .node-main { fill: #3182ce; filter: drop-shadow(0 0 3px rgba(49, 130, 206, 0.6)); }
+  .node-ongoing { fill: #ed8936; filter: drop-shadow(0 0 3px rgba(237, 137, 54, 0.6)); }
+  .station-label { fill: #e2e8f0; font-size: 10px; font-weight: 600; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; pointer-events: none; }
+  .section-rect { fill: rgba(30, 41, 59, 0.4); stroke: #1e293b; stroke-width: 1; }
+  .section-tag { fill: #64748b; font-size: 8px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.05em; }
+
+  .container { max-width: 960px; margin: 0 auto; padding: 24px 16px; padding-right: 360px; }
+  h1 { font-size: 1.5rem; margin-bottom: 4px; }
+  .subtitle { color: var(--muted); font-size: 0.95rem; margin-bottom: 24px; }
+
+  /* Groups */
+  .group { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; margin-bottom: 16px; overflow: hidden; }
+  .group-header { display: flex; justify-content: space-between; align-items: center; padding: 14px 18px; cursor: pointer; user-select: none; border-bottom: 1px solid var(--border); background: #f7fafc; }
+  .group-header:hover { background: #edf2f7; }
+  .group-title { font-weight: 600; font-size: 0.95rem; }
+  .group-desc { padding: 10px 18px; font-size: 0.85rem; color: var(--muted); background: #fafbfc; border-bottom: 1px solid var(--border); }
+  .group-score { font-size: 0.8rem; font-weight: 700; padding: 2px 10px; border-radius: 12px; white-space: nowrap; }
+  .group-body { padding: 0; }
+  .group-body.collapsed { display: none; }
+  .group-chevron { transition: transform 0.2s; font-size: 10px; margin-right: 10px; color: var(--muted); }
+  .group-chevron.open { transform: rotate(90deg); }
+
+  /* Controls */
+  .control { padding: 14px 18px; border-bottom: 1px solid #f0f4f8; display: flex; flex-wrap: wrap; align-items: flex-start; gap: 10px; }
+  .control:last-child { border-bottom: none; }
+  .control-id { font-size: 0.75rem; font-weight: 700; color: var(--accent); background: #ebf4ff; padding: 2px 8px; border-radius: 4px; white-space: nowrap; flex-shrink: 0; }
+  .control-label { flex: 1; min-width: 200px; font-size: 0.9rem; }
+  .control-answer { display: flex; gap: 6px; flex-shrink: 0; }
+  .control-answer label { font-size: 0.85rem; padding: 4px 14px; border: 1px solid var(--border); border-radius: 4px; cursor: pointer; transition: all 0.15s; }
+  .control-answer input { display: none; }
+  .control-answer input:checked + label.opt-yes { background: #c6f6d5; border-color: var(--green); color: #22543d; }
+  .control-answer input:checked + label.opt-no { background: #fed7d7; border-color: var(--red); color: #742a2a; }
+  .control-answer label:hover { background: #edf2f7; }
+  .status-dot { width: 12px; height: 12px; border-radius: 50%; border: 1px solid rgba(0,0,0,0.1); flex-shrink: 0; margin-top: 4px; }
+  .control.hidden { display: none; }
+
+  /* Detail input */
+  .detail-row { width: 100%; padding: 8px 0 0 0; display: none; }
+  .detail-row.visible { display: block; }
+  .detail-row label { font-size: 0.82rem; color: var(--muted); display: block; margin-bottom: 4px; }
+  .detail-row textarea { width: 100%; padding: 8px 10px; border: 1px solid var(--border); border-radius: 4px; font-size: 0.85rem; resize: vertical; min-height: 60px; font-family: inherit; }
+
+  /* Button group */
+  .btn-group-section { padding: 14px 18px; }
+  .btn-group-label { font-size: 0.9rem; font-weight: 500; margin-bottom: 10px; color: var(--text); }
+  .btn-group { display: flex; flex-wrap: wrap; gap: 8px; }
+  .btn-toggle { font-size: 0.85rem; padding: 8px 16px; border: 2px solid var(--border); border-radius: 6px; background: var(--surface); cursor: pointer; transition: all 0.15s; color: var(--text); font-family: inherit; }
+  .btn-toggle:hover { background: #edf2f7; border-color: #cbd5e0; }
+  .btn-toggle.selected { background: #ebf4ff; border-color: var(--accent); color: var(--accent); font-weight: 600; }
+
+  /* Scoping summary */
+  .summary { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 18px; margin-top: 24px; }
+  .summary h2 { font-size: 1.1rem; margin-bottom: 12px; border-bottom: 1px solid var(--border); padding-bottom: 8px; }
+  .summary-cols { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+  .summary-col h3 { font-size: 0.9rem; font-weight: 600; margin-bottom: 8px; color: var(--muted); }
+  .summary-item { display: flex; align-items: center; gap: 8px; padding: 6px 0; font-size: 0.85rem; border-bottom: 1px solid #f0f4f8; }
+  .summary-item:last-child { border-bottom: none; }
+  .badge { font-size: 0.7rem; font-weight: 700; padding: 2px 8px; border-radius: 10px; }
+  .badge-active { background: #c6f6d5; color: #22543d; }
+  .badge-inactive { background: #edf2f7; color: #a0aec0; }
+  .badge-always { background: #bee3f8; color: #2a4365; }
+
+  .process-tag { font-size: 0.7rem; background: #e9d8fd; color: #553c9a; padding: 1px 6px; border-radius: 3px; margin-left: 4px; }
+
+  .output { margin-top: 24px; }
+  .output summary { font-weight: 600; cursor: pointer; color: var(--muted); font-size: 0.9rem; }
+  .output pre { background: #1a202c; color: #a0aec0; padding: 16px; border-radius: 6px; font-size: 0.8rem; overflow-x: auto; margin-top: 8px; max-height: 400px; overflow-y: auto; }
+</style>
+</head>
+<body>
+
+<div id="diagram" class="diagram-panel"></div>
+
+<div class="container">
+  <h1>Chapter 4 — Introduction &amp; Scoping</h1>
+  <p class="subtitle">Answer these questions to determine which detailed compliance sections and business processes apply to your organisation.</p>
+
+  <div id="form"></div>
+  <div id="scoping-summary"></div>
+
+  <details class="output">
+    <summary>Raw Data Output</summary>
+    <pre id="json-output">{}</pre>
+  </details>
+</div>
+
+<script>
+// ─── DATA ───────────────────────────────────────────────────────────────────
+
+const CONTROLS = [
+  { id:"4_1_3_1",   label:"Does your business consider the risk posed by different customer types when identifying ML/TF risk?", "detail-required":true, "correct-option":"Yes", "detail-label":"Which types of customers do you consider?", "process-id":"PROC-AML-002c" },
+  { id:"4_1_3_1_a", label:"Does your risk identification process specifically consider the beneficial owners of customers?", "detail-required":false, "correct-option":"Yes", "process-id":"PROC-AML-003a" },
+  { id:"4_1_3_1_b", label:"Does your risk identification process specifically consider any politically exposed persons (PEPs)?", "detail-required":false, "correct-option":"Yes", "process-id":"PROC-AML-003b" },
+  { id:"4_1_3_2",   label:"Does your business consider its customers' sources of funds and wealth?", "detail-required":true, "correct-option":"Yes", "detail-label":"Describe how you consider customers' sources of funds and wealth.", "process-id":"PROC-AML-002c" },
+  { id:"4_1_3_3",   label:"Does your business consider the nature and purpose of the business relationship with its customers?", "detail-required":true, "correct-option":"Yes", "detail-label":"Describe how you consider the nature and purpose of the business relationship.", "process-id":"PROC-AML-002c" },
+  { id:"4_1_3_4",   label:"Does your business consider the control structure of its non-individual customers?", "detail-required":true, "correct-option":"Yes", "detail-label":"Describe how you consider the control structure of non-individual customers.", "process-id":"PROC-AML-002c" },
+  { id:"4_1_3_5",   label:"Does your business consider the types of designated services it provides?", "detail-required":true, "correct-option":"Yes", "detail-label":"Describe how you consider the risks posed by the designated services you provide.", "process-id":"PROC-AML-002c" },
+  { id:"4_1_3_6",   label:"Does your business consider the methods by which it delivers designated services?", "detail-required":true, "correct-option":"Yes", "detail-label":"Describe how you consider the risks posed by your delivery methods.", "process-id":"PROC-AML-002c" },
+  { id:"4_1_3_7",   label:"Does your business consider the foreign jurisdictions with which it deals?", "detail-required":true, "correct-option":"Yes", "detail-label":"Describe how you consider the risks posed by foreign jurisdictions.", "process-id":"PROC-AML-002c" }
+];
+
+const GROUPS = [
+  { id:"4_1_4", title:"Customer Categories", description:"Select the types of customers your business provides designated services to. This determines which identification, verification and record-keeping rules apply to your program." },
+  { id:"4_1_8", title:"Agents", description:"Select if your business deals with agents acting on behalf of customers." },
+  { id:"4_1_3", title:"ML/TF Risk Identification Factors", description:"Mandatory factors a reporting entity must consider when identifying its ML/TF risk." }
+];
+
+const RULES = [
+  { target:"4_1_3_1_a", scope:"4_1_3_1", effect:"SHOW", schema:{ const:"Yes" } },
+  { target:"4_1_3_1_b", scope:"4_1_3_1", effect:"SHOW", schema:{ const:"Yes" } }
+];
+
+const CUSTOMER_OPTIONS = [
+  { key:"individuals",          label:"Individuals",                 controlId:"4_1_4_1", isIndividual:true },
+  { key:"sole_traders",         label:"Sole Traders",                controlId:"4_1_4_1", isIndividual:true },
+  { key:"domestic_companies",   label:"Domestic Companies",          controlId:"4_1_4_2", isIndividual:false },
+  { key:"foreign_companies",    label:"Foreign Companies",           controlId:"4_1_4_2", isIndividual:false },
+  { key:"trusts",               label:"Trusts",                      controlId:"4_1_4_3", isIndividual:false },
+  { key:"partnerships",         label:"Partnerships",                controlId:"4_1_4_4", isIndividual:false },
+  { key:"assoc",                label:"Associations",                controlId:"4_1_4_5", isIndividual:false },
+  { key:"cooperatives",         label:"Co-operatives",               controlId:"4_1_4_6", isIndividual:false },
+  { key:"government_bodies",    label:"Government Bodies",           controlId:"4_1_4_7", isIndividual:false }
+];
+
+const AGENT_OPTIONS = [
+  { key:"agents", label:"Customer Agents", controlId:"4_1_8" }
+];
+
+const SCOPING = {
+  "4_1_4_1": { sections:["4_2"],  label:"Part 4.2: Individuals & Sole Traders",   processes:["PROC-AML-002","PROC-AML-002a","PROC-AML-002b"] },
+  "4_1_4_2": { sections:["4_3"],  label:"Part 4.3: Companies",                     processes:["PROC-AML-002","PROC-AML-002a","PROC-AML-002b"] },
+  "4_1_4_3": { sections:["4_4"],  label:"Part 4.4: Trusts",                        processes:["PROC-AML-002","PROC-AML-002a","PROC-AML-002b"] },
+  "4_1_4_4": { sections:["4_5"],  label:"Part 4.5: Partnerships",                  processes:["PROC-AML-002","PROC-AML-002a","PROC-AML-002b"] },
+  "4_1_4_5": { sections:["4_6"],  label:"Part 4.6: Associations",                  processes:["PROC-AML-002","PROC-AML-002a","PROC-AML-002b"] },
+  "4_1_4_6": { sections:["4_7"],  label:"Part 4.7: Co-operatives",                 processes:["PROC-AML-002","PROC-AML-002a","PROC-AML-002b"] },
+  "4_1_4_7": { sections:["4_8"],  label:"Part 4.8: Government Bodies",             processes:["PROC-AML-002","PROC-AML-002a","PROC-AML-002b"] },
+  "4_1_5_1": { sections:["4_12"], label:"Part 4.12: Beneficial Ownership",         processes:["PROC-AML-003","PROC-AML-003a","PROC-AML-003c"] },
+  "4_1_5_2": { sections:["4_13"], label:"Part 4.13: Politically Exposed Persons",  processes:["PROC-AML-003","PROC-AML-003b","PROC-AML-003c"] },
+  "4_1_8":   { sections:["4_11"], label:"Part 4.11: Customer Agents",              processes:["PROC-AML-001"] }
+};
+
+const ALWAYS_ACTIVE = {
+  sections: [
+    { id:"4_1",  label:"Part 4.1: Introduction" },
+    { id:"4_9",  label:"Part 4.9: Verification (Documents)" },
+    { id:"4_10", label:"Part 4.10: Verification (Electronic)" },
+    { id:"4_14", label:"Part 4.14: Exemptions and Special Provisions" },
+    { id:"4_15", label:"Part 4.15: Alternative Identity Proofing" }
+  ],
+  processes: [
+    { id:"PROC-AML-002c", name:"Risk Assessment" },
+    { id:"PROC-AML-004",  name:"Ongoing CDD" },
+    { id:"PROC-AML-004a", name:"High Value Transactions" },
+    { id:"PROC-AML-004b", name:"Suspicious Matter Reporting" }
+  ]
+};
+
+const PROCESSES = {
+  "PROC-AML-001":  { name:"Customer Agents",             parent:null },
+  "PROC-AML-002":  { name:"Customer Due Diligence",      parent:null },
+  "PROC-AML-002a": { name:"Onboarding",                  parent:"PROC-AML-002" },
+  "PROC-AML-002b": { name:"Verification",                parent:"PROC-AML-002" },
+  "PROC-AML-002c": { name:"Risk Assessment",             parent:"PROC-AML-002" },
+  "PROC-AML-003":  { name:"Enhanced CDD",                parent:null },
+  "PROC-AML-003a": { name:"Beneficial Ownership",        parent:"PROC-AML-003" },
+  "PROC-AML-003b": { name:"Politically Exposed Persons", parent:"PROC-AML-003" },
+  "PROC-AML-003c": { name:"Verification (Enhanced)",     parent:"PROC-AML-003" },
+  "PROC-AML-004a": { name:"High Value Transactions",     parent:"PROC-AML-004" },
+  "PROC-AML-004b": { name:"Suspicious Matter Reporting", parent:"PROC-AML-004" }
+};
+
+// ─── STATE ──────────────────────────────────────────────────────────────────
+const answers = {};
+const toggles = {};
+
+// ─── DERIVED STATE ──────────────────────────────────────────────────────────
+function getDerived() {
+  const selectedCustomers = CUSTOMER_OPTIONS.filter(o => toggles[o.key]);
+  const customerCount = selectedCustomers.length;
+  const hasAnyCustomer = customerCount > 0;
+  const hasIndividual = selectedCustomers.some(o => o.isIndividual);
+  const hasNonIndividual = selectedCustomers.some(o => !o.isIndividual);
+  const hasAgent = !!toggles.agents;
+  const hasBO = hasNonIndividual;
+  const hasPEP = hasAnyCustomer;
+  return { customerCount, hasAnyCustomer, hasIndividual, hasNonIndividual, hasAgent, hasBO, hasPEP };
+}
+
+// ─── HELPERS ────────────────────────────────────────────────────────────────
+function getParentId(id) {
+  const parts = id.split("_");
+  return parts.length === 1 ? null : parts.slice(0, -1).join("_");
+}
+
+function getControlStatus(ctrl) {
+  const answer = answers[ctrl.id];
+  const detail = answers[ctrl.id + "_detail"];
+  if (answer === undefined || answer === "") return "pending";
+  if (!ctrl["correct-option"] || ctrl["correct-option"] === "N/A") return "success";
+  if (answer !== ctrl["correct-option"]) return "error";
+  if (ctrl["detail-required"] && (!detail || detail.trim() === "")) return "warning";
+  return "success";
+}
+
+function statusColor(status) {
+  return { pending:"var(--orange)", success:"var(--green)", warning:"var(--yellow)", error:"var(--red)" }[status];
+}
+
+function checkVisibility(id) {
+  const rule = RULES.find(r => r.target === id);
+  if (!rule) return true;
+  return answers[rule.scope] === rule.schema.const;
+}
+
+function sortById(a, b) {
+  const idA = typeof a === "string" ? a : a.id || "";
+  const idB = typeof b === "string" ? b : b.id || "";
+  return idA.localeCompare(idB, undefined, { numeric:true, sensitivity:"base" });
+}
+
+function syncAnswers() {
+  const activeControlIds = new Set();
+  const allControlIds = new Set();
+  CUSTOMER_OPTIONS.forEach(opt => {
+    allControlIds.add(opt.controlId);
+    if (toggles[opt.key]) activeControlIds.add(opt.controlId);
+  });
+  AGENT_OPTIONS.forEach(opt => {
+    allControlIds.add(opt.controlId);
+    if (toggles[opt.key]) activeControlIds.add(opt.controlId);
+  });
+  allControlIds.forEach(cid => {
+    answers[cid] = activeControlIds.has(cid) ? "Yes" : undefined;
+  });
+  const d = getDerived();
+  answers["4_1_5_1"] = d.hasBO ? "Yes" : undefined;
+  answers["4_1_5_2"] = d.hasPEP ? "Yes" : undefined;
+}
+
+function getControlGroupScore(groupId) {
+  const controls = CONTROLS.filter(c => c.id.startsWith(groupId + "_") || c.id === groupId);
+  let total = 0, green = 0;
+  controls.forEach(c => {
+    if (!checkVisibility(c.id)) return;
+    total++;
+    if (getControlStatus(c) === "success") green++;
+  });
+  return { score: total === 0 ? 1 : green / total, total, green };
+}
+
+// ─── RAILWAY DIAGRAM (fixed right panel, top-to-bottom, tube-map style) ─────
+function renderDiagram() {
+  const el = document.getElementById("diagram");
+  const d = getDerived();
+
+  // --- Configuration ---
+  const R = 7;                   // Node radius
+  const NODE_GAP = 52;           // Vertical spacing between stations
+  const SECTION_GAP = 20;        // Spacing between major blocks
+  const TRACK_X = 65;            // Shifted left to provide 275px for labels
+  const SIDING_X = TRACK_X + 45; // X-offset for the Ongoing CDD siding
+  const LABEL_OFFSET = 20;       // Distance from node to text
+  const FONT = '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+
+  // --- Colors (Matched to CSS Variables) ---
+  const COL_MAIN = "#3182ce";    // Blue (Active/Onboarding)
+  const COL_ONGOING = "#ed8936"; // Orange (Maintenance)
+  const COL_TRACK = "#334155";   // Slate (Inactive tracks)
+  const COL_LABEL = "#e2e8f0";   // Light gray text
+  const COL_SECTION_BG = "rgba(30, 41, 59, 0.4)";
+  const COL_SECTION_BORDER = "#1e293b";
+
+  let y = 30;
+  const sections = [];
+
+  // 1. Designated Services (Always Present)
+  sections.push({
+    id: "services", title: null,
+    nodes: [{ id: "services", label: "Designated Services", x: TRACK_X, y, color: COL_MAIN }],
+    top: y - 10, bottom: y + 10
+  });
+  y += NODE_GAP + SECTION_GAP;
+
+  // 2. Customer Due Diligence Section
+  const cddNodes = [];
+  if (d.hasAgent) cddNodes.push({ id: "agent", label: "Agent Onboarding", x: TRACK_X, y: 0, color: COL_MAIN });
+  if (d.hasAnyCustomer) cddNodes.push({ id: "customer", label: `Customer (${d.customerCount})`, x: TRACK_X, y: 0, color: COL_MAIN });
+  
+  if (cddNodes.length > 0) {
+    const sTop = y - 15;
+    cddNodes.forEach(n => { n.y = y; y += NODE_GAP; });
+    sections.push({ id: "cdd", title: "Customer Due Diligence", nodes: cddNodes, top: sTop, bottom: y - (NODE_GAP - 15) });
+    y += SECTION_GAP;
+  }
+
+  // 3. Enhanced CDD Section
+  const ecddNodes = [];
+  if (d.hasBO) ecddNodes.push({ id: "bo", label: "Beneficial Owners", x: TRACK_X, y: 0, color: COL_MAIN });
+  
+  if (ecddNodes.length > 0) {
+    const sTop = y - 15;
+    ecddNodes.forEach(n => { n.y = y; y += NODE_GAP; });
+    sections.push({ id: "ecdd", title: "Enhanced CDD", nodes: ecddNodes, top: sTop, bottom: y - (NODE_GAP - 15) });
+    y += SECTION_GAP;
+  }
+
+  // 4. Ongoing CDD (Siding / Bypass Track)
+  const ongoingProcs = Object.entries(PROCESSES)
+    .filter(([id]) => id.startsWith("PROC-AML-004"))
+    .sort(([a],[b]) => a.localeCompare(b));
+
+  const sidingTopY = y + 10;
+  const ongoingNodes = ongoingProcs.map(([, p], i) => ({
+    label: p.name, x: SIDING_X, y: sidingTopY + 25 + (i * NODE_GAP), color: COL_ONGOING
+  }));
+  const sidingBottomY = ongoingNodes[ongoingNodes.length - 1].y + 25;
+  
+  sections.push({
+    id: "ongoing", title: "Ongoing Compliance",
+    nodes: ongoingNodes, top: y - 5, bottom: sidingBottomY + 10, isSiding: true
+  });
+
+  const svgW = 340;
+  const svgH = sidingBottomY + 100;
+
+  // --- SVG Construction ---
+  let svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${svgW}" height="${svgH}" viewBox="0 -60 ${svgW} ${svgH}">`;
+
+  // Draw Section Backgrounds
+  sections.forEach(s => {
+    const boxX = TRACK_X - 25;
+    const boxW = svgW - boxX - 15;
+    svg += `<rect x="${boxX}" y="${s.top}" width="${boxW}" height="${s.bottom - s.top}" rx="8" fill="${COL_SECTION_BG}" stroke="${COL_SECTION_BORDER}" stroke-width="1"/>`;
+    if (s.title) {
+      svg += `<text x="${boxX + 40}" y="${s.top - 6}" fill="#64748b" font-size="9" font-weight="800" font-family="${FONT}" text-transform="uppercase" letter-spacing="0.05em">${s.title}</text>`;
+    }
+  });
+
+  // Draw Main Track Line
+  const mainNodes = sections.filter(s => !s.isSiding).flatMap(s => s.nodes);
+  if (mainNodes.length > 0) {
+    svg += `<line x1="${TRACK_X}" y1="${mainNodes[0].y}" x2="${TRACK_X}" y2="${sidingBottomY + 0}" stroke="${COL_TRACK}" stroke-width="4" stroke-linecap="round"/>`;
+  }
+
+  // Draw Siding Track (Trapezium/Rectilinear)
+  const entryY = sidingTopY;
+  const exitY = sidingBottomY;
+  svg += `<path d="M ${TRACK_X} ${entryY} L ${SIDING_X} ${entryY + 20} L ${SIDING_X} ${exitY - 20} L ${TRACK_X} ${exitY}" fill="none" stroke="${COL_ONGOING}" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" />`;
+
+  // Draw Nodes and Labels
+  sections.flatMap(s => s.nodes).forEach(n => {
+    // Station Dot
+    svg += `<circle cx="${n.x}" cy="${n.y}" r="${R + 3}" fill="rgba(15,23,42,0.8)" stroke="${n.color}" stroke-width="1.5" />`;
+    svg += `<circle cx="${n.x}" cy="${n.y}" r="${R}" fill="${n.color}" style="filter: drop-shadow(0 0 3px ${n.color}88)" />`;
+    
+    // Standard Station Text
+    const lx = n.x + LABEL_OFFSET;
+    const ly = n.y + 4;
+    svg += `<text x="${lx}" y="${ly}" fill="${COL_LABEL}" font-size="10" font-weight="600" font-family="${FONT}">${n.label}</text>`;
+  });
+
+  // --- PEP Branches (Updated to use station styling and 45/20 diagonal angle) ---
+  if (d.hasAnyCustomer || d.hasBO) {
+    const pepTargets = [];
+    if (d.hasAnyCustomer) {
+      const c = mainNodes.find(n => n.id === "customer");
+      if (c) pepTargets.push(c);
+    }
+    if (d.hasBO) {
+      const b = mainNodes.find(n => n.id === "bo");
+      if (b) pepTargets.push(b);
+    }
+
+    pepTargets.forEach(p => {
+      const pepX = p.x + 45; // Match SIDING_X offset
+      const pepY = p.y + 20; // Match diagonal entry slope
+      
+      // Branch Line
+      svg += `<line x1="${p.x}" y1="${p.y}" x2="${pepX}" y2="${pepY}" stroke="${COL_TRACK}" stroke-width="2" stroke-linecap="round" />`;
+      
+      // Node Outer Ring
+      svg += `<circle cx="${pepX}" cy="${pepY}" r="${R + 3}" fill="rgba(15,23,42,0.8)" stroke="${COL_MAIN}" stroke-width="1.5" />`;
+      // Node Main Fill & Shadow
+      svg += `<circle cx="${pepX}" cy="${pepY}" r="${R}" fill="${COL_MAIN}" style="filter: drop-shadow(0 0 3px ${COL_MAIN}88)" />`;
+      
+      // PEP Label (Blue theme)
+      const lx = pepX + LABEL_OFFSET;
+      const ly = pepY + 4;
+      svg += `<text x="${lx}" y="${ly}" fill="${COL_MAIN}" font-size="10" font-weight="600" font-family="${FONT}">PEP Screening</text>`;
+    });
+  }
+
+  svg += `</svg>`;
+  el.innerHTML = svg;
+}
+
+// ─── FORM RENDER ────────────────────────────────────────────────────────────
+function render() {
+  syncAnswers();
+  renderDiagram();
+
+  const formEl = document.getElementById("form");
+  formEl.innerHTML = "";
+
+  GROUPS.forEach(group => {
+    if (group.id === "4_1_4") {
+      formEl.appendChild(renderButtonGroupSection(group, "What types of customers does your business serve?", CUSTOMER_OPTIONS));
+    } else if (group.id === "4_1_8") {
+      formEl.appendChild(renderAgentRadioSection(group));
+    } else {
+      formEl.appendChild(renderControlGroup(group));
+    }
+  });
+
+  const d = getDerived();
+  if (d.hasAnyCustomer) {
+    const infoDiv = document.createElement("div");
+    infoDiv.style.cssText = "padding:12px 18px;font-size:0.82rem;color:#718096;border:1px solid #e2e8f0;border-radius:8px;background:#fafbfc;margin-bottom:16px;";
+    const parts = [];
+    if (d.hasBO) parts.push("Beneficial Ownership (Part 4.12) applies to your non-individual customer types");
+    if (d.hasPEP) parts.push("Politically Exposed Person screening (Part 4.13) applies to all customers and beneficial owners");
+    infoDiv.innerHTML = parts.map(p => `<div style="margin-bottom:4px;">\u2192 ${p}</div>`).join("");
+    formEl.appendChild(infoDiv);
+  }
+
+  renderScopingSummary();
+  document.getElementById("json-output").textContent = JSON.stringify({ answers, toggles, derived: getDerived() }, null, 2);
+}
+
+function renderControlGroup(group) {
+  const div = document.createElement("div");
+  div.className = "group";
+  div.style.margin = "8px 0";
+
+  const { score, total, green } = getControlGroupScore(group.id);
+  const scoreColor = score >= 1 ? "var(--green)" : score >= 0.5 ? "var(--yellow)" : total === 0 ? "var(--muted)" : "var(--orange)";
+  const scoreBg = score >= 1 ? "var(--success-bg)" : score >= 0.5 ? "var(--warning-bg)" : total === 0 ? "#edf2f7" : "var(--pending-bg)";
+
+  const header = document.createElement("div");
+  header.className = "group-header";
+  header.innerHTML = `
+    <div style="display:flex;align-items:center;">
+      <span class="group-chevron open">&#9654;</span>
+      <span class="group-title">${group.title}</span>
+    </div>
+    <span class="group-score" style="color:${scoreColor};background:${scoreBg};">${green}/${total}</span>
+  `;
+
+  const body = document.createElement("div");
+  body.className = "group-body";
+
+  header.addEventListener("click", () => {
+    body.classList.toggle("collapsed");
+    header.querySelector(".group-chevron").classList.toggle("open");
+  });
+
+  div.appendChild(header);
+
+  if (group.description) {
+    const desc = document.createElement("div");
+    desc.className = "group-desc";
+    desc.textContent = group.description;
+    body.appendChild(desc);
+  }
+
+  const childControls = CONTROLS.filter(c => getParentId(c.id) === group.id).sort(sortById);
+  childControls.forEach(ctrl => body.appendChild(renderControl(ctrl)));
+
+  div.appendChild(body);
+  return div;
+}
+
+function renderControl(ctrl) {
+  const visible = checkVisibility(ctrl.id);
+  const status = getControlStatus(ctrl);
+
+  const div = document.createElement("div");
+  div.className = "control" + (visible ? "" : " hidden");
+  div.dataset.controlId = ctrl.id;
+
+  const processTag = ctrl["process-id"]
+    ? `<span class="process-tag">${ctrl["process-id"]}</span>`
+    : "";
+
+  div.innerHTML = `
+    <div class="status-dot" style="background:${statusColor(status)};"></div>
+    <span class="control-id">${ctrl.id}</span>
+    <span class="control-label">${ctrl.label}${processTag}</span>
+    <div class="control-answer">
+      <input type="radio" name="${ctrl.id}" id="${ctrl.id}_yes" value="Yes" ${answers[ctrl.id]==="Yes"?"checked":""}>
+      <label for="${ctrl.id}_yes" class="opt-yes">Yes</label>
+      <input type="radio" name="${ctrl.id}" id="${ctrl.id}_no" value="No" ${answers[ctrl.id]==="No"?"checked":""}>
+      <label for="${ctrl.id}_no" class="opt-no">No</label>
+    </div>
+  `;
+
+  if (ctrl["detail-required"]) {
+    const detailDiv = document.createElement("div");
+    detailDiv.className = "detail-row" + (answers[ctrl.id] === "Yes" ? " visible" : "");
+    detailDiv.innerHTML = `
+      <label>${ctrl["detail-label"] || "Please provide details:"}</label>
+      <textarea placeholder="Enter details...">${answers[ctrl.id + "_detail"] || ""}</textarea>
+    `;
+    detailDiv.querySelector("textarea").addEventListener("input", (e) => {
+      answers[ctrl.id + "_detail"] = e.target.value;
+      render();
+    });
+    div.appendChild(detailDiv);
+  }
+
+  div.querySelectorAll('input[type="radio"]').forEach(radio => {
+    radio.addEventListener("change", (e) => {
+      answers[ctrl.id] = e.target.value;
+      render();
+    });
+  });
+
+  return div;
+}
+
+function renderButtonGroupSection(group, questionLabel, options) {
+  const div = document.createElement("div");
+  div.className = "group";
+  div.style.margin = "8px 0";
+
+  const selectedCount = options.filter(o => toggles[o.key]).length;
+  const hasAny = selectedCount > 0;
+  const scoreColor = hasAny ? "var(--green)" : "var(--muted)";
+  const scoreBg = hasAny ? "var(--success-bg)" : "#edf2f7";
+
+  const header = document.createElement("div");
+  header.className = "group-header";
+  header.innerHTML = `
+    <div style="display:flex;align-items:center;">
+      <span class="group-chevron open">&#9654;</span>
+      <span class="group-title">${group.title}</span>
+    </div>
+    <span class="group-score" style="color:${scoreColor};background:${scoreBg};">${selectedCount} selected</span>
+  `;
+
+  const body = document.createElement("div");
+  body.className = "group-body";
+
+  header.addEventListener("click", () => {
+    body.classList.toggle("collapsed");
+    header.querySelector(".group-chevron").classList.toggle("open");
+  });
+
+  div.appendChild(header);
+
+  if (group.description) {
+    const desc = document.createElement("div");
+    desc.className = "group-desc";
+    desc.textContent = group.description;
+    body.appendChild(desc);
+  }
+
+  const section = document.createElement("div");
+  section.className = "btn-group-section";
+
+  const label = document.createElement("div");
+  label.className = "btn-group-label";
+  label.textContent = questionLabel;
+  section.appendChild(label);
+
+  const btnRow = document.createElement("div");
+  btnRow.className = "btn-group";
+
+  options.forEach(opt => {
+    const btn = document.createElement("button");
+    btn.type = "button";
+    btn.className = "btn-toggle" + (toggles[opt.key] ? " selected" : "");
+    btn.textContent = opt.label;
+    btn.addEventListener("click", () => {
+      toggles[opt.key] = !toggles[opt.key];
+      render();
+    });
+    btnRow.appendChild(btn);
+  });
+
+  section.appendChild(btnRow);
+  body.appendChild(section);
+  div.appendChild(body);
+  return div;
+}
+
+function renderAgentRadioSection(group) {
+  const div = document.createElement("div");
+  div.className = "group";
+
+  const hasAgent = !!toggles.agents;
+  const scoreColor = hasAgent ? "var(--green)" : "var(--muted)";
+  const scoreBg = hasAgent ? "var(--success-bg)" : "#edf2f7";
+  const scoreLabel = hasAgent ? "Yes" : "No";
+
+  const header = document.createElement("div");
+  header.className = "group-header";
+  header.innerHTML = `
+    <div style="display:flex;align-items:center;">
+      <span class="group-chevron open">&#9654;</span>
+      <span class="group-title">${group.title}</span>
+    </div>
+    <span class="group-score" style="color:${scoreColor};background:${scoreBg};">${scoreLabel}</span>
+  `;
+
+  const body = document.createElement("div");
+  body.className = "group-body";
+
+  header.addEventListener("click", () => {
+    body.classList.toggle("collapsed");
+    header.querySelector(".group-chevron").classList.toggle("open");
+  });
+
+  div.appendChild(header);
+
+  if (group.description) {
+    const desc = document.createElement("div");
+    desc.className = "group-desc";
+    desc.textContent = group.description;
+    body.appendChild(desc);
+  }
+
+  const control = document.createElement("div");
+  control.className = "control";
+  control.innerHTML = `
+    <span class="control-label">Does your business deal with agents acting on behalf of customers?</span>
+    <div class="control-answer">
+      <input type="radio" name="agents_radio" id="agents_yes" value="Yes" ${hasAgent ? "checked" : ""}>
+      <label for="agents_yes" class="opt-yes">Yes</label>
+      <input type="radio" name="agents_radio" id="agents_no" value="No" ${!hasAgent && toggles.agents !== undefined ? "checked" : ""}>
+      <label for="agents_no" class="opt-no">No</label>
+    </div>
+  `;
+
+  control.querySelectorAll('input[type="radio"]').forEach(radio => {
+    radio.addEventListener("change", (e) => {
+      toggles.agents = e.target.value === "Yes";
+      render();
+    });
+  });
+
+  body.appendChild(control);
+  div.appendChild(body);
+  return div;
+}
+
+// ─── SCOPING SUMMARY ────────────────────────────────────────────────────────
+function renderScopingSummary() {
+  const el = document.getElementById("scoping-summary");
+
+  const activeSections = [];
+  const activeProcessIds = new Set();
+
+  ALWAYS_ACTIVE.sections.forEach(s => activeSections.push({ ...s, source:"always" }));
+  ALWAYS_ACTIVE.processes.forEach(p => activeProcessIds.add(p.id));
+
+  Object.entries(SCOPING).forEach(([controlId, scope]) => {
+    const isActive = answers[controlId] === "Yes";
+    scope.sections.forEach(sId => {
+      if (!activeSections.find(s => s.id === sId)) {
+        activeSections.push({ id:sId, label:scope.label, source: isActive ? "active" : "inactive" });
+      }
+    });
+    if (isActive) {
+      scope.processes.forEach(pId => activeProcessIds.add(pId));
+    }
+  });
+
+  activeSections.sort((a,b) => a.id.localeCompare(b.id, undefined, { numeric:true }));
+
+  const allProcessEntries = Object.entries(PROCESSES).map(([id, p]) => ({
+    id, name: p.name, parent: p.parent,
+    active: activeProcessIds.has(id),
+    alwaysActive: ALWAYS_ACTIVE.processes.some(ap => ap.id === id)
+  })).sort((a,b) => a.id.localeCompare(b.id));
+
+  el.innerHTML = `
+    <div class="summary">
+      <h2>Scoping Summary</h2>
+      <div class="summary-cols">
+        <div class="summary-col">
+          <h3>Form Sections Required</h3>
+          ${activeSections.map(s => `
+            <div class="summary-item">
+              <span class="badge ${s.source === "always" ? "badge-always" : s.source === "active" ? "badge-active" : "badge-inactive"}">${s.source === "always" ? "ALWAYS" : s.source === "active" ? "ACTIVE" : "\u2014"}</span>
+              <span>${s.label || s.id}</span>
+            </div>
+          `).join("")}
+        </div>
+        <div class="summary-col">
+          <h3>Business Processes</h3>
+          ${allProcessEntries.map(p => {
+            const indent = p.parent ? "padding-left:20px;" : "";
+            const badge = p.alwaysActive ? "badge-always" : p.active ? "badge-active" : "badge-inactive";
+            const label = p.alwaysActive ? "ALWAYS" : p.active ? "ACTIVE" : "\u2014";
+            return `
+              <div class="summary-item" style="${indent}">
+                <span class="badge ${badge}">${label}</span>
+                <span>${p.parent ? "\u21b3 " : ""}${p.name}</span>
+                <span style="color:var(--muted);font-size:0.7rem;margin-left:auto;">${p.id}</span>
+              </div>
+            `;
+          }).join("")}
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+// ─── INIT ───────────────────────────────────────────────────────────────────
+render();
+</script>
+</body>
+</html>

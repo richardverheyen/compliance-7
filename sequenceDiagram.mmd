@@ -1,0 +1,63 @@
+sequenceDiagram
+
+    box Reporting Entity
+        participant Designated Services
+        actor Verifying Officer
+    end
+    actor Agent
+    box Customer
+        actor Individual
+        actor Sole Trader
+        participant Company Domestic
+        participant Company (Registered Foreign)
+        participant Company (Unregistered Foreign)
+        participant Trust
+        participant Partnership
+        participant Association
+        participant Cooperative
+        participant Government
+    end
+    actor Beneficial Owner
+
+    Note over Agent: Agent Check: <br>Full Name*, <br>Role/Position Title*, <br>Signature*, <br>Evidence of Customer Authorisation*
+    critical verification
+        Note over Agent: Verify *
+    end
+    Note over Individual: Individual:<br> Name*, <br>DOB**, <br>Address**
+    Note over Sole Trader: Sole Trader:<br>Name*, <br>DOB**, <br>Business Name, <br>Business Address, <br>ABN
+    critical verification
+        Note over Individual,Sole Trader: *Documentation Verification <br> Safe-Harbour med/low risk
+        Note over Individual,Sole Trader: *Electronic Verification <br> Safe-Harbour med/low risk
+        Note over Individual,Sole Trader: Discrepancy Management
+    end
+    Note over Company Domestic: Domestic Company Check: <br>Company Full Name (ASIC)*, <br>Company Office Address, <br>Company Business Address, <br>ACN*, <br>Company Type (ASIC)*, <br>Director Names (Proprietary Companies only)
+    critical verification
+        Note over Company Domestic: Verify *
+        Note over Company Domestic: Discrepancy Management
+    end
+    Note over Company (Registered Foreign): Registered Foreign Company Check: <br>Company Full Name (ASIC)*, <br>Company Aust. Office Address, <br>Company Business Address, <br>ARBN*, <br>Origin Country, <br>Origin Country Company Type*, <br>Director Names (Proprietary Companies only)
+    critical verification
+        Note over Company (Registered Foreign): Verify *
+        Note over Company (Registered Foreign): Discrepancy Management
+    end
+    Note over Company (Unregistered Foreign): Unregistered Foreign Company Check: <br>Company Full Name*, <br>Origin Country, <br>Origin Country Registration Org, <br>Origin Country Registration ID*, <br>Origin Country Address, <br>Origin Country Company Type*, <br>Director Names (Proprietary Companies only)
+    critical verification
+        Note over Company (Unregistered Foreign): Verify *
+        Note over Company (Unregistered Foreign): Discrepancy Management
+    end
+    Note over Individual,Government: Source of Funds/Wealth
+    Note over Individual,Government: Nature of business
+    Note over Company Domestic,Government: Control structure Check 
+    Company Domestic->>Beneficial Owner: BO Check
+    Note over Individual,Sole Trader: PEP Check
+    Note over Beneficial Owner: BO Check:<br> Name*, <br>DOB**, <br>Address**
+    critical verification
+        Note over Beneficial Owner: *Documentation Verification <br> Safe-Harbour med/low risk
+        Note over Beneficial Owner: *Electronic Verification <br> Safe-Harbour med/low risk
+        Note over Beneficial Owner: Discrepancy Management
+        Note over Beneficial Owner: ID Failure Process 4.12.9
+    end
+    Note over Beneficial Owner: PEP Check: <br>Seek Snr. Management Approval (High Risk) or Foreign.
+    critical verification
+        Note over Beneficial Owner: Discrepancy Management
+    end
