@@ -543,6 +543,54 @@ def build_groups(nodes: list[dict]) -> list[dict]:
     return sorted_groups
 
 
+def enrich_groups_with_nodes(nodes: list[dict], groups: list[dict]) -> list[dict]:
+    """Add text_nodes to each group by collecting nodes in its index range.
+
+    For each group, collects all nodes with node_index in
+    [group.first_node_index, end_boundary), where end_boundary is the
+    first_node_index of the next group whose ID is NOT a descendant
+    (i.e., doesn't start with group.id + "_").
+
+    Parent groups include ALL child nodes (including sub-groups).
+    """
+    enriched = []
+    for i, group in enumerate(groups):
+        gid = group["id"]
+        start = group["first_node_index"]
+
+        # Find end boundary: first_node_index of next non-descendant group
+        end = len(nodes)  # default: rest of document
+        for j in range(i + 1, len(groups)):
+            next_gid = groups[j]["id"]
+            if not next_gid.startswith(gid + "_"):
+                end = groups[j]["first_node_index"]
+                break
+
+        # Collect nodes in range
+        text_nodes = []
+        for node in nodes:
+            ni = node["node_index"]
+            if ni < start:
+                continue
+            if ni >= end:
+                break
+            text_nodes.append({
+                "node_index": ni,
+                "text": node["text"],
+                "rule_code": node.get("rule_code", ""),
+                "type": node.get("type", "TEXT"),
+                "is_bold": node.get("is_bold", False),
+                "is_italic": node.get("is_italic", False),
+            })
+
+        enriched_group = dict(group)
+        enriched_group["text_nodes"] = text_nodes
+        enriched.append(enriched_group)
+
+    logger.info(f"Enriched {len(enriched)} groups with text nodes.")
+    return enriched
+
+
 def save_groups_json(groups: list[dict], run_dir: str) -> str:
     """Write groups.json to the run directory."""
     output_path = os.path.join(run_dir, "groups.json")
@@ -720,6 +768,27 @@ def run_groups(nodes_path: str):
     print(f"  groups.svg  : {svg_path}")
 
 
+def run_enrich(nodes_path: str, groups_path: str):
+    """Enrich groups with their text nodes and save to groups_enriched.json."""
+    with open(nodes_path) as f:
+        nodes = json.load(f)
+    with open(groups_path) as f:
+        groups = json.load(f)
+
+    enriched = enrich_groups_with_nodes(nodes, groups)
+
+    run_dir = os.path.dirname(os.path.abspath(groups_path))
+    output_path = os.path.join(run_dir, "groups_enriched.json")
+    with open(output_path, "w") as f:
+        json.dump(enriched, f, indent=2)
+
+    print(f"\nDone!")
+    print(f"  groups_enriched.json : {output_path}")
+    print(f"  Groups enriched: {len(enriched)}")
+    total_nodes = sum(len(g["text_nodes"]) for g in enriched)
+    print(f"  Total text nodes assigned: {total_nodes}")
+
+
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Scrape a PDF and extract text nodes to JSON.")
     sub = parser.add_subparsers(dest="command")
@@ -732,8 +801,15 @@ if __name__ == "__main__":
     groups_p = sub.add_parser("groups", help="Identify groups from an existing nodes.json")
     groups_p.add_argument("nodes_json", help="Path to nodes.json")
 
+    # Enrich groups with text nodes
+    enrich_p = sub.add_parser("enrich", help="Enrich groups with their text nodes")
+    enrich_p.add_argument("nodes_json", help="Path to nodes.json")
+    enrich_p.add_argument("groups_json", help="Path to groups.json")
+
     args = parser.parse_args()
     if args.command == "groups":
         run_groups(args.nodes_json)
+    elif args.command == "enrich":
+        run_enrich(args.nodes_json, args.groups_json)
     else:
         run_pipeline(getattr(args, "pdf", "chapter4.pdf"))

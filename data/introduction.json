@@ -1,86 +1,10 @@
 {
-  "controls": [
-    {
-      "id": "4_1_3_1",
-      "label": "Does your business consider the risk posed by different customer types when identifying ML/TF risk?",
-      "detail-required": true,
-      "correct-option": "Yes",
-      "detail-label": "Which types of customers do you consider?",
-      "process-id": "PROC-AML-002c"
-    },
-    {
-      "id": "4_1_3_1_a",
-      "label": "Does your risk identification process specifically consider the beneficial owners of customers?",
-      "detail-required": false,
-      "correct-option": "Yes",
-      "process-id": "PROC-AML-003a"
-    },
-    {
-      "id": "4_1_3_1_b",
-      "label": "Does your risk identification process specifically consider any politically exposed persons (PEPs)?",
-      "detail-required": false,
-      "correct-option": "Yes",
-      "process-id": "PROC-AML-003b"
-    },
-    {
-      "id": "4_1_3_2",
-      "label": "Does your business consider its customers' sources of funds and wealth?",
-      "detail-required": true,
-      "correct-option": "Yes",
-      "detail-label": "Describe how you consider customers' sources of funds and wealth.",
-      "process-id": "PROC-AML-002c"
-    },
-    {
-      "id": "4_1_3_3",
-      "label": "Does your business consider the nature and purpose of the business relationship with its customers?",
-      "detail-required": true,
-      "correct-option": "Yes",
-      "detail-label": "Describe how you consider the nature and purpose of the business relationship.",
-      "process-id": "PROC-AML-002c"
-    },
-    {
-      "id": "4_1_3_4",
-      "label": "Does your business consider the control structure of its non-individual customers?",
-      "detail-required": true,
-      "correct-option": "Yes",
-      "detail-label": "Describe how you consider the control structure of non-individual customers.",
-      "process-id": "PROC-AML-002c"
-    },
-    {
-      "id": "4_1_3_5",
-      "label": "Does your business consider the types of designated services it provides?",
-      "detail-required": true,
-      "correct-option": "Yes",
-      "detail-label": "Describe how you consider the risks posed by the designated services you provide.",
-      "process-id": "PROC-AML-002c"
-    },
-    {
-      "id": "4_1_3_6",
-      "label": "Does your business consider the methods by which it delivers designated services?",
-      "detail-required": true,
-      "correct-option": "Yes",
-      "detail-label": "Describe how you consider the risks posed by your delivery methods.",
-      "process-id": "PROC-AML-002c"
-    },
-    {
-      "id": "4_1_3_7",
-      "label": "Does your business consider the foreign jurisdictions with which it deals?",
-      "detail-required": true,
-      "correct-option": "Yes",
-      "detail-label": "Describe how you consider the risks posed by foreign jurisdictions.",
-      "process-id": "PROC-AML-002c"
-    }
-  ],
+  "controls": [],
   "groups": [
     {
       "id": "4_1",
       "title": "Part 4.1: Introduction",
       "description": "This introduction determines which parts of Chapter 4 apply to your business. Your answers here will scope the detailed compliance forms you need to complete."
-    },
-    {
-      "id": "4_1_3",
-      "title": "ML/TF Risk Identification Factors",
-      "description": "Mandatory factors a reporting entity must consider when identifying its ML/TF risk."
     },
     {
       "id": "4_1_4",
@@ -93,10 +17,7 @@
       "description": "Select if your business deals with agents acting on behalf of customers."
     }
   ],
-  "rules": [
-    { "target": "4_1_3_1_a", "scope": "4_1_3_1", "effect": "SHOW", "schema": { "const": "Yes" } },
-    { "target": "4_1_3_1_b", "scope": "4_1_3_1", "effect": "SHOW", "schema": { "const": "Yes" } }
-  ],
+  "rules": [],
   "buttonGroups": {
     "4_1_4": {
       "label": "What types of customers does your business serve?",
