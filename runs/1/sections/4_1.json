@@ -1,0 +1,78 @@
+{
+  "controls": [
+    {
+      "id": "4_1_3",
+      "label": "Does your AML/CTF program include a documented process to identify and assess ML/TF risks posed by your customer types, including beneficial owners and politically exposed persons?",
+      "detail-required": true,
+      "detail-label": "Describe your risk assessment process for customer types, beneficial owners, and PEPs.",
+      "correct-option": "Yes",
+      "process-id": "PROC-AML-002c"
+    },
+    {
+      "id": "4_1_3_2",
+      "label": "Does your AML/CTF program include a documented process to identify and assess ML/TF risks posed by customers' sources of funds and wealth?",
+      "detail-required": true,
+      "detail-label": "Describe how you assess and document customers' sources of funds and wealth.",
+      "correct-option": "Yes",
+      "process-id": "PROC-AML-002c"
+    },
+    {
+      "id": "4_1_3_3",
+      "label": "Does your AML/CTF program include a documented process to identify and assess ML/TF risks based on the nature and purpose of business relationships with customers?",
+      "detail-required": true,
+      "detail-label": "Describe how you collect and assess information relevant to the nature and purpose of customer relationships.",
+      "correct-option": "Yes",
+      "process-id": "PROC-AML-002c"
+    },
+    {
+      "id": "4_1_3_4",
+      "label": "Does your AML/CTF program include a documented process to identify and assess ML/TF risks based on the control structures of your non-individual customers?",
+      "detail-required": true,
+      "detail-label": "Describe how you assess control structures of non-individual customers.",
+      "correct-option": "Yes",
+      "process-id": "PROC-AML-002c"
+    },
+    {
+      "id": "4_1_3_5",
+      "label": "Does your AML/CTF program include a documented process to identify and assess ML/TF risks based on the types of designated services you provide?",
+      "detail-required": true,
+      "detail-label": "Describe how you assess ML/TF risks associated with each designated service you provide.",
+      "correct-option": "Yes",
+      "process-id": "PROC-AML-002c"
+    },
+    {
+      "id": "4_1_3_6",
+      "label": "Does your AML/CTF program include a documented process to identify and assess ML/TF risks based on the methods by which you deliver designated services?",
+      "detail-required": true,
+      "detail-label": "Describe how you assess delivery methods (e.g. branch, online, phone) for ML/TF risk.",
+      "correct-option": "Yes",
+      "process-id": "PROC-AML-002c"
+    },
+    {
+      "id": "4_1_3_7",
+      "label": "Does your AML/CTF program include a documented process to identify and assess ML/TF risks based on the foreign jurisdictions with which you deal?",
+      "detail-required": true,
+      "detail-label": "Describe how you assess and monitor ML/TF risks associated with foreign jurisdictions.",
+      "correct-option": "Yes",
+      "process-id": "PROC-AML-002c"
+    }
+  ],
+  "groups": [
+    {
+      "id": "4_1",
+      "title": "AML/CTF Program \u2013 General Requirements and Risk Assessment",
+      "description": "These Rules specify requirements for Part A or Part B of a reporting entity's standard or joint AML/CTF program. The primary purpose of Part A is to identify, manage and mitigate money laundering or terrorism financing (ML/TF) risk. Part B sets out the applicable customer identification procedures. When collecting information about customers from third parties, reporting entities must consider their obligations under subclause 3.6 of the Australian Privacy Principles."
+    },
+    {
+      "id": "4_1_2",
+      "title": "Scope Exclusions",
+      "description": "These Rules do not apply to pre-commencement customers or customers who receive designated services covered by items 40, 42 or 44 of table 1 in section 6 of the AML/CTF Act."
+    },
+    {
+      "id": "4_1_3",
+      "title": "ML/TF Risk Assessment Factors",
+      "description": "When identifying ML/TF risk, a reporting entity must consider the risk posed by its customer types (including beneficial owners and politically exposed persons), customers' sources of funds and wealth, the nature and purpose of business relationships, control structures of non-individual customers, types of designated services provided, methods of service delivery, and foreign jurisdictions dealt with."
+    }
+  ],
+  "rules": []
+}

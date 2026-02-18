@@ -1,0 +1,191 @@
+{
+  "controls": [
+    {
+      "id": "4_8_1",
+      "label": "Does your AML/CTF program cover government bodies as customers?",
+      "detail-required": false,
+      "correct-option": "Yes",
+      "mapping-confidence": 1.0,
+      "source-rules": [
+        "4.8.1"
+      ],
+      "process-id": "PROC-AML-002"
+    },
+    {
+      "id": "4_8_2",
+      "label": "Does your program include risk-based systems and controls to verify that a government body exists and (where applicable) provide information about beneficial owners?",
+      "detail-required": true,
+      "detail-label": "Describe your risk-based systems and controls for verifying government body existence and beneficial ownership information.",
+      "correct-option": "Yes",
+      "mapping-confidence": 0.7,
+      "source-rules": [
+        "4.8.2",
+        "4.8.2(1)",
+        "4.8.2(2)"
+      ],
+      "process-id": "PROC-AML-002"
+    },
+    {
+      "id": "4_8_3",
+      "label": "Does your procedure for government bodies include collection of: (1) full name, (2) principal place of operations address, (3) Commonwealth status, and (4) State/Territory/foreign country status?",
+      "detail-required": true,
+      "detail-label": "Describe how your procedure collects these four categories of KYC information.",
+      "correct-option": "Yes",
+      "mapping-confidence": 1.0,
+      "source-rules": [
+        "4.8.3",
+        "4.8.3(1)",
+        "4.8.3(2)",
+        "4.8.3(3)",
+        "4.8.3(4)"
+      ],
+      "process-id": "PROC-AML-002a"
+    },
+    {
+      "id": "4_8_4",
+      "label": "Do your risk-based systems and controls determine whether to collect additional KYC information beyond the minimum specified in paragraph 4.8.3?",
+      "detail-required": true,
+      "detail-label": "Describe how your risk-based assessment determines whether additional KYC information is required.",
+      "correct-option": "Yes",
+      "mapping-confidence": 1.0,
+      "source-rules": [
+        "4.8.4"
+      ],
+      "process-id": "PROC-AML-002c"
+    },
+    {
+      "id": "4_8_5",
+      "label": "Does your procedure verify information collected under paragraph 4.8.3 using reliable and independent documentation, electronic data, or a combination of both?",
+      "detail-required": true,
+      "detail-label": "Describe the verification methods and sources you use (documentation, electronic data, or combination).",
+      "correct-option": "Yes",
+      "mapping-confidence": 1.0,
+      "source-rules": [
+        "4.8.5"
+      ],
+      "process-id": "PROC-AML-002b"
+    },
+    {
+      "id": "4_8_6",
+      "label": "Do your risk-based systems and controls determine whether to verify any additional KYC information collected under paragraph 4.8.4?",
+      "detail-required": true,
+      "detail-label": "Describe how your risk assessment determines whether additional KYC information should be verified.",
+      "correct-option": "Yes",
+      "mapping-confidence": 1.0,
+      "source-rules": [
+        "4.8.6"
+      ],
+      "process-id": "PROC-AML-002c"
+    },
+    {
+      "id": "4_8_7",
+      "label": "For foreign government entities, do your risk-based systems and controls determine whether to collect KYC information about ownership or control?",
+      "detail-required": true,
+      "detail-label": "Describe how your risk-based systems determine the need to collect beneficial ownership or control information for foreign government bodies.",
+      "correct-option": "Yes",
+      "mapping-confidence": 1.0,
+      "source-rules": [
+        "4.8.7"
+      ],
+      "process-id": "PROC-AML-003a"
+    },
+    {
+      "id": "4_8_8",
+      "label": "For foreign government entities, do your risk-based systems and controls determine whether to verify ownership or control information using reliable and independent sources?",
+      "detail-required": true,
+      "detail-label": "Describe how you verify beneficial ownership or control information for foreign government bodies (documentation, electronic data, or combination).",
+      "correct-option": "Yes",
+      "mapping-confidence": 1.0,
+      "source-rules": [
+        "4.8.8"
+      ],
+      "process-id": "PROC-AML-003a"
+    },
+    {
+      "id": "4_8_9",
+      "label": "Do your risk-based systems and controls include a process to respond to discrepancies identified during verification to determine whether you remain reasonably satisfied about government body existence and beneficial ownership information?",
+      "detail-required": true,
+      "detail-label": "Describe your process for identifying, investigating, and resolving discrepancies in government body information.",
+      "correct-option": "Yes",
+      "mapping-confidence": 1.0,
+      "source-rules": [
+        "4.8.9"
+      ],
+      "process-id": "PROC-AML-002b"
+    }
+  ],
+  "groups": [
+    {
+      "id": "4_8",
+      "title": "Customer Due Diligence \u2014 Government Bodies",
+      "description": "AML/CTF program requirements for government body customers, including identification, verification, and risk-based systems."
+    },
+    {
+      "id": "4_8_a",
+      "title": "General CDD Obligation and Risk Assessment Framework",
+      "description": "Establish whether your program covers government bodies and implement the required risk-based systems and controls framework."
+    },
+    {
+      "id": "4_8_b",
+      "title": "Collection of KYC Information",
+      "description": "Collect minimum identifying information about government bodies (name, address, jurisdiction information) and assess need for additional information."
+    },
+    {
+      "id": "4_8_c",
+      "title": "Verification of Information",
+      "description": "Verify collected information using reliable and independent sources, and determine whether additional collected information requires verification."
+    },
+    {
+      "id": "4_8_d",
+      "title": "Foreign Government Beneficial Ownership",
+      "description": "Apply risk-based assessment to determine whether to collect and verify ownership or control information for foreign government entities."
+    },
+    {
+      "id": "4_8_e",
+      "title": "Discrepancy Handling",
+      "description": "Respond to discrepancies identified during verification to ensure reasonable satisfaction about government body details."
+    }
+  ],
+  "rules": [
+    {
+      "target": "4_8",
+      "scope": "4_1_4_7",
+      "effect": "SHOW",
+      "schema": {
+        "const": "Yes"
+      }
+    },
+    {
+      "target": "4_8_b",
+      "scope": "4_8_1",
+      "effect": "SHOW",
+      "schema": {
+        "const": "Yes"
+      }
+    },
+    {
+      "target": "4_8_c",
+      "scope": "4_8_1",
+      "effect": "SHOW",
+      "schema": {
+        "const": "Yes"
+      }
+    },
+    {
+      "target": "4_8_d",
+      "scope": "4_8_1",
+      "effect": "SHOW",
+      "schema": {
+        "const": "Yes"
+      }
+    },
+    {
+      "target": "4_8_e",
+      "scope": "4_8_1",
+      "effect": "SHOW",
+      "schema": {
+        "const": "Yes"
+      }
+    }
+  ]
+}

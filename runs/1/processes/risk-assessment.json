@@ -1,0 +1,129 @@
+{
+  "controls": [
+    {
+      "id": "4_1_3_1",
+      "label": "Does your ML/TF risk assessment consider the customer types you serve, including beneficial owners and any politically exposed persons among them?",
+      "detail-required": true,
+      "detail-label": "Explain how you assess customer type risk (individual, company, trustee, partnership, association, cooperative, government body) and identify beneficial owners and PEPs.",
+      "correct-option": "Yes",
+      "process-id": "PROC-AML-002c",
+      "source-rules": [
+        "4.1.3(1)",
+        "4.1.3(1)(a)",
+        "4.1.3(1)(b)"
+      ],
+      "mapping-confidence": 0.9
+    },
+    {
+      "id": "4_1_3_2",
+      "label": "Does your ML/TF risk assessment consider the sources of funds and wealth of your customers?",
+      "detail-required": true,
+      "detail-label": "Explain how you assess and document customer sources of funds and wealth as part of your risk profile.",
+      "correct-option": "Yes",
+      "process-id": "PROC-AML-002c",
+      "source-rules": [
+        "4.1.3(2)"
+      ],
+      "mapping-confidence": 1.0
+    },
+    {
+      "id": "4_1_3_3",
+      "label": "Does your ML/TF risk assessment consider the nature and purpose of the business relationship with customers?",
+      "detail-required": true,
+      "detail-label": "Explain how you collect and assess information about the nature and purpose of customer business relationships.",
+      "correct-option": "Yes",
+      "process-id": "PROC-AML-002c",
+      "source-rules": [
+        "4.1.3(3)"
+      ],
+      "mapping-confidence": 1.0
+    },
+    {
+      "id": "4_1_3_4",
+      "label": "Does your ML/TF risk assessment consider the control structure of non-individual customers (e.g., ownership, management hierarchy)?",
+      "detail-required": true,
+      "detail-label": "Explain how you assess the control structure and governance arrangements of your non-individual customers.",
+      "correct-option": "Yes",
+      "process-id": "PROC-AML-002c",
+      "source-rules": [
+        "4.1.3(4)"
+      ],
+      "mapping-confidence": 1.0
+    },
+    {
+      "id": "4_1_3_5",
+      "label": "Does your ML/TF risk assessment consider the types of designated services you provide?",
+      "detail-required": true,
+      "detail-label": "Explain how you assess risk associated with each type of designated service your entity provides.",
+      "correct-option": "Yes",
+      "process-id": "PROC-AML-002c",
+      "source-rules": [
+        "4.1.3(5)"
+      ],
+      "mapping-confidence": 1.0
+    },
+    {
+      "id": "4_1_3_6",
+      "label": "Does your ML/TF risk assessment consider the methods by which you deliver designated services (e.g., in-person, telephone, electronic)?",
+      "detail-required": true,
+      "detail-label": "Explain how you assess risk based on service delivery methods (in-person, telephone, online, branch, agent, etc.).",
+      "correct-option": "Yes",
+      "process-id": "PROC-AML-002c",
+      "source-rules": [
+        "4.1.3(6)"
+      ],
+      "mapping-confidence": 1.0
+    },
+    {
+      "id": "4_1_3_7",
+      "label": "Does your ML/TF risk assessment consider the foreign jurisdictions with which you deal?",
+      "detail-required": true,
+      "detail-label": "Explain how you identify and assess risk associated with foreign jurisdictions where you conduct business or have customer relationships.",
+      "correct-option": "Yes",
+      "process-id": "PROC-AML-002c",
+      "source-rules": [
+        "4.1.3(7)"
+      ],
+      "mapping-confidence": 1.0
+    },
+    {
+      "id": "4_1_2_1",
+      "label": "Are you aware that certain customers are exempt from CDD requirements (pre-commencement customers and those receiving specific designated services)?",
+      "detail-required": false,
+      "correct-option": "N/A",
+      "process-id": "PROC-AML-002c",
+      "source-rules": [
+        "4.1.2(1)",
+        "4.1.2(2)"
+      ],
+      "mapping-confidence": 0.8
+    }
+  ],
+  "groups": [
+    {
+      "id": "4_1",
+      "title": "ML/TF Risk Assessment Framework",
+      "description": "The primary purpose of your AML/CTF program Part A is to identify, manage and mitigate money laundering or terrorism financing (ML/TF) risk your reporting entity may reasonably face in providing designated services in Australia. These controls ensure your risk assessment considers the mandatory risk factors."
+    },
+    {
+      "id": "4_1_3",
+      "title": "Collection of Risk Factors",
+      "description": "When identifying ML/TF risk, you must consider and assess the following risk factors as part of your formal risk assessment process."
+    },
+    {
+      "id": "4_1_2",
+      "title": "Scope and Exclusions",
+      "description": "Confirm your understanding of customer types and services exempt from these requirements."
+    }
+  ],
+  "rules": [
+    {
+      "target": "4_1_3",
+      "scope": "4_1_2_1",
+      "effect": "SHOW",
+      "schema": {
+        "const": "Yes"
+      }
+    }
+  ]
+}

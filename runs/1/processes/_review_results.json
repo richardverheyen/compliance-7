@@ -1,0 +1,1686 @@
+{
+  "cdd-individuals": {
+    "reviews": [
+      {
+        "control_id": "4_2_1",
+        "quality": "good",
+        "confidence": 1.0,
+        "issues": []
+      },
+      {
+        "control_id": "4_2_2",
+        "quality": "good",
+        "confidence": 1.0,
+        "issues": []
+      },
+      {
+        "control_id": "4_2_3",
+        "quality": "acceptable",
+        "confidence": 0.7,
+        "issues": [
+          "Control aggregates all sub-requirements (4.2.3(1-3)) into a single question about minimum KYC information collection. While accurate, this loses some granularity - the regulation specifies each element separately.",
+          "Confidence of 0.7 is appropriate given the aggregation, though the mapping itself is correct."
+        ]
+      },
+      {
+        "control_id": "4_2_4",
+        "quality": "acceptable",
+        "confidence": 0.7,
+        "issues": [
+          "Control aggregates all sub-requirements (4.2.4(1-5)) for sole traders into a single question. This is reasonable given that sole traders are treated as a distinct category, but loses clarity on which elements are truly required vs. conditional.",
+          "The phrase 'business/residential address' in the control label slightly oversimplifies the regulation, which specifies 'principal place of business (if any)' OR 'residential address' - not necessarily both."
+        ]
+      },
+      {
+        "control_id": "4_2_5",
+        "quality": "good",
+        "confidence": 1.0,
+        "issues": []
+      },
+      {
+        "control_id": "4_2_6",
+        "quality": "acceptable",
+        "confidence": 0.7,
+        "issues": [
+          "Control correctly captures the 'either/or' requirement for date of birth vs. residential address verification.",
+          "Confidence of 0.7 reflects appropriate uncertainty from aggregating multiple sub-rules, though the mapping is substantively accurate."
+        ]
+      },
+      {
+        "control_id": "4_2_7",
+        "quality": "acceptable",
+        "confidence": 0.7,
+        "issues": [
+          "Control accurately captures the three verification methods (documentation, electronic data, or combination).",
+          "Confidence of 0.7 is appropriate given sub-rule aggregation, though the mapping is substantively correct."
+        ]
+      },
+      {
+        "control_id": "4_2_8",
+        "quality": "good",
+        "confidence": 1.0,
+        "issues": []
+      },
+      {
+        "control_id": "4_2_9",
+        "quality": "good",
+        "confidence": 1.0,
+        "issues": []
+      },
+      {
+        "control_id": "4_2_10",
+        "quality": "good",
+        "confidence": 1.0,
+        "issues": []
+      },
+      {
+        "control_id": "4_2_11_1",
+        "quality": "good",
+        "confidence": 1.0,
+        "issues": []
+      },
+      {
+        "control_id": "4_2_11_2",
+        "quality": "acceptable",
+        "confidence": 0.7,
+        "issues": [
+          "Control correctly captures the 'either/or' structure: either (a) primary photographic ID, OR (b) both primary non-photographic AND secondary ID.",
+          "The label is slightly wordy and could be clearer about the strict 'either/or' nature of the two paths, but the substance is accurate.",
+          "Confidence of 0.7 reflects complexity of nested logical structures in the regulation."
+        ]
+      },
+      {
+        "control_id": "4_2_11_3",
+        "quality": "good",
+        "confidence": 1.0,
+        "issues": []
+      },
+      {
+        "control_id": "4_2_12",
+        "quality": "good",
+        "confidence": 1.0,
+        "issues": []
+      },
+      {
+        "control_id": "4_2_13_1",
+        "quality": "good",
+        "confidence": 1.0,
+        "issues": []
+      },
+      {
+        "control_id": "4_2_13_2",
+        "quality": "questionable",
+        "confidence": 0.7,
+        "issues": [
+          "Control label uses 'OR' to combine two distinct verification paths: (i) verification of identity elements, and (ii) verification of transaction history. However, the regulation structure in 4.2.13(2) is ambiguous about whether these are truly alternative paths or complementary requirements.",
+          "The regulation says verify 'the customer's name and either residential address, date of birth, or both' OR 'that the customer has a transaction history for at least 3 years'. The logical structure suggests these may be meant as alternatives, but the grouping is unclear.",
+          "The control label could mislead: it's not clear whether transaction history is an alternative to identity verification, or an additional requirement when electronic verification is used.",
+          "Confidence of 0.7 reflects this interpretive uncertainty in the source regulation."
+        ]
+      },
+      {
+        "control_id": "4_2_14",
+        "quality": "good",
+        "confidence": 1.0,
+        "issues": []
+      }
+    ],
+    "unmapped_assessment": [
+      {
+        "rule_code": "[4.9.3]",
+        "reason": "already_covered",
+        "explanation": "Rule [4.9.3] appears to be a structural reference that describes the substantive content already covered by controls 4_2_11_1, 4_2_11_2, and 4_2_11_3. The numbered sub-paragraphs (4.9.3(1), 4.9.3(2), 4.9.3(3)) are referenced in those controls. The parent reference [4.9.3] itself is a heading/organizational marker rather than an independent substantive requirement, and its content is captured through the specific sub-paragraph citations in the controls."
+      }
+    ]
+  },
+  "cdd-companies": {
+    "reviews": [
+      {
+        "control_id": "4_3_1",
+        "quality": "good",
+        "confidence": 1.0,
+        "issues": []
+      },
+      {
+        "control_id": "4_3_2",
+        "quality": "good",
+        "confidence": 0.9,
+        "issues": []
+      },
+      {
+        "control_id": "4_3_3_1",
+        "quality": "good",
+        "confidence": 0.9,
+        "issues": []
+      },
+      {
+        "control_id": "4_3_3_2",
+        "quality": "good",
+        "confidence": 0.9,
+        "issues": []
+      },
+      {
+        "control_id": "4_3_3_3",
+        "quality": "acceptable",
+        "confidence": 0.85,
+        "issues": [
+          "Reference to 4.3.3(3)(i) in source-rules appears to be a citation error - the actual regulation refers to the identification number requirement at 4.3.3(3)(c)(i)",
+          "Source-rules cite 4.3.3(3)(i)(ii) and 4.3.3(3)(i)(iii) which appear to be numbering errors in the original regulation text - these should be 4.3.3(3)(c)(ii) and 4.3.3(3)(c)(iii)"
+        ]
+      },
+      {
+        "control_id": "4_3_4",
+        "quality": "good",
+        "confidence": 1.0,
+        "issues": []
+      },
+      {
+        "control_id": "4_3_5_1",
+        "quality": "good",
+        "confidence": 0.9,
+        "issues": []
+      },
+      {
+        "control_id": "4_3_5_2",
+        "quality": "good",
+        "confidence": 0.9,
+        "issues": []
+      },
+      {
+        "control_id": "4_3_5_3",
+        "quality": "acceptable",
+        "confidence": 0.85,
+        "issues": [
+          "Source-rules contain citation errors (4.3.5(3)(i) and 4.3.5(3)(i)(ii)) that should be 4.3.5(3)(b)(i) and 4.3.5(3)(b)(ii) to properly trace to the regulation text"
+        ]
+      },
+      {
+        "control_id": "4_3_6",
+        "quality": "good",
+        "confidence": 1.0,
+        "issues": []
+      },
+      {
+        "control_id": "4_3_7",
+        "quality": "good",
+        "confidence": 1.0,
+        "issues": []
+      },
+      {
+        "control_id": "4_3_8",
+        "quality": "good",
+        "confidence": 0.9,
+        "issues": []
+      },
+      {
+        "control_id": "4_3_8_1",
+        "quality": "questionable",
+        "confidence": 0.65,
+        "issues": [
+          "Source-rules cite 4.3.5(1) through 4.3.5(7), but the actual substantive rules are found at 4.3.8 (the simplified procedure eligibility criteria) and the procedure itself (which mentions obtaining confirmations via specific means)",
+          "The regulatory text at 4.3.5(4) through 4.3.5(7) is misidentified - these are NOT paragraphs in the regulation; the actual verification methods for simplified procedure are described in the paragraph beginning 'The reporting entity must confirm...' without clear subparagraph numbering",
+          "The label and control text refer to 'simplified verification' but source-rules inappropriately reference the basic verification requirements at 4.3.5, creating potential confusion about which verification standard applies"
+        ]
+      },
+      {
+        "control_id": "4_3_9_1",
+        "quality": "good",
+        "confidence": 1.0,
+        "issues": []
+      },
+      {
+        "control_id": "4_3_9_2",
+        "quality": "good",
+        "confidence": 1.0,
+        "issues": []
+      },
+      {
+        "control_id": "4_3_10",
+        "quality": "good",
+        "confidence": 0.9,
+        "issues": []
+      },
+      {
+        "control_id": "4_3_11",
+        "quality": "good",
+        "confidence": 1.0,
+        "issues": []
+      },
+      {
+        "control_id": "4_3_12",
+        "quality": "good",
+        "confidence": 1.0,
+        "issues": []
+      },
+      {
+        "control_id": "4_3_13",
+        "quality": "good",
+        "confidence": 1.0,
+        "issues": []
+      },
+      {
+        "control_id": "4_3_14",
+        "quality": "good",
+        "confidence": 1.0,
+        "issues": []
+      }
+    ],
+    "unmapped_assessment": [
+      {
+        "rule_code": "4.3.3(3)(i)",
+        "reason": "already_covered",
+        "explanation": "This rule specifies that for unregistered foreign companies, the entity must collect 'any identification number issued to the company by the relevant foreign registration body upon the company's formation, incorporation or registration.' This requirement is substantively captured by control 4_3_3_3, which addresses collection of 'registration status and details' and 'identification number if registered' for unregistered foreign companies. While the exact rule reference is not cited due to apparent numbering errors in the source regulation (the rule appears to be at 4.3.3(3)(c)(i) based on the text structure), the requirement is covered."
+      },
+      {
+        "rule_code": "4.3.9(1)",
+        "reason": "already_covered",
+        "explanation": "This rule states that 'An AML/CTF program may include appropriate risk-based systems and controls for the reporting entity to determine whether and in what manner to verify the existence of a foreign company by confirming that the foreign company is a foreign listed public company.' This is substantively captured by control 4_3_9_1, which directly addresses discretionary risk-based systems and controls for verifying foreign companies as foreign listed public companies. The requirement is properly mapped to that control."
+      },
+      {
+        "rule_code": "4.3.9(3)",
+        "reason": "should_be_mapped",
+        "explanation": "This rule states: 'If an AML/CTF program includes systems and controls of that kind, an AML/CTF program is taken to comply with the requirements of paragraphs 4.3.5, 4.3.6 and 4.3.7 of these Rules in so far as those customers are concerned.' This is a substantive compliance exemption provision. It specifies a conditional safe harbor - if an entity includes foreign listed public company verification procedures (per 4.3.9(1)), those procedures satisfy the verification, additional information, and risk consideration requirements of 4.3.5, 4.3.6, and 4.3.7. This is an important regulatory requirement (even though permissive) that warrants explicit control mapping as it defines a compliance pathway and should be tracked to ensure the condition is properly understood and implemented."
+      }
+    ]
+  },
+  "cdd-trusts": {
+    "reviews": [
+      {
+        "control_id": "4_4_1",
+        "quality": "acceptable",
+        "confidence": 0.85,
+        "issues": [
+          "Control is phrased as a question about whether entity has trust customers, but source rule [4.4.1] is an introductory threshold statement that establishes the scope of Part 4.4. The control should clarify that this is a precondition for applicability rather than a yes/no compliance question. The correct-option of 'N/A' suggests the reviewer understood this, but the question phrasing is misleading."
+        ]
+      },
+      {
+        "control_id": "4_4_2",
+        "quality": "good",
+        "confidence": 0.92,
+        "issues": []
+      },
+      {
+        "control_id": "4_4_2_2",
+        "quality": "good",
+        "confidence": 0.92,
+        "issues": []
+      },
+      {
+        "control_id": "4_4_3",
+        "quality": "acceptable",
+        "confidence": 0.8,
+        "issues": [
+          "Control label aggregates eight distinct KYC information collection requirements into one control. While the source rules are correctly cited, the label is somewhat compressed and loses the nuance of conditional requirements (e.g., settlor name exceptions under 4.4.3(5)(a-d)). The confidence of 0.8 appropriately reflects this aggregation."
+        ]
+      },
+      {
+        "control_id": "4_4_4",
+        "quality": "good",
+        "confidence": 1.0,
+        "issues": []
+      },
+      {
+        "control_id": "4_4_5",
+        "quality": "acceptable",
+        "confidence": 0.8,
+        "issues": [
+          "Control aggregates verification requirements from [4.4.5(1)-(5)]. Like 4_4_3, the label compresses complex conditional exceptions around settlor name verification under 4.4.5(5)(a-d). The specific conditions (asset threshold, death, simplified procedure exemption, custodian/nominee status) are substantive and their omission from the label, while the conditions are in the source rules, creates potential ambiguity."
+        ]
+      },
+      {
+        "control_id": "4_4_6",
+        "quality": "good",
+        "confidence": 1.0,
+        "issues": []
+      },
+      {
+        "control_id": "4_4_7",
+        "quality": "good",
+        "confidence": 1.0,
+        "issues": []
+      },
+      {
+        "control_id": "4_4_8",
+        "quality": "acceptable",
+        "confidence": 0.88,
+        "issues": [
+          "Source-rules citation includes both [4.4.8] references and what appear to be duplicate provisions. The label correctly describes the simplified procedure for four categories of regulated trusts, but the correct-option of 'N/A' is appropriate since this is an optional procedure that entities may (not must) include. The mapping is sound but the duplication in source rules is slightly confusing."
+        ]
+      },
+      {
+        "control_id": "4_4_9",
+        "quality": "good",
+        "confidence": 0.92,
+        "issues": []
+      },
+      {
+        "control_id": "4_4_10",
+        "quality": "good",
+        "confidence": 1.0,
+        "issues": []
+      },
+      {
+        "control_id": "4_4_11",
+        "quality": "good",
+        "confidence": 1.0,
+        "issues": []
+      },
+      {
+        "control_id": "4_4_12",
+        "quality": "good",
+        "confidence": 1.0,
+        "issues": []
+      },
+      {
+        "control_id": "4_4_13",
+        "quality": "acceptable",
+        "confidence": 0.87,
+        "issues": [
+          "The control correctly identifies three categories of trusts where trustee/beneficiary requirements are omitted, but the label says 'omit' when the requirement is actually 'need not include' (a subtle but important legal distinction). The source rules correctly cited, but framing as 'omit' may cause confusion about whether these are exemptions or outright prohibitions. The control is sound in substance."
+        ]
+      },
+      {
+        "control_id": "4_4_14",
+        "quality": "acceptable",
+        "confidence": 0.88,
+        "issues": [
+          "Control correctly identifies the partial exemption for Commonwealth-regulated trusts (omit collection but retain verification). However, the source rule [4.4.14] actually refers to 'need not include the requirements specified in paragraph 4.4.9 in relation to a trust that is registered and subject to regulatory oversight'. The control should clarify that this exemption applies specifically to 4.4.9 (collection), not all requirements, and that 4.4.10-4.4.12 may still apply. The parenthetical clarification partially mitigates this."
+        ]
+      },
+      {
+        "control_id": "4_4_15",
+        "quality": "good",
+        "confidence": 0.92,
+        "issues": []
+      },
+      {
+        "control_id": "4_4_16",
+        "quality": "acceptable",
+        "confidence": 0.8,
+        "issues": [
+          "Control uses 'allow use of' language and correct-option 'N/A', but [4.4.16] is definitional/clarificatory (it defines what counts as 'reliable and independent documents'). The control treats this as optional guidance when it is actually part of the mandatory definition structure in 4.4.15. The mapping is technically accurate but the phrasing and N/A designation may mislead on whether disclosure certificates are required vs. permitted."
+        ]
+      },
+      {
+        "control_id": "4_4_17",
+        "quality": "good",
+        "confidence": 1.0,
+        "issues": []
+      },
+      {
+        "control_id": "4_4_18",
+        "quality": "acceptable",
+        "confidence": 0.82,
+        "issues": [
+          "Control label accurately describes the custodian/nominee exemptions from 4.4.18(1-3), but the source-rules citation of [4.4.18(3)] alone is incomplete. The regulation explicitly carves out requirements from Parts 4.12, 4.13, and Chapter 15 (paragraphs 15.2, 15.3, and specific subparagraphs). The control label focuses on beneficiary collection and underlying customer CDD, which is accurate, but the broader scope of exemptions (affecting multiple Parts and Chapters) is inadequately captured. This is a significant scope limitation."
+        ]
+      },
+      {
+        "control_id": "4_4_19",
+        "quality": "questionable",
+        "confidence": 0.7,
+        "issues": [
+          "Control label treats [4.4.19] as if it requires entities to 'include definitions and criteria' in their AML/CTF programs. However, [4.4.19] is purely definitional\u2014it defines key terms ('custodian', 'IDPS', 'MDA service', 'nominee of a custodian', etc.) for the purpose of Part 4.4. It does not impose a substantive requirement on reporting entities to collect these definitions or verify compliance with these definitions. The control correct-option of 'Yes' reinforces this misunderstanding. This is a definitional provision, not a control requirement. The mapping conflates regulatory definitions with compliance obligations."
+        ]
+      }
+    ]
+  },
+  "cdd-partnerships": {
+    "reviews": [
+      {
+        "control_id": "4_5_1",
+        "quality": "good",
+        "confidence": 1.0,
+        "issues": []
+      },
+      {
+        "control_id": "4_5_2",
+        "quality": "good",
+        "confidence": 0.9,
+        "issues": []
+      },
+      {
+        "control_id": "4_5_3_1",
+        "quality": "good",
+        "confidence": 1.0,
+        "issues": []
+      },
+      {
+        "control_id": "4_5_3_2",
+        "quality": "good",
+        "confidence": 1.0,
+        "issues": []
+      },
+      {
+        "control_id": "4_5_3_3",
+        "quality": "good",
+        "confidence": 1.0,
+        "issues": []
+      },
+      {
+        "control_id": "4_5_3_4",
+        "quality": "acceptable",
+        "confidence": 0.9,
+        "issues": [
+          "Control label says 'at least one partner' but source regulation 4.5.3(4) says 'in respect of one of the partners' \u2014 the word 'one' specifically indicates only one partner's information is required, not a minimum threshold"
+        ]
+      },
+      {
+        "control_id": "4_5_3_5",
+        "quality": "good",
+        "confidence": 1.0,
+        "issues": []
+      },
+      {
+        "control_id": "4_5_4",
+        "quality": "good",
+        "confidence": 1.0,
+        "issues": []
+      },
+      {
+        "control_id": "4_5_5_1",
+        "quality": "good",
+        "confidence": 1.0,
+        "issues": []
+      },
+      {
+        "control_id": "4_5_5_2",
+        "quality": "acceptable",
+        "confidence": 0.9,
+        "issues": [
+          "Control label says 'at least one partner' but source regulation 4.5.5(2) says 'one of the partners' \u2014 similar to 4_5_3_4, the source specifies one partner only, not a minimum threshold. The phrasing suggests specific individual identification of one designated partner."
+        ]
+      },
+      {
+        "control_id": "4_5_6",
+        "quality": "good",
+        "confidence": 1.0,
+        "issues": []
+      },
+      {
+        "control_id": "4_5_7_1",
+        "quality": "good",
+        "confidence": 1.0,
+        "issues": []
+      },
+      {
+        "control_id": "4_5_7_2",
+        "quality": "good",
+        "confidence": 1.0,
+        "issues": []
+      },
+      {
+        "control_id": "4_5_7_3",
+        "quality": "good",
+        "confidence": 1.0,
+        "issues": []
+      },
+      {
+        "control_id": "4_5_7_4",
+        "quality": "good",
+        "confidence": 1.0,
+        "issues": []
+      },
+      {
+        "control_id": "4_5_7_5",
+        "quality": "good",
+        "confidence": 1.0,
+        "issues": []
+      },
+      {
+        "control_id": "4_5_8_1",
+        "quality": "acceptable",
+        "confidence": 0.9,
+        "issues": [
+          "Control label references '4.5.6' but should reference '4.5.4' \u2014 the source rule 4.5.8(1) states the verification is 'for the purposes of a procedure of the kind described in paragraph 4.5.6' which means the disclosure certificate applies to risk-based determinations about additional verification (4.5.6), but 4.5.6 itself doesn't define what documents can be used. The control's cross-reference to 4.5.4 or understanding of scope could be clearer."
+        ]
+      },
+      {
+        "control_id": "4_5_9",
+        "quality": "good",
+        "confidence": 1.0,
+        "issues": []
+      }
+    ],
+    "unmapped_assessment": [
+      {
+        "rule_code": "Part 4.5 heading",
+        "reason": "correctly_omitted",
+        "explanation": "This is a section header/introduction, not a substantive requirement that warrants an individual control."
+      },
+      {
+        "rule_code": "Collection and verification of information heading",
+        "reason": "correctly_omitted",
+        "explanation": "This is a subsection heading that organizes content but does not contain a standalone substantive requirement."
+      },
+      {
+        "rule_code": "Methods of verification heading",
+        "reason": "correctly_omitted",
+        "explanation": "This is a subsection heading that organizes content but does not contain a standalone substantive requirement."
+      },
+      {
+        "rule_code": "Responding to discrepancies heading",
+        "reason": "correctly_omitted",
+        "explanation": "This is a subsection heading that organizes content but does not contain a standalone substantive requirement."
+      },
+      {
+        "rule_code": "Part 4.6 reference",
+        "reason": "correctly_omitted",
+        "explanation": "This is a cross-reference to the next section and not a substantive requirement within Part 4.5 that requires mapping in this control set."
+      }
+    ]
+  },
+  "cdd-associations": {
+    "reviews": [
+      {
+        "control_id": "4_6_1",
+        "quality": "good",
+        "confidence": 1.0,
+        "issues": []
+      },
+      {
+        "control_id": "4_6_2",
+        "quality": "good",
+        "confidence": 0.95,
+        "issues": []
+      },
+      {
+        "control_id": "4_6_3_1",
+        "quality": "good",
+        "confidence": 1.0,
+        "issues": []
+      },
+      {
+        "control_id": "4_6_3_2",
+        "quality": "good",
+        "confidence": 1.0,
+        "issues": []
+      },
+      {
+        "control_id": "4_6_4",
+        "quality": "good",
+        "confidence": 1.0,
+        "issues": []
+      },
+      {
+        "control_id": "4_6_5_1",
+        "quality": "good",
+        "confidence": 1.0,
+        "issues": []
+      },
+      {
+        "control_id": "4_6_5_2",
+        "quality": "good",
+        "confidence": 1.0,
+        "issues": []
+      },
+      {
+        "control_id": "4_6_6",
+        "quality": "good",
+        "confidence": 1.0,
+        "issues": []
+      },
+      {
+        "control_id": "4_6_7",
+        "quality": "good",
+        "confidence": 1.0,
+        "issues": []
+      },
+      {
+        "control_id": "4_6_8",
+        "quality": "acceptable",
+        "confidence": 0.9,
+        "issues": [
+          "The control label states 'permit the use' which slightly softens the regulatory requirement. Section 4.6.8 actually defines what 'reliable and independent documents' INCLUDES (not permits), making this a definitional inclusion rather than a discretionary permission."
+        ]
+      },
+      {
+        "control_id": "4_6_9",
+        "quality": "good",
+        "confidence": 0.95,
+        "issues": [
+          "Cross-reference to 4.6.2(1) and 4.6.2(2) is appropriate for context but these are already covered in control 4_6_2. This is not an error but shows appropriate linkage."
+        ]
+      }
+    ],
+    "unmapped_assessment": [
+      {
+        "rule_code": "Part 4.7",
+        "reason": "correctly_omitted",
+        "explanation": "This is a section heading that marks the start of a new part (Applicable customer identification procedure with respect to registered co-operatives). It is not a substantive requirement and correctly appears at the end of the regulatory text provided as a boundary marker."
+      }
+    ]
+  },
+  "cdd-cooperatives": {
+    "reviews": [
+      {
+        "control_id": "4_7_1",
+        "quality": "good",
+        "confidence": 0.95,
+        "issues": []
+      },
+      {
+        "control_id": "4_7_2",
+        "quality": "good",
+        "confidence": 0.95,
+        "issues": []
+      },
+      {
+        "control_id": "4_7_3_1",
+        "quality": "good",
+        "confidence": 0.95,
+        "issues": []
+      },
+      {
+        "control_id": "4_7_3_2",
+        "quality": "good",
+        "confidence": 0.95,
+        "issues": []
+      },
+      {
+        "control_id": "4_7_5_1",
+        "quality": "good",
+        "confidence": 0.95,
+        "issues": []
+      },
+      {
+        "control_id": "4_7_5_2",
+        "quality": "good",
+        "confidence": 0.95,
+        "issues": []
+      },
+      {
+        "control_id": "4_7_7",
+        "quality": "good",
+        "confidence": 0.95,
+        "issues": []
+      },
+      {
+        "control_id": "4_7_8",
+        "quality": "good",
+        "confidence": 0.95,
+        "issues": []
+      },
+      {
+        "control_id": "4_7_9",
+        "quality": "good",
+        "confidence": 0.95,
+        "issues": []
+      }
+    ],
+    "unmapped_assessment": [
+      {
+        "rule_code": "Part 4.8",
+        "reason": "correctly_omitted",
+        "explanation": "This is a section heading/reference for the next part of the regulations (government bodies). It does not contain substantive requirements specific to co-operative customer due diligence and is properly excluded from this mapping."
+      }
+    ]
+  },
+  "cdd-government": {
+    "reviews": [
+      {
+        "control_id": "4_8_1",
+        "quality": "good",
+        "confidence": 1.0,
+        "issues": []
+      },
+      {
+        "control_id": "4_8_2",
+        "quality": "acceptable",
+        "confidence": 0.7,
+        "issues": [
+          "Control combines two distinct requirements: (1) verification that government body exists, and (2) collection of beneficial ownership information where applicable. The 'where applicable' qualifier in the control label adds interpretation not explicit in source rule 4.8.2(2), which states information should be provided 'where sought'\u2014a different threshold focused on reporting entity discretion rather than applicability.",
+          "The mapping confidence of 0.7 suggests uncertainty; this may reflect the complexity of aggregating multiple sub-requirements or ambiguity in the 'where applicable' phrasing."
+        ]
+      },
+      {
+        "control_id": "4_8_3",
+        "quality": "good",
+        "confidence": 1.0,
+        "issues": []
+      },
+      {
+        "control_id": "4_8_4",
+        "quality": "good",
+        "confidence": 1.0,
+        "issues": []
+      },
+      {
+        "control_id": "4_8_5",
+        "quality": "good",
+        "confidence": 1.0,
+        "issues": []
+      },
+      {
+        "control_id": "4_8_6",
+        "quality": "good",
+        "confidence": 1.0,
+        "issues": []
+      },
+      {
+        "control_id": "4_8_7",
+        "quality": "good",
+        "confidence": 1.0,
+        "issues": []
+      },
+      {
+        "control_id": "4_8_8",
+        "quality": "good",
+        "confidence": 1.0,
+        "issues": []
+      },
+      {
+        "control_id": "4_8_9",
+        "quality": "good",
+        "confidence": 1.0,
+        "issues": []
+      }
+    ],
+    "unmapped_assessment": [
+      {
+        "rule_code": "4.8 (Part heading)",
+        "reason": "correctly_omitted",
+        "explanation": "This is a section heading that introduces the topic of customer due diligence for government bodies. It does not contain substantive requirements and serves as organizational structure."
+      },
+      {
+        "rule_code": "Collection and verification of information (subheading)",
+        "reason": "correctly_omitted",
+        "explanation": "This is a subheading that organizes paragraphs 4.8.3\u20134.8.6. It does not contain independent substantive requirements; all relevant requirements are captured in controls 4_8_3 through 4_8_6."
+      },
+      {
+        "rule_code": "Beneficial ownership in respect of foreign government entities (subheading)",
+        "reason": "correctly_omitted",
+        "explanation": "This is a subheading organizing paragraphs 4.8.7\u20134.8.8. It does not contain independent substantive requirements; all relevant requirements are captured in controls 4_8_7 and 4_8_8."
+      },
+      {
+        "rule_code": "Responding to discrepancies (subheading)",
+        "reason": "correctly_omitted",
+        "explanation": "This is a subheading introducing paragraph 4.8.9. It does not contain substantive requirements; the requirement is captured in control 4_8_9."
+      },
+      {
+        "rule_code": "[Part 4.9] Verification from documentation Verification with respect to individuals",
+        "reason": "correctly_omitted",
+        "explanation": "This is a heading/reference to Part 4.9, which addresses verification procedures for individuals. While referenced in 4.8.1 as applicable 'in so far as they are applicable' to government body due diligence, it is a separate part of the regulation with its own substantive requirements that would be covered under their own controls. This is correctly not mapped as a government body specific control."
+      }
+    ]
+  },
+  "risk-assessment": {
+    "reviews": [
+      {
+        "control_id": "4_1_3_1",
+        "quality": "good",
+        "confidence": 0.92,
+        "issues": []
+      },
+      {
+        "control_id": "4_1_3_2",
+        "quality": "good",
+        "confidence": 1.0,
+        "issues": []
+      },
+      {
+        "control_id": "4_1_3_3",
+        "quality": "good",
+        "confidence": 1.0,
+        "issues": []
+      },
+      {
+        "control_id": "4_1_3_4",
+        "quality": "good",
+        "confidence": 1.0,
+        "issues": []
+      },
+      {
+        "control_id": "4_1_3_5",
+        "quality": "good",
+        "confidence": 1.0,
+        "issues": []
+      },
+      {
+        "control_id": "4_1_3_6",
+        "quality": "good",
+        "confidence": 1.0,
+        "issues": []
+      },
+      {
+        "control_id": "4_1_3_7",
+        "quality": "good",
+        "confidence": 1.0,
+        "issues": []
+      },
+      {
+        "control_id": "4_1_2_1",
+        "quality": "questionable",
+        "confidence": 0.65,
+        "issues": [
+          "The control label frames this as 'awareness' of exemptions ('Are you aware'), but the source rules establish objective exemption criteria, not subjective awareness requirements",
+          "The correct-option 'N/A' is inappropriate for a yes/no question that attempts to verify compliance; either a reporting entity applies exemptions correctly (Yes) or it does not (No)",
+          "The control poorly represents the mandatory nature of the exemptions \u2014 these are conditions that automatically remove persons from CDD scope, not optional awareness items",
+          "A better control would directly ask whether the entity properly identifies and excludes pre-commencement customers and those receiving exempt designated services"
+        ]
+      }
+    ],
+    "unmapped_assessment": [
+      {
+        "rule_code": "[4.1.1]",
+        "reason": "correctly_omitted",
+        "explanation": "This is an introductory/explanatory rule describing the legislative basis, purpose of the Rules, and the structure of Parts A and B of AML/CTF programs. While it provides important context (identifying, managing, mitigating ML/TF risk; distinguishing between CDD and ID procedures), the substantive requirements are detailed in sections 4.1.3 onwards. The general statement of purpose does not warrant a separate control."
+      },
+      {
+        "rule_code": "[4.1.2]",
+        "reason": "already_covered",
+        "explanation": "The parent rule heading is covered by control 4_1_2_1, which addresses both the exemption conditions listed in [4.1.2(1)] and [4.1.2(2)]."
+      },
+      {
+        "rule_code": "[4.1.3]",
+        "reason": "already_covered",
+        "explanation": "The parent rule heading is covered by the seven controls (4_1_3_1 through 4_1_3_7), which together address all the substantive factors that must be considered in ML/TF risk assessment."
+      },
+      {
+        "rule_code": "[4.1.4]",
+        "reason": "correctly_omitted",
+        "explanation": "This is an introductory rule that explains the structure of the Rules across different customer types and directs to Parts 4.2\u20134.8. It does not itself impose requirements on reporting entities; rather, it explains how other rules are organized. The actual requirements for each customer type are in the referenced parts."
+      },
+      {
+        "rule_code": "[4.1.4(1)]",
+        "reason": "correctly_omitted",
+        "explanation": "This is a structural reference directing to Part 4.2 for individual customer requirements. It is a navigational element, not a substantive requirement. The actual requirements appear in Part 4.2, which is outside the scope of this review."
+      },
+      {
+        "rule_code": "[4.1.4(2)]",
+        "reason": "correctly_omitted",
+        "explanation": "This is a structural reference directing to Part 4.3 for company customer requirements. It is a navigational element, not a substantive requirement."
+      },
+      {
+        "rule_code": "[4.1.4(3)]",
+        "reason": "correctly_omitted",
+        "explanation": "This is a structural reference directing to Part 4.4 for trustee customer requirements. It is a navigational element, not a substantive requirement."
+      },
+      {
+        "rule_code": "[4.1.4(4)]",
+        "reason": "correctly_omitted",
+        "explanation": "This is a structural reference directing to Part 4.5 for partnership member requirements. It is a navigational element, not a substantive requirement."
+      },
+      {
+        "rule_code": "[4.1.4(5)]",
+        "reason": "correctly_omitted",
+        "explanation": "This is a structural reference directing to Part 4.6 for incorporated/unincorporated association requirements. It is a navigational element, not a substantive requirement."
+      },
+      {
+        "rule_code": "[4.1.4(6)]",
+        "reason": "correctly_omitted",
+        "explanation": "This is a structural reference directing to Part 4.7 for registered co-operative requirements. It is a navigational element, not a substantive requirement."
+      },
+      {
+        "rule_code": "[4.1.4(7)]",
+        "reason": "correctly_omitted",
+        "explanation": "This is a structural reference directing to Part 4.8 for government body requirements. It is a navigational element, not a substantive requirement."
+      },
+      {
+        "rule_code": "[4.1.5]",
+        "reason": "correctly_omitted",
+        "explanation": "This is an introductory rule explaining that specific requirements apply to beneficial owners and politically exposed persons and directing to Parts 4.12 and 4.13. It does not itself impose substantive requirements; the requirements appear in those parts (outside this review's scope)."
+      },
+      {
+        "rule_code": "[4.1.5(1)]",
+        "reason": "correctly_omitted",
+        "explanation": "This is a structural reference directing to Part 4.12 for beneficial owner requirements. It is a navigational element, not a substantive requirement. However, note that beneficial owner considerations are partially captured in control 4_1_3_1."
+      },
+      {
+        "rule_code": "[4.1.5(2)]",
+        "reason": "correctly_omitted",
+        "explanation": "This is a structural reference directing to Part 4.13 for politically exposed person requirements. It is a navigational element, not a substantive requirement. However, note that PEP considerations are partially captured in control 4_1_3_1."
+      },
+      {
+        "rule_code": "[4.1.6]",
+        "reason": "correctly_omitted",
+        "explanation": "This is a transitional/temporal provision that limits the application of certain requirements (sections 4.4.3(5), 4.4.5(5), and Parts 4.12\u20134.13) to customers who became customers after 1 June 2014. This is an applicability date provision for commencement, not an ongoing operational requirement for current AML/CTF programs."
+      },
+      {
+        "rule_code": "[4.1.7]",
+        "reason": "correctly_omitted",
+        "explanation": "This is a directive that AML/CTF programs must comply with Parts 4.9 and 4.10 (relating to document-based verification and verification from electronic data). The substantive verification requirements are in those parts, which are outside the scope of this review. This rule is a structural pointer."
+      },
+      {
+        "rule_code": "[4.1.8]",
+        "reason": "correctly_omitted",
+        "explanation": "This is a directive that AML/CTF programs must comply with Part 4.11 regarding agents acting on behalf of customers. The substantive requirements are in Part 4.11, which is outside the scope of this review. This rule is a structural pointer."
+      }
+    ]
+  },
+  "verification-documents": {
+    "reviews": [
+      {
+        "control_id": "4_9_1_a",
+        "quality": "good",
+        "confidence": 0.95,
+        "issues": []
+      },
+      {
+        "control_id": "4_9_1_b",
+        "quality": "good",
+        "confidence": 0.95,
+        "issues": []
+      },
+      {
+        "control_id": "4_9_2_1",
+        "quality": "good",
+        "confidence": 0.95,
+        "issues": []
+      },
+      {
+        "control_id": "4_9_2_2",
+        "quality": "good",
+        "confidence": 0.95,
+        "issues": []
+      },
+      {
+        "control_id": "4_9_2_3",
+        "quality": "good",
+        "confidence": 0.95,
+        "issues": []
+      },
+      {
+        "control_id": "4_9_3_1",
+        "quality": "good",
+        "confidence": 0.95,
+        "issues": []
+      },
+      {
+        "control_id": "4_9_3_2",
+        "quality": "good",
+        "confidence": 0.95,
+        "issues": []
+      },
+      {
+        "control_id": "4_9_5_1",
+        "quality": "good",
+        "confidence": 0.95,
+        "issues": []
+      },
+      {
+        "control_id": "4_9_5_2",
+        "quality": "good",
+        "confidence": 0.95,
+        "issues": []
+      },
+      {
+        "control_id": "4_9_5_3",
+        "quality": "good",
+        "confidence": 0.95,
+        "issues": []
+      },
+      {
+        "control_id": "4_9_5_4",
+        "quality": "good",
+        "confidence": 0.95,
+        "issues": []
+      },
+      {
+        "control_id": "4_9_6_1",
+        "quality": "good",
+        "confidence": 0.95,
+        "issues": []
+      },
+      {
+        "control_id": "4_9_6_2",
+        "quality": "good",
+        "confidence": 0.95,
+        "issues": []
+      },
+      {
+        "control_id": "4_9_6_3",
+        "quality": "good",
+        "confidence": 0.95,
+        "issues": []
+      },
+      {
+        "control_id": "4_9_6_4",
+        "quality": "good",
+        "confidence": 0.95,
+        "issues": []
+      }
+    ],
+    "unmapped_assessment": [
+      {
+        "rule_code": "4.9.3",
+        "reason": "correctly_omitted",
+        "explanation": "This is a header/umbrella provision that introduces the detailed requirements in [4.9.3(1)] through [4.9.3(6)], all of which are explicitly mapped to individual controls. The provision itself does not establish a substantive requirement beyond directing the reporting entity to implement risk-based systems and controls, which is captured by the specific sub-requirements."
+      },
+      {
+        "rule_code": "4.9.5",
+        "reason": "correctly_omitted",
+        "explanation": "This is a header/umbrella provision that introduces the detailed requirements in [4.9.5(1)] through [4.9.5(6)], all of which are explicitly mapped to individual controls. The provision itself does not establish a substantive requirement beyond directing the reporting entity to implement risk-based systems and controls, which is captured by the specific sub-requirements."
+      }
+    ]
+  },
+  "verification-electronic": {
+    "reviews": [
+      {
+        "control_id": "4_10_1",
+        "quality": "good",
+        "confidence": 1.0,
+        "issues": []
+      },
+      {
+        "control_id": "4_10_2_1_a",
+        "quality": "good",
+        "confidence": 0.9,
+        "issues": []
+      },
+      {
+        "control_id": "4_10_2_1_b",
+        "quality": "good",
+        "confidence": 0.9,
+        "issues": []
+      },
+      {
+        "control_id": "4_10_2_1_c",
+        "quality": "good",
+        "confidence": 0.9,
+        "issues": []
+      },
+      {
+        "control_id": "4_10_2_1_d",
+        "quality": "good",
+        "confidence": 0.9,
+        "issues": []
+      },
+      {
+        "control_id": "4_10_2_1_e",
+        "quality": "good",
+        "confidence": 0.9,
+        "issues": []
+      },
+      {
+        "control_id": "4_10_2_1_f",
+        "quality": "good",
+        "confidence": 0.9,
+        "issues": []
+      },
+      {
+        "control_id": "4_10_2_1_g",
+        "quality": "good",
+        "confidence": 0.9,
+        "issues": []
+      },
+      {
+        "control_id": "4_10_2_2",
+        "quality": "good",
+        "confidence": 1.0,
+        "issues": []
+      },
+      {
+        "control_id": "4_10_2_3",
+        "quality": "good",
+        "confidence": 1.0,
+        "issues": []
+      },
+      {
+        "control_id": "4_10_2_4",
+        "quality": "good",
+        "confidence": 1.0,
+        "issues": []
+      }
+    ],
+    "unmapped_assessment": [
+      {
+        "rule_code": "[4.10.2]",
+        "reason": "already_covered",
+        "explanation": "This is an overarching requirement statement that serves as the parent provision for all the specific requirements below it (4.10.2(1) through 4.10.2(4)). The substance of this rule is fully captured and covered by the 11 controls mapped to its sub-provisions. The introductory text establishing the requirement for 'appropriate risk-based systems and controls' is operationalized across all mapped controls. No separate control is needed for this structural element."
+      }
+    ]
+  },
+  "agent-management": {
+    "reviews": [
+      {
+        "control_id": "4_11_2",
+        "quality": "good",
+        "confidence": 0.95,
+        "issues": []
+      },
+      {
+        "control_id": "4_11_3",
+        "quality": "good",
+        "confidence": 0.95,
+        "issues": []
+      },
+      {
+        "control_id": "4_11_4",
+        "quality": "good",
+        "confidence": 0.95,
+        "issues": []
+      },
+      {
+        "control_id": "4_11_6",
+        "quality": "good",
+        "confidence": 0.95,
+        "issues": []
+      },
+      {
+        "control_id": "4_11_7",
+        "quality": "good",
+        "confidence": 0.95,
+        "issues": []
+      },
+      {
+        "control_id": "4_11_8",
+        "quality": "good",
+        "confidence": 0.95,
+        "issues": []
+      },
+      {
+        "control_id": "4_11_9",
+        "quality": "acceptable",
+        "confidence": 0.85,
+        "issues": [
+          "Control maps 4.11.9 and 4.11.10 but labels itself as addressing 4.11.9 only. 4.11.10 is a conditional provision stating that when 4.11.9 conditions are met, requirements 4.11.6 to 4.11.8 need not apply. This is important regulatory substance but the control label focuses only on the provision option.",
+          "The 'N/A' correct-option is unusual for a control about program procedures. This should likely be 'Yes' since the program must provide for this option if it chooses to use verifying officers."
+        ]
+      },
+      {
+        "control_id": "4_11_12_1",
+        "quality": "good",
+        "confidence": 0.95,
+        "issues": []
+      },
+      {
+        "control_id": "4_11_12_2",
+        "quality": "good",
+        "confidence": 0.95,
+        "issues": []
+      },
+      {
+        "control_id": "4_11_12_3",
+        "quality": "good",
+        "confidence": 0.95,
+        "issues": []
+      },
+      {
+        "control_id": "4_11_12_4",
+        "quality": "good",
+        "confidence": 0.95,
+        "issues": []
+      },
+      {
+        "control_id": "4_11_12_5_a",
+        "quality": "good",
+        "confidence": 0.95,
+        "issues": []
+      },
+      {
+        "control_id": "4_11_12_5_b",
+        "quality": "good",
+        "confidence": 0.95,
+        "issues": []
+      },
+      {
+        "control_id": "4_11_13_1",
+        "quality": "good",
+        "confidence": 1.0,
+        "issues": []
+      },
+      {
+        "control_id": "4_11_13_2",
+        "quality": "good",
+        "confidence": 1.0,
+        "issues": []
+      },
+      {
+        "control_id": "4_11_13_3",
+        "quality": "good",
+        "confidence": 1.0,
+        "issues": []
+      },
+      {
+        "control_id": "4_11_13_4",
+        "quality": "good",
+        "confidence": 1.0,
+        "issues": []
+      }
+    ],
+    "unmapped_assessment": [
+      {
+        "rule_code": "4.11.1",
+        "reason": "correctly_omitted",
+        "explanation": "This is a introductory/scope-setting paragraph establishing which rules apply to agents of individual customers. It is a structural element that defines the applicability of sections 4.11.2-4.11.4. The substantive requirements are captured by those subsections (which are mapped), so the umbrella provision need not have its own control."
+      },
+      {
+        "rule_code": "4.11.5",
+        "reason": "correctly_omitted",
+        "explanation": "This is a parallel introductory/scope-setting paragraph establishing which rules apply to agents of non-individual customers. Like 4.11.1, it is a structural element that defines applicability of sections 4.11.6-4.11.8. The substantive requirements are captured by those subsections (which are mapped)."
+      },
+      {
+        "rule_code": "4.11.10(1)",
+        "reason": "should_be_mapped",
+        "explanation": "This provision states when the reporting entity need not apply sections 4.11.6-4.11.8 (the standard agent verification requirements). This is substantive regulatory relief conditional on other requirements being met. While control 4_11_9 attempts to capture the verifying officer option, 4.11.10 is the rule that explicitly permits the alternative pathway and should be explicitly represented as a control about compliance flexibility/exemption conditions."
+      },
+      {
+        "rule_code": "4.11.10(2)",
+        "reason": "should_be_mapped",
+        "explanation": "This provision specifies the conditions (requirements in 4.11.12-4.11.13 must be met) for the exemption from 4.11.6-4.11.8 to apply. This is a critical gating condition that should be explicitly controlled, as it establishes when standard agent verification requirements can be bypassed."
+      },
+      {
+        "rule_code": "4.11.11",
+        "reason": "should_be_mapped",
+        "explanation": "This rule defines what a verifying officer is and who may be appointed as one (must be an employee, agent, or contractor of the customer). This is substantive regulatory definition and eligibility requirement that should have its own control to ensure programs properly understand and implement the verifying officer role restrictions."
+      },
+      {
+        "rule_code": "4.11.12",
+        "reason": "already_covered",
+        "explanation": "This is the overarching parent provision that introduces the requirements for identification by a verifying officer. The substantive requirements it imposes are fully captured by controls 4_11_12_1 through 4_11_12_5_b (which map to its sub-provisions 4.11.12(1)-(5))."
+      },
+      {
+        "rule_code": "4.11.12(5)",
+        "reason": "already_covered",
+        "explanation": "This provision introduces what the verifying officer must provide to the reporting entity. Its specific requirements are captured by controls 4_11_12_5_a (full name) and 4_11_12_5_b (signature copy) which map to sub-provisions 4.11.12(5)(a) and 4.11.12(5)(b)."
+      }
+    ]
+  },
+  "beneficial-ownership": {
+    "reviews": [
+      {
+        "control_id": "4_12_1",
+        "quality": "good",
+        "confidence": 1.0,
+        "issues": []
+      },
+      {
+        "control_id": "4_12_2_1",
+        "quality": "good",
+        "confidence": 1.0,
+        "issues": []
+      },
+      {
+        "control_id": "4_12_2_2",
+        "quality": "acceptable",
+        "confidence": 0.7,
+        "issues": [
+          "The control aggregates multiple exemption criteria into a single question, which loses some nuance about the different entity types and conditions",
+          "The phrasing 'subject to beneficial ownership transparency requirements' is somewhat condensed from the original regulatory language about 'disclosure requirements (whether by stock exchange rules or through law or enforceable means)'",
+          "Confidence lowered due to aggregation, but mapping is fundamentally sound"
+        ]
+      },
+      {
+        "control_id": "4_12_1_1",
+        "quality": "good",
+        "confidence": 1.0,
+        "issues": []
+      },
+      {
+        "control_id": "4_12_1_2",
+        "quality": "good",
+        "confidence": 1.0,
+        "issues": []
+      },
+      {
+        "control_id": "4_12_3",
+        "quality": "good",
+        "confidence": 1.0,
+        "issues": []
+      },
+      {
+        "control_id": "4_12_4",
+        "quality": "good",
+        "confidence": 1.0,
+        "issues": []
+      },
+      {
+        "control_id": "4_12_6",
+        "quality": "good",
+        "confidence": 1.0,
+        "issues": []
+      },
+      {
+        "control_id": "4_12_5_1",
+        "quality": "questionable",
+        "confidence": 0.8,
+        "issues": [
+          "Control uses 'N/A' as correct-option, which is unusual and problematic - this should be 'Yes' to indicate whether the program allows/includes the safe harbour procedures",
+          "The control properly identifies the conditions (not foreign PEP, medium or lower ML/TF risk) but the N/A answer makes it unclear how compliance would be assessed",
+          "The source rules are correctly cited but the question framing and answer type create ambiguity about what constitutes a compliant response"
+        ]
+      },
+      {
+        "control_id": "4_12_7_2",
+        "quality": "acceptable",
+        "confidence": 0.7,
+        "issues": [
+          "The control's source rules include [4.12.7(1)] which is about collection, not documentation-based verification specifics - this is somewhat tangential",
+          "The reference to [4.12.7(2)(i)(ii)] appears to be a citation error in the original regulation text (should be just '(ii)' not '(i)(ii)'), but the control correctly interprets the intent",
+          "Overall the mapping is sound but the inclusion of 4.12.7(1) in source rules is slightly misleading as it addresses collection rather than the specific verification method"
+        ]
+      },
+      {
+        "control_id": "4_12_7_3",
+        "quality": "good",
+        "confidence": 1.0,
+        "issues": []
+      },
+      {
+        "control_id": "4_12_7_4",
+        "quality": "good",
+        "confidence": 1.0,
+        "issues": []
+      },
+      {
+        "control_id": "4_12_8",
+        "quality": "good",
+        "confidence": 1.0,
+        "issues": []
+      },
+      {
+        "control_id": "4_12_9",
+        "quality": "acceptable",
+        "confidence": 0.7,
+        "issues": [
+          "Control aggregates detailed fallback procedures across three different entity types (companies/partnerships, trusts, associations/cooperatives) into a single control, losing specificity about which procedures apply to which entities",
+          "The phrase 'as specified in the fallback procedures' is somewhat vague and requires the respondent to reference external documentation",
+          "The mapping is fundamentally correct but would benefit from entity-type-specific controls to avoid confusion about applicability"
+        ]
+      }
+    ],
+    "unmapped_assessment": [
+      {
+        "rule_code": "4.12.2",
+        "reason": "already_covered",
+        "explanation": "The substance of [4.12.2] is the introductory statement that requirements 'may be modified' for certain entities. The actual modifications and exemptions are fully detailed in subsequent paragraphs [4.12.2(1)] through [4.12.2(2)(e)], which are all mapped to controls 4_12_2_1 and 4_12_2_2. The parent paragraph serves as a heading/framing statement and does not contain substantive requirements beyond what is captured in its sub-paragraphs."
+      }
+    ]
+  },
+  "pep-screening": {
+    "reviews": [
+      {
+        "control_id": "4_13_1_1",
+        "quality": "good",
+        "confidence": 1.0,
+        "issues": []
+      },
+      {
+        "control_id": "4_13_1_2",
+        "quality": "good",
+        "confidence": 1.0,
+        "issues": []
+      },
+      {
+        "control_id": "4_13_2_1",
+        "quality": "good",
+        "confidence": 1.0,
+        "issues": []
+      },
+      {
+        "control_id": "4_13_2_2",
+        "quality": "good",
+        "confidence": 1.0,
+        "issues": []
+      },
+      {
+        "control_id": "4_13_2_3",
+        "quality": "questionable",
+        "confidence": 0.7,
+        "issues": [
+          "Control label frames this as a conditional check ('Is this customer...' with N/A option) rather than a requirement to take action when true. This doesn't match section 4.13.2(3) which states 'if the person is determined to be of high ML/TF risk, then...carry out the actions specified in subparagraphs 4.13.3(2), (3) and (4)' - implying those actions are mandatory in this scenario.",
+          "The correct-option is 'N/A' which is problematic for a regulatory requirement. Either the customer falls into this category (and additional actions are required) or they don't - there's no 'not applicable' option in the regulation."
+        ]
+      },
+      {
+        "control_id": "4_13_3_1",
+        "quality": "good",
+        "confidence": 1.0,
+        "issues": []
+      },
+      {
+        "control_id": "4_13_3_2",
+        "quality": "good",
+        "confidence": 1.0,
+        "issues": []
+      },
+      {
+        "control_id": "4_13_3_3",
+        "quality": "good",
+        "confidence": 1.0,
+        "issues": []
+      },
+      {
+        "control_id": "4_13_3_4",
+        "quality": "acceptable",
+        "confidence": 0.95,
+        "issues": [
+          "The control label mentions 'transaction monitoring and ongoing reporting obligations' but the source rule 4.13.3(4) simply requires compliance with 'Chapter 15 of these Rules' without specifying what those obligations are. The mapping is reasonable but adds interpretive detail (transaction monitoring) that, while likely correct given Chapter 15 context, goes beyond the literal text."
+        ]
+      },
+      {
+        "control_id": "4_13_4_1",
+        "quality": "good",
+        "confidence": 1.0,
+        "issues": []
+      },
+      {
+        "control_id": "4_13_4_2",
+        "quality": "acceptable",
+        "confidence": 0.85,
+        "issues": [
+          "The control splits section 4.13.4 into two controls where one is more of a compliance verification check. While the regulation does require being 'reasonably satisfied,' framing this as a separate control with correct-option 'Yes' suggests it's a procedural step rather than an outcome. The lower confidence (0.9) in the original mapping was appropriate, though the mapping itself is defensible as a verification control."
+        ]
+      }
+    ],
+    "unmapped_assessment": [
+      {
+        "rule_code": "4.13.1",
+        "reason": "already_covered",
+        "explanation": "The core requirement of section 4.13.1 is fully covered by controls 4_13_1_1 and 4_13_1_2, which separately address the requirement for risk-management systems and the timing of PEP determination."
+      },
+      {
+        "rule_code": "4.13.2",
+        "reason": "already_covered",
+        "explanation": "Section 4.13.2 (the header) is a grouping statement. Its substantive requirements are mapped across controls 4_13_2_1, 4_13_2_2, and 4_13_2_3."
+      },
+      {
+        "rule_code": "4.13.2(1)",
+        "reason": "already_covered",
+        "explanation": "Covered by control 4_13_2_1."
+      },
+      {
+        "rule_code": "4.13.2(2)",
+        "reason": "already_covered",
+        "explanation": "Covered by control 4_13_2_2."
+      },
+      {
+        "rule_code": "4.13.2(3)",
+        "reason": "already_covered",
+        "explanation": "Covered by control 4_13_2_3 (though with quality concerns noted above). The requirement to carry out actions in 4.13.3(2), (3), (4) when high ML/TF risk is determined is addressed in that control."
+      },
+      {
+        "rule_code": "4.13.3",
+        "reason": "already_covered",
+        "explanation": "Section 4.13.3 (the header) is a grouping statement. Its substantive requirements are mapped across controls 4_13_3_1, 4_13_3_2, 4_13_3_3, and 4_13_3_4."
+      },
+      {
+        "rule_code": "4.13.3(1)",
+        "reason": "already_covered",
+        "explanation": "Covered by control 4_13_3_1."
+      },
+      {
+        "rule_code": "4.13.3(2)",
+        "reason": "already_covered",
+        "explanation": "Covered by control 4_13_3_2."
+      },
+      {
+        "rule_code": "4.13.3(3)",
+        "reason": "already_covered",
+        "explanation": "Covered by control 4_13_3_3."
+      },
+      {
+        "rule_code": "4.13.3(4)",
+        "reason": "already_covered",
+        "explanation": "Covered by control 4_13_3_4."
+      },
+      {
+        "rule_code": "4.13.4",
+        "reason": "already_covered",
+        "explanation": "Covered by controls 4_13_4_1 and 4_13_4_2."
+      },
+      {
+        "rule_code": "Note",
+        "reason": "correctly_omitted",
+        "explanation": "The note regarding Privacy Act 1988 is guidance/recommendation only (indicated by 'should consider'), not a binding requirement, and appropriately omitted from the control set."
+      },
+      {
+        "rule_code": "4.14_heading",
+        "reason": "correctly_omitted",
+        "explanation": "Part 4.14 is a heading/section title that indicates exemptions follow. This is not substantive regulatory text requiring a control; it appears to be a section break in the document."
+      }
+    ]
+  },
+  "record-keeping": {
+    "reviews": [
+      {
+        "control_id": "4_14_1",
+        "quality": "acceptable",
+        "confidence": 0.8,
+        "issues": [
+          "The control label is somewhat generic and doesn't capture the dual requirement clearly: the entity must BOTH provide a designated service AND be exempt under specific AML/CTF Act/Rules references",
+          "The control aggregates three rule nodes (4.14.1, 4.14.1(1), 4.14.1(2)) into a single question, losing the structural relationship between the parent rule and its two sub-conditions",
+          "The control doesn't reflect the complexity of the exemption tables and multiple designated service categories (Financial Services, Bullion, Gambling) that apply different exemption conditions"
+        ]
+      },
+      {
+        "control_id": "4_15_1",
+        "quality": "good",
+        "confidence": 0.88,
+        "issues": []
+      },
+      {
+        "control_id": "4_15_2",
+        "quality": "acceptable",
+        "confidence": 0.82,
+        "issues": [
+          "While the control accurately reflects the COVID-19 exception mentioned in the regulatory text, it represents a specific subset of the broader Part 4.15 requirements rather than a comprehensive control",
+          "The control focuses on one exceptional circumstance (COVID-19 measures) but doesn't require procedures to address other listed vulnerable populations (individuals with unregistered births, homeless persons, victims of domestic violence, undocumented arrivals, transgender/intersex individuals, disaster survivors, etc.)",
+          "This control and 4_15_1 together may not fully capture the requirement to document procedures for ALL the vulnerable/exceptional circumstances listed"
+        ]
+      }
+    ],
+    "unmapped_assessment": [
+      {
+        "rule_code": "4.14.1(1)",
+        "reason": "already_covered",
+        "explanation": "This rule node specifying that entities must provide a designated service of the type specified in Column 1 is substantively covered by control 4_14_1, which references it in source-rules and incorporates its requirement into the question about providing designated services."
+      },
+      {
+        "rule_code": "4.14.1(2)",
+        "reason": "already_covered",
+        "explanation": "This rule node requiring exemption from Division 4 of Part 2 under specified AML/CTF Act or Rules references is substantively covered by control 4_14_1, which references it in source-rules and incorporates its requirement into the exemption question."
+      },
+      {
+        "rule_code": "Table 1-3 (Financial Services, Bullion, Gambling exemption tables)",
+        "reason": "should_be_mapped",
+        "explanation": "The detailed exemption tables (Columns 1 and 2) listing specific designated services and corresponding AML/CTF Act/Rules exemption references are critical compliance requirements that warrant more granular controls. Control 4_14_1 treats this as a single yes/no question, but entities need to verify: (a) which specific designated service they provide, and (b) which specific exemption conditions apply to that service. The tables contain multiple different exemption conditions across different service types."
+      },
+      {
+        "rule_code": "Part 4.15 (non-COVID context)",
+        "reason": "should_be_mapped",
+        "explanation": "The Part 4.15 requirements regarding vulnerable and exceptional circumstances (unregistered births, homelessness, domestic violence, undocumented arrivals, remote areas, transgender/intersex individuals, natural disasters, limited identity document access, limited social participation, young people without social footprint) warrant specific controls. Control 4_15_2 only addresses COVID-19 measures, leaving a significant gap in documenting procedures for the broader range of vulnerable populations explicitly listed in the regulation."
+      }
+    ]
+  },
+  "alternative-id": {
+    "reviews": [
+      {
+        "control_id": "4_15_1_1",
+        "quality": "good",
+        "confidence": 1.0,
+        "issues": []
+      },
+      {
+        "control_id": "4_15_1_2",
+        "quality": "good",
+        "confidence": 1.0,
+        "issues": []
+      },
+      {
+        "control_id": "4_15_2_1",
+        "quality": "acceptable",
+        "confidence": 0.7,
+        "issues": [
+          "This control infers a procedural requirement from the Note to 4.15.1/4.15.1A, which merely provides examples ('could include') rather than prescribing mandatory procedures",
+          "The control is reasonable but adds specificity not explicitly required by the regulation",
+          "Confidence level of 0.7 appropriately reflects this inferential interpretation"
+        ]
+      },
+      {
+        "control_id": "4_15_3_1",
+        "quality": "good",
+        "confidence": 1.0,
+        "issues": []
+      },
+      {
+        "control_id": "4_15_3_2",
+        "quality": "questionable",
+        "confidence": 0.7,
+        "issues": [
+          "The control label mentions 'verification of alternative identity information' but the source rules (4.15.2 and 4.15.3) do not explicitly require verification of self-attestations",
+          "Section 4.15.3 requires 'appropriate levels of ongoing customer due diligence' but this is CDD activity, not verification of the self-attestation itself",
+          "The control conflates two different concepts: (1) accepting self-attestation, and (2) conducting ongoing CDD on customers with self-attested identities",
+          "Source rule 4.15.2 allows acceptance of self-attestation without prior verification; 4.15.3 addresses post-identification CDD, not verification of the attestation"
+        ]
+      },
+      {
+        "control_id": "4_15_3_3",
+        "quality": "good",
+        "confidence": 1.0,
+        "issues": []
+      },
+      {
+        "control_id": "4_15_4_1",
+        "quality": "good",
+        "confidence": 1.0,
+        "issues": []
+      },
+      {
+        "control_id": "4_15_5_1",
+        "quality": "good",
+        "confidence": 1.0,
+        "issues": []
+      },
+      {
+        "control_id": "4_15_5_2",
+        "quality": "questionable",
+        "confidence": 0.5,
+        "issues": [
+          "Source rule 4.15.4 does not prescribe that staff must understand penalties; it establishes an obligation for the entity not to rely on false/misleading self-attestations",
+          "The Note to 4.15.4 is informational guidance to customers and entities about potential penalties, not a mandate that staff be trained on penalties",
+          "This control extends the regulation's scope by requiring staff awareness/training, which is an implementation detail not specified in the source rules",
+          "The low confidence (0.5) correctly reflects this significant interpretive stretch"
+        ]
+      },
+      {
+        "control_id": "4_15_6_1",
+        "quality": "acceptable",
+        "confidence": 0.7,
+        "issues": [
+          "Source rules cited are 4.15.5 and 4.15.6, but the control specifically addresses 4.15.6 definition; 4.15.5 covers document copying and is not directly related to defining 'COVID-19 Pandemic measures'",
+          "The control itself is appropriate and necessary (defining regulatory terms), but the source rule citation is slightly misaligned",
+          "The control should primarily cite 4.15.6, with 4.15.6(1), 4.15.6(2), and 4.15.6(3) being the substantive definitional elements"
+        ]
+      }
+    ],
+    "unmapped_assessment": [
+      {
+        "rule_code": "4.15.6(1)",
+        "reason": "should_be_mapped",
+        "explanation": "This is a substantive component of the definition of 'COVID-19 Pandemic measures' and directly informs the scope and applicability of alternative procedures permitted under 4.15.1A and 4.15.5. While control 4_15_6_1 addresses the overall definition, this specific clause should be explicitly referenced or a more granular control should address government-implemented/recommended measures separately to ensure full regulatory coverage."
+      },
+      {
+        "rule_code": "4.15.6(2)",
+        "reason": "should_be_mapped",
+        "explanation": "This clause defines 'reasonable measures adopted by a reporting entity' as part of 'COVID-19 Pandemic measures.' It is a key enabler of the flexibility permitted in 4.15.1A and 4.15.5, requiring entities to define and document what constitutes 'reasonable measures' for their context. This substantive requirement should be explicitly mapped to ensure entities have procedures to identify and apply reasonable measures consistently."
+      },
+      {
+        "rule_code": "4.15.6(3)",
+        "reason": "should_be_mapped",
+        "explanation": "This clause includes 'reasonable measures adopted by a person' (including persons in foreign countries per the Note) in the definition of 'COVID-19 Pandemic measures.' This is substantive because it establishes that the entity's ability to rely on alternative procedures is affected by third-party measures beyond the entity's direct control. Entities need to understand and document this scope to properly apply 4.15.1A and 4.15.5 flexibility."
+      }
+    ]
+  }
+}

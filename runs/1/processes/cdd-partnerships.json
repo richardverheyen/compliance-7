@@ -1,0 +1,423 @@
+{
+  "controls": [
+    {
+      "id": "4_5_1",
+      "label": "Does your AML/CTF program cover customers who act as partners in partnerships?",
+      "detail-required": false,
+      "correct-option": "N/A",
+      "mapping-confidence": 1.0,
+      "source-rules": [
+        "4.5.1"
+      ],
+      "process-id": "PROC-AML-002"
+    },
+    {
+      "id": "4_5_2",
+      "label": "Does your AML/CTF program include risk-based systems and controls to verify that the partnership exists and that all partners' names have been provided?",
+      "detail-required": true,
+      "correct-option": "Yes",
+      "detail-label": "Describe your risk-based systems and controls for partnership existence verification and partner identification.",
+      "mapping-confidence": 0.9,
+      "source-rules": [
+        "4.5.2",
+        "4.5.2(1)",
+        "4.5.2(2)"
+      ],
+      "process-id": "PROC-AML-002c"
+    },
+    {
+      "id": "4_5_3_1",
+      "label": "Does your AML/CTF program include a procedure to collect the full name of the partnership?",
+      "detail-required": true,
+      "correct-option": "Yes",
+      "detail-label": "Describe the procedure for collecting the partnership's full name.",
+      "mapping-confidence": 1.0,
+      "source-rules": [
+        "4.5.3",
+        "4.5.3(1)"
+      ],
+      "process-id": "PROC-AML-002a"
+    },
+    {
+      "id": "4_5_3_2",
+      "label": "Does your AML/CTF program include a procedure to collect the full business name (if registered) of the partnership under State or Territory business names legislation?",
+      "detail-required": true,
+      "correct-option": "Yes",
+      "detail-label": "Describe the procedure for collecting the registered business name.",
+      "mapping-confidence": 1.0,
+      "source-rules": [
+        "4.5.3",
+        "4.5.3(2)"
+      ],
+      "process-id": "PROC-AML-002a"
+    },
+    {
+      "id": "4_5_3_3",
+      "label": "Does your AML/CTF program include a procedure to collect the country in which the partnership was established?",
+      "detail-required": true,
+      "correct-option": "Yes",
+      "detail-label": "Describe the procedure for collecting the partnership's country of establishment.",
+      "mapping-confidence": 1.0,
+      "source-rules": [
+        "4.5.3",
+        "4.5.3(3)"
+      ],
+      "process-id": "PROC-AML-002a"
+    },
+    {
+      "id": "4_5_3_4",
+      "label": "Does your AML/CTF program include a procedure to collect individual customer identification information (name, date of birth, address, etc.) from at least one partner?",
+      "detail-required": true,
+      "correct-option": "Yes",
+      "detail-label": "Describe the procedure for collecting individual identification information from partners, including reference to your individual identification procedure.",
+      "mapping-confidence": 0.9,
+      "source-rules": [
+        "4.5.3",
+        "4.5.3(4)"
+      ],
+      "process-id": "PROC-AML-002a"
+    },
+    {
+      "id": "4_5_3_5",
+      "label": "Does your AML/CTF program include a procedure to collect the full name and residential address of each partner in the partnership (or confirm professional association membership)?",
+      "detail-required": true,
+      "correct-option": "Yes",
+      "detail-label": "Describe the procedure for collecting partner names and addresses, or how you confirm regulated status through professional association directories.",
+      "mapping-confidence": 1.0,
+      "source-rules": [
+        "4.5.3",
+        "4.5.3(5)"
+      ],
+      "process-id": "PROC-AML-002a"
+    },
+    {
+      "id": "4_5_4",
+      "label": "Does your AML/CTF program include risk-based systems and controls to determine whether additional KYC information beyond the minimum should be collected about the partnership?",
+      "detail-required": true,
+      "correct-option": "Yes",
+      "detail-label": "Describe your risk-based assessment process for determining whether to collect additional information about partnerships.",
+      "mapping-confidence": 1.0,
+      "source-rules": [
+        "4.5.4"
+      ],
+      "process-id": "PROC-AML-002c"
+    },
+    {
+      "id": "4_5_5_1",
+      "label": "Does your AML/CTF program include a procedure to verify the full name of the partnership using partnership agreements, certified documents, or reliable independent sources?",
+      "detail-required": true,
+      "correct-option": "Yes",
+      "detail-label": "Describe the procedure and documentary sources used to verify the partnership's full name.",
+      "mapping-confidence": 1.0,
+      "source-rules": [
+        "4.5.5",
+        "4.5.5(1)"
+      ],
+      "process-id": "PROC-AML-002b"
+    },
+    {
+      "id": "4_5_5_2",
+      "label": "Does your AML/CTF program include a procedure to verify individual customer identification information from at least one partner in accordance with your individual identification procedure?",
+      "detail-required": true,
+      "correct-option": "Yes",
+      "detail-label": "Describe the procedure for verifying individual partner identification and reference your individual identification verification procedure.",
+      "mapping-confidence": 0.9,
+      "source-rules": [
+        "4.5.5",
+        "4.5.5(2)"
+      ],
+      "process-id": "PROC-AML-002b"
+    },
+    {
+      "id": "4_5_6",
+      "label": "Does your AML/CTF program include risk-based systems and controls to determine whether additional collected KYC information about the partnership should be verified?",
+      "detail-required": true,
+      "correct-option": "Yes",
+      "detail-label": "Describe your risk-based process for determining the extent of verification required for additional partnership information.",
+      "mapping-confidence": 1.0,
+      "source-rules": [
+        "4.5.6"
+      ],
+      "process-id": "PROC-AML-002c"
+    },
+    {
+      "id": "4_5_7_1",
+      "label": "Does your AML/CTF program permit verification of partnership information using partnership agreements or certified copies/extracts?",
+      "detail-required": false,
+      "correct-option": "Yes",
+      "mapping-confidence": 1.0,
+      "source-rules": [
+        "4.5.7",
+        "4.5.7(1)"
+      ],
+      "process-id": "PROC-AML-002b"
+    },
+    {
+      "id": "4_5_7_2",
+      "label": "Does your AML/CTF program permit verification of partnership information using certified copies/extracts of partnership meeting minutes?",
+      "detail-required": false,
+      "correct-option": "Yes",
+      "mapping-confidence": 1.0,
+      "source-rules": [
+        "4.5.7",
+        "4.5.7(2)"
+      ],
+      "process-id": "PROC-AML-002b"
+    },
+    {
+      "id": "4_5_7_3",
+      "label": "Does your AML/CTF program permit verification of partnership information using reliable and independent documents relating to the partnership?",
+      "detail-required": false,
+      "correct-option": "Yes",
+      "mapping-confidence": 1.0,
+      "source-rules": [
+        "4.5.7",
+        "4.5.7(3)"
+      ],
+      "process-id": "PROC-AML-002b"
+    },
+    {
+      "id": "4_5_7_4",
+      "label": "Does your AML/CTF program permit verification of partnership information using reliable and independent electronic data?",
+      "detail-required": false,
+      "correct-option": "Yes",
+      "mapping-confidence": 1.0,
+      "source-rules": [
+        "4.5.7",
+        "4.5.7(4)"
+      ],
+      "process-id": "PROC-AML-002b"
+    },
+    {
+      "id": "4_5_7_5",
+      "label": "Does your AML/CTF program permit verification using a combination of partnership agreements, meeting minutes, reliable documents, and electronic data?",
+      "detail-required": false,
+      "correct-option": "Yes",
+      "mapping-confidence": 1.0,
+      "source-rules": [
+        "4.5.7",
+        "4.5.7(5)"
+      ],
+      "process-id": "PROC-AML-002b"
+    },
+    {
+      "id": "4_5_8_1",
+      "label": "Does your AML/CTF program permit the use of disclosure certificates to verify partnership information when used as additional KYC procedures and when information is not otherwise reasonably available?",
+      "detail-required": true,
+      "correct-option": "Yes",
+      "detail-label": "Describe the circumstances under which you accept disclosure certificates and how you ensure information is not otherwise available.",
+      "mapping-confidence": 0.9,
+      "source-rules": [
+        "4.5.8",
+        "4.5.8(1)",
+        "4.5.8(2)"
+      ],
+      "process-id": "PROC-AML-002b"
+    },
+    {
+      "id": "4_5_9",
+      "label": "Does your AML/CTF program include risk-based systems and controls to identify and respond to discrepancies during partnership verification?",
+      "detail-required": true,
+      "correct-option": "Yes",
+      "detail-label": "Describe your procedures for identifying discrepancies and the risk-based actions taken to resolve them and confirm partnership existence and partner identification.",
+      "mapping-confidence": 1.0,
+      "source-rules": [
+        "4.5.9"
+      ],
+      "process-id": "PROC-AML-002c"
+    }
+  ],
+  "groups": [
+    {
+      "id": "4_5_1",
+      "title": "Partnership CDD Scope",
+      "description": "Determine whether your AML/CTF program has customers acting as partners in partnerships, and whether Part 4.5 CDD requirements apply."
+    },
+    {
+      "id": "4_5_2",
+      "title": "Satisfaction Requirements",
+      "description": "Risk-based controls to verify partnership existence and partner identification."
+    },
+    {
+      "id": "4_5_3",
+      "title": "Collection of KYC Information",
+      "description": "Procedures to collect minimum required information about partnerships and partners."
+    },
+    {
+      "id": "4_5_4",
+      "title": "Collection Risk Assessment",
+      "description": "Risk-based decision-making on whether to collect additional KYC information beyond the minimum."
+    },
+    {
+      "id": "4_5_5",
+      "title": "Verification of Information",
+      "description": "Procedures to verify partnership details and partner identity using specified sources and methods."
+    },
+    {
+      "id": "4_5_6",
+      "title": "Verification Risk Assessment",
+      "description": "Risk-based decision-making on whether to verify additional collected KYC information."
+    },
+    {
+      "id": "4_5_7",
+      "title": "Verification Methods",
+      "description": "Approved sources and methods for verifying partnership information."
+    },
+    {
+      "id": "4_5_8",
+      "title": "Disclosure Certificate Procedures",
+      "description": "Procedures for using disclosure certificates as verification evidence in specific circumstances."
+    },
+    {
+      "id": "4_5_9",
+      "title": "Handling Discrepancies",
+      "description": "Risk-based controls to respond to and resolve discrepancies discovered during verification."
+    }
+  ],
+  "rules": [
+    {
+      "target": "4_5",
+      "scope": "4_1_4_4",
+      "effect": "SHOW",
+      "schema": {
+        "const": "Yes"
+      }
+    },
+    {
+      "target": "4_5_2",
+      "scope": "4_5_1",
+      "effect": "SHOW",
+      "schema": {
+        "const": "Yes"
+      }
+    },
+    {
+      "target": "4_5_3_1",
+      "scope": "4_5_1",
+      "effect": "SHOW",
+      "schema": {
+        "const": "Yes"
+      }
+    },
+    {
+      "target": "4_5_3_2",
+      "scope": "4_5_1",
+      "effect": "SHOW",
+      "schema": {
+        "const": "Yes"
+      }
+    },
+    {
+      "target": "4_5_3_3",
+      "scope": "4_5_1",
+      "effect": "SHOW",
+      "schema": {
+        "const": "Yes"
+      }
+    },
+    {
+      "target": "4_5_3_4",
+      "scope": "4_5_1",
+      "effect": "SHOW",
+      "schema": {
+        "const": "Yes"
+      }
+    },
+    {
+      "target": "4_5_3_5",
+      "scope": "4_5_1",
+      "effect": "SHOW",
+      "schema": {
+        "const": "Yes"
+      }
+    },
+    {
+      "target": "4_5_4",
+      "scope": "4_5_1",
+      "effect": "SHOW",
+      "schema": {
+        "const": "Yes"
+      }
+    },
+    {
+      "target": "4_5_5_1",
+      "scope": "4_5_1",
+      "effect": "SHOW",
+      "schema": {
+        "const": "Yes"
+      }
+    },
+    {
+      "target": "4_5_5_2",
+      "scope": "4_5_1",
+      "effect": "SHOW",
+      "schema": {
+        "const": "Yes"
+      }
+    },
+    {
+      "target": "4_5_6",
+      "scope": "4_5_1",
+      "effect": "SHOW",
+      "schema": {
+        "const": "Yes"
+      }
+    },
+    {
+      "target": "4_5_7_1",
+      "scope": "4_5_1",
+      "effect": "SHOW",
+      "schema": {
+        "const": "Yes"
+      }
+    },
+    {
+      "target": "4_5_7_2",
+      "scope": "4_5_1",
+      "effect": "SHOW",
+      "schema": {
+        "const": "Yes"
+      }
+    },
+    {
+      "target": "4_5_7_3",
+      "scope": "4_5_1",
+      "effect": "SHOW",
+      "schema": {
+        "const": "Yes"
+      }
+    },
+    {
+      "target": "4_5_7_4",
+      "scope": "4_5_1",
+      "effect": "SHOW",
+      "schema": {
+        "const": "Yes"
+      }
+    },
+    {
+      "target": "4_5_7_5",
+      "scope": "4_5_1",
+      "effect": "SHOW",
+      "schema": {
+        "const": "Yes"
+      }
+    },
+    {
+      "target": "4_5_8_1",
+      "scope": "4_5_1",
+      "effect": "SHOW",
+      "schema": {
+        "const": "Yes"
+      }
+    },
+    {
+      "target": "4_5_9",
+      "scope": "4_5_1",
+      "effect": "SHOW",
+      "schema": {
+        "const": "Yes"
+      }
+    }
+  ]
+}

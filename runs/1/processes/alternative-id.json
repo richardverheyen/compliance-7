@@ -1,0 +1,197 @@
+{
+  "controls": [
+    {
+      "id": "4_15_1_1",
+      "label": "Does your program establish circumstances under which a customer may be identified using alternative identity proofing processes if they lack standard identity documentation?",
+      "detail-required": true,
+      "detail-label": "Describe the circumstances (e.g. customer lacks documentation, cannot obtain it, or cannot produce it due to COVID-19 Pandemic measures) under which you use alternative proofing.",
+      "correct-option": "Yes",
+      "source-rules": [
+        "4.15.1",
+        "4.15.1A"
+      ],
+      "mapping-confidence": 1.0,
+      "process-id": "PROC-AML-002b"
+    },
+    {
+      "id": "4_15_1_2",
+      "label": "Are your alternative identity proofing processes designed in accordance with your risk-based systems and controls?",
+      "detail-required": true,
+      "detail-label": "Explain how you integrate risk assessment into the design and application of alternative proofing methods.",
+      "correct-option": "Yes",
+      "source-rules": [
+        "4.15.1",
+        "4.15.1A"
+      ],
+      "mapping-confidence": 1.0,
+      "process-id": "PROC-AML-002c"
+    },
+    {
+      "id": "4_15_2_1",
+      "label": "Does your program include a procedure to collect multiple types of secondary identification documents when primary documentation is not available?",
+      "detail-required": true,
+      "detail-label": "Describe the types of secondary identification documents your program accepts and the minimum number or combination required.",
+      "correct-option": "Yes",
+      "source-rules": [
+        "4.15.1",
+        "4.15.1A"
+      ],
+      "mapping-confidence": 0.7,
+      "process-id": "PROC-AML-002a"
+    },
+    {
+      "id": "4_15_3_1",
+      "label": "Does your program include a procedure to accept self-attestation from customers when unable to establish identity through standard or alternative methods?",
+      "detail-required": true,
+      "detail-label": "Describe what information the customer must certify in their self-attestation and how you document and retain this attestation.",
+      "correct-option": "Yes",
+      "source-rules": [
+        "4.15.2"
+      ],
+      "mapping-confidence": 1.0,
+      "process-id": "PROC-AML-002b"
+    },
+    {
+      "id": "4_15_3_2",
+      "label": "Does your program include procedures to verify alternative identity information obtained from customers, including self-attestations?",
+      "detail-required": true,
+      "detail-label": "Describe your verification procedures for alternative identity information (e.g. cross-referencing, ongoing monitoring, additional inquiries).",
+      "correct-option": "Yes",
+      "source-rules": [
+        "4.15.2",
+        "4.15.3"
+      ],
+      "mapping-confidence": 0.7,
+      "process-id": "PROC-AML-002b"
+    },
+    {
+      "id": "4_15_3_3",
+      "label": "When you cannot obtain an original or certified copy of a document due to COVID-19 Pandemic measures, does your program allow acceptance of a document copy in accordance with your risk-based systems and controls?",
+      "detail-required": true,
+      "detail-label": "Describe the circumstances under which you accept uncertified copies and how you assess the associated ML/TF risk.",
+      "correct-option": "Yes",
+      "source-rules": [
+        "4.15.5"
+      ],
+      "mapping-confidence": 1.0,
+      "process-id": "PROC-AML-002b"
+    },
+    {
+      "id": "4_15_4_1",
+      "label": "Does your program apply appropriate levels of ongoing customer due diligence to customers whose identity was established using self-attestation?",
+      "detail-required": true,
+      "detail-label": "Describe the ongoing due diligence procedures you apply to identify, mitigate and manage ML/TF risk for these customers.",
+      "correct-option": "Yes",
+      "source-rules": [
+        "4.15.3"
+      ],
+      "mapping-confidence": 1.0,
+      "process-id": "PROC-AML-003c"
+    },
+    {
+      "id": "4_15_5_1",
+      "label": "Does your program include procedures to prevent reliance on self-attestation when you know or have reason to believe it is incorrect or misleading?",
+      "detail-required": true,
+      "detail-label": "Describe the mechanisms you use to identify and respond to false or misleading self-attestations (e.g. verification checks, verification failures, suspicious indicators).",
+      "correct-option": "Yes",
+      "source-rules": [
+        "4.15.4"
+      ],
+      "mapping-confidence": 1.0,
+      "process-id": "PROC-AML-002b"
+    },
+    {
+      "id": "4_15_5_2",
+      "label": "Does your staff understand that criminal or civil penalties under the AML/CTF Act may apply to customers providing false or misleading identity information?",
+      "detail-required": false,
+      "correct-option": "Yes",
+      "source-rules": [
+        "4.15.4"
+      ],
+      "mapping-confidence": 0.5,
+      "process-id": "PROC-AML-002b"
+    },
+    {
+      "id": "4_15_6_1",
+      "label": "Is your definition of 'COVID-19 Pandemic measures' consistent with the regulatory definition (government-implemented/recommended measures, or reasonable measures by your entity or relevant persons)?",
+      "detail-required": true,
+      "detail-label": "Describe how your program defines and applies 'COVID-19 Pandemic measures' including reasonable measures adopted domestically or in foreign locations where you operate.",
+      "correct-option": "Yes",
+      "source-rules": [
+        "4.15.5",
+        "4.15.6"
+      ],
+      "mapping-confidence": 0.7,
+      "process-id": "PROC-AML-002b"
+    }
+  ],
+  "groups": [
+    {
+      "id": "4_15_1",
+      "title": "Scope and Eligibility for Alternative Identity Proofing",
+      "description": "Determine whether alternative identity proofing processes are available and applicable to your customers based on their circumstances."
+    },
+    {
+      "id": "4_15_2",
+      "title": "Collection of Alternative Identity Information",
+      "description": "Procedures for collecting alternative forms of identity information when standard CDD requirements cannot be met."
+    },
+    {
+      "id": "4_15_3",
+      "title": "Verification of Alternative Identity Information",
+      "description": "Processes for verifying identity information obtained through alternative methods, including self-attestation and document handling during COVID-19 disruptions."
+    },
+    {
+      "id": "4_15_4",
+      "title": "Risk Assessment and Ongoing Monitoring",
+      "description": "Risk-based decision-making and ongoing customer due diligence for customers identified through alternative methods."
+    },
+    {
+      "id": "4_15_5",
+      "title": "Discrepancy Handling and Validation",
+      "description": "Procedures for detecting and responding to false or misleading information in alternative identity proofing processes."
+    }
+  ],
+  "rules": [
+    {
+      "target": "4_15_2_1",
+      "scope": "4_15_1_1",
+      "effect": "SHOW",
+      "schema": {
+        "const": "Yes"
+      }
+    },
+    {
+      "target": "4_15_3_1",
+      "scope": "4_15_1_1",
+      "effect": "SHOW",
+      "schema": {
+        "const": "Yes"
+      }
+    },
+    {
+      "target": "4_15_3_2",
+      "scope": "4_15_3_1",
+      "effect": "SHOW",
+      "schema": {
+        "const": "Yes"
+      }
+    },
+    {
+      "target": "4_15_4_1",
+      "scope": "4_15_3_1",
+      "effect": "SHOW",
+      "schema": {
+        "const": "Yes"
+      }
+    },
+    {
+      "target": "4_15_5_1",
+      "scope": "4_15_3_1",
+      "effect": "SHOW",
+      "schema": {
+        "const": "Yes"
+      }
+    }
+  ]
+}

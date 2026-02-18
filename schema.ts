@@ -35,6 +35,16 @@ export interface Control {
    * References a LegislationProcess.id from the process catalog.
    */
   "process-id"?: string;
+
+  /** Regulation rule codes this control covers (process mode), e.g. ["4.3.5(1)", "4.3.5(2)"] */
+  "source-rules"?: string[];
+
+  /**
+   * LLM self-assessed confidence in the mapping from regulation to control (0.0–1.0).
+   * 1.0 = direct, unambiguous mapping. 0.5 = reasonable interpretation.
+   * Below 0.5 = uncertain, flagged for review.
+   */
+  "mapping-confidence"?: number;
 }
 
 // ---------------------------------------------------------------------------

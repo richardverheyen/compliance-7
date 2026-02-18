@@ -1,0 +1,813 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Compliance Viewer</title>
+<style>
+  :root {
+    --bg: #f8fafc; --surface: #ffffff; --border: #e2e8f0;
+    --text: #1a202c; --muted: #718096; --accent: #3182ce;
+    --green: #48bb78; --yellow: #ecc94b; --red: #f56565; --orange: #ed8936;
+    --pending-bg: #ebf8ff; --success-bg: #f0fff4; --warning-bg: #fffff0; --error-bg: #fff5f5;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: var(--bg); color: var(--text); line-height: 1.6; }
+
+  .container { max-width: 820px; margin: 0 auto; padding: 24px 16px; }
+  h1 { font-size: 1.5rem; margin-bottom: 4px; }
+  .subtitle { color: var(--muted); font-size: 0.95rem; margin-bottom: 20px; }
+
+  /* Introduction panel */
+  .intro-panel { background: var(--surface); border: 2px solid var(--accent); border-radius: 8px; margin-bottom: 20px; overflow: hidden; }
+  .intro-header { display: flex; justify-content: space-between; align-items: center; padding: 12px 18px; cursor: pointer; user-select: none; background: #ebf4ff; border-bottom: 1px solid var(--border); }
+  .intro-header:hover { background: #dbeafe; }
+  .intro-header h2 { font-size: 0.95rem; color: var(--accent); }
+  .intro-chevron { transition: transform 0.2s; font-size: 10px; color: var(--accent); }
+  .intro-chevron.open { transform: rotate(90deg); }
+  .intro-body { padding: 16px 18px; }
+  .intro-body.collapsed { display: none; }
+  .intro-group { margin-bottom: 16px; }
+  .intro-group:last-child { margin-bottom: 0; }
+  .intro-group-label { font-size: 0.85rem; font-weight: 600; margin-bottom: 8px; }
+  .intro-group-desc { font-size: 0.8rem; color: var(--muted); margin-bottom: 8px; }
+  .intro-options { display: flex; flex-wrap: wrap; gap: 6px; }
+  .intro-option { font-size: 0.8rem; padding: 5px 14px; border: 1px solid var(--border); border-radius: 5px; background: var(--surface); cursor: pointer; transition: all 0.15s; user-select: none; }
+  .intro-option:hover { background: #edf2f7; border-color: #cbd5e0; }
+  .intro-option.selected { background: #c6f6d5; border-color: var(--green); color: #22543d; font-weight: 600; }
+  .intro-derived { margin-top: 10px; padding-top: 10px; border-top: 1px solid var(--border); }
+  .intro-derived-item { font-size: 0.8rem; color: var(--muted); padding: 2px 0; display: flex; align-items: center; gap: 6px; }
+  .intro-derived-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+  .intro-summary { font-size: 0.75rem; color: var(--muted); margin-top: 8px; padding-top: 8px; border-top: 1px solid #f0f4f8; }
+
+  /* Mode toggle */
+  .mode-toggle { display: flex; gap: 0; margin-bottom: 16px; }
+  .mode-toggle button {
+    font-size: 0.85rem; padding: 6px 18px; border: 1px solid var(--border);
+    background: var(--surface); cursor: pointer; font-family: inherit; color: var(--muted); transition: all 0.15s;
+  }
+  .mode-toggle button:first-child { border-radius: 5px 0 0 5px; }
+  .mode-toggle button:last-child { border-radius: 0 5px 5px 0; border-left: none; }
+  .mode-toggle button.active { background: var(--accent); color: white; border-color: var(--accent); font-weight: 600; }
+
+  /* Section picker */
+  .picker { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 24px; }
+  .picker button {
+    font-size: 0.8rem; padding: 5px 12px; border: 1px solid var(--border); border-radius: 5px;
+    background: var(--surface); cursor: pointer; font-family: inherit; color: var(--text); transition: all 0.15s;
+  }
+  .picker button:hover { background: #edf2f7; border-color: #cbd5e0; }
+  .picker button.active { background: #ebf4ff; border-color: var(--accent); color: var(--accent); font-weight: 600; }
+  .picker button.empty { opacity: 0.4; }
+  .picker button.gated-off { opacity: 0.35; border-style: dashed; }
+  .picker button .gated-icon { font-size: 0.65rem; margin-left: 3px; opacity: 0.6; }
+
+  /* Stats bar */
+  .stats { display: flex; gap: 16px; margin-bottom: 20px; font-size: 0.82rem; color: var(--muted); }
+  .stat { background: var(--surface); border: 1px solid var(--border); border-radius: 6px; padding: 8px 14px; }
+  .stat strong { color: var(--text); }
+
+  /* Groups */
+  .group { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; margin-bottom: 14px; overflow: hidden; }
+  .group-header { display: flex; justify-content: space-between; align-items: center; padding: 14px 18px; cursor: pointer; user-select: none; border-bottom: 1px solid var(--border); background: #f7fafc; }
+  .group-header:hover { background: #edf2f7; }
+  .group-title { font-weight: 600; font-size: 0.95rem; }
+  .group-id { font-size: 0.7rem; font-weight: 700; color: var(--accent); background: #ebf4ff; padding: 2px 8px; border-radius: 4px; margin-right: 10px; }
+  .group-desc { padding: 10px 18px; font-size: 0.85rem; color: var(--muted); background: #fafbfc; border-bottom: 1px solid var(--border); }
+  .group-body { padding: 0; }
+  .group-body.collapsed { display: none; }
+  .group-chevron { transition: transform 0.2s; font-size: 10px; margin-right: 10px; color: var(--muted); }
+  .group-chevron.open { transform: rotate(90deg); }
+  .group-score { font-size: 0.8rem; font-weight: 700; padding: 2px 10px; border-radius: 12px; white-space: nowrap; }
+
+  /* Controls */
+  .control { padding: 14px 18px; border-bottom: 1px solid #f0f4f8; display: flex; flex-wrap: wrap; align-items: flex-start; gap: 10px; }
+  .control:last-child { border-bottom: none; }
+  .control.hidden { display: none; }
+  .control-id { font-size: 0.75rem; font-weight: 700; color: var(--accent); background: #ebf4ff; padding: 2px 8px; border-radius: 4px; white-space: nowrap; flex-shrink: 0; }
+  .control-label { flex: 1; min-width: 200px; font-size: 0.9rem; }
+  .control-answer { display: flex; gap: 6px; flex-shrink: 0; }
+  .control-answer label { font-size: 0.85rem; padding: 4px 14px; border: 1px solid var(--border); border-radius: 4px; cursor: pointer; transition: all 0.15s; }
+  .control-answer input { display: none; }
+  .control-answer input:checked + label.opt-yes { background: #c6f6d5; border-color: var(--green); color: #22543d; }
+  .control-answer input:checked + label.opt-no { background: #fed7d7; border-color: var(--red); color: #742a2a; }
+  .control-answer label:hover { background: #edf2f7; }
+  .status-dot { width: 12px; height: 12px; border-radius: 50%; border: 1px solid rgba(0,0,0,0.1); flex-shrink: 0; margin-top: 4px; }
+  .process-tag { font-size: 0.7rem; background: #e9d8fd; color: #553c9a; padding: 1px 6px; border-radius: 3px; margin-left: 4px; }
+  .correct-tag { font-size: 0.65rem; padding: 1px 5px; border-radius: 3px; margin-left: 4px; }
+  .correct-yes { background: #c6f6d5; color: #22543d; }
+  .correct-no { background: #fed7d7; color: #742a2a; }
+  .correct-na { background: #edf2f7; color: #718096; }
+  .source-rule { font-size: 0.6rem; background: #fefcbf; color: #744210; padding: 1px 5px; border-radius: 3px; margin-left: 3px; }
+  .confidence-tag { font-size: 0.6rem; padding: 1px 5px; border-radius: 3px; margin-left: 3px; font-weight: 600; }
+  .conf-high { background: #c6f6d5; color: #22543d; }
+  .conf-mid { background: #fefcbf; color: #744210; }
+  .conf-low { background: #fed7d7; color: #742a2a; }
+
+  /* Coverage panel */
+  .coverage-panel { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 16px 18px; margin-bottom: 14px; }
+  .coverage-panel h3 { font-size: 0.85rem; font-weight: 600; margin-bottom: 10px; color: var(--muted); }
+  .coverage-bar { height: 8px; border-radius: 4px; background: #edf2f7; overflow: hidden; margin: 6px 0; }
+  .coverage-fill { height: 100%; border-radius: 4px; transition: width 0.3s; }
+  .coverage-stats { font-size: 0.8rem; color: var(--muted); display: flex; gap: 16px; flex-wrap: wrap; }
+  .unmapped-list { font-size: 0.75rem; color: var(--red); margin-top: 8px; }
+  .unmapped-list code { background: #fff5f5; padding: 1px 4px; border-radius: 2px; }
+
+  /* Detail input */
+  .detail-row { width: 100%; padding: 8px 0 0 0; display: none; }
+  .detail-row.visible { display: block; }
+  .detail-row label { font-size: 0.82rem; color: var(--muted); display: block; margin-bottom: 4px; }
+  .detail-row textarea { width: 100%; padding: 8px 10px; border: 1px solid var(--border); border-radius: 4px; font-size: 0.85rem; resize: vertical; min-height: 60px; font-family: inherit; }
+
+  /* Rules sidebar */
+  .rules-panel { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 16px 18px; margin-bottom: 14px; }
+  .rules-panel h3 { font-size: 0.85rem; font-weight: 600; margin-bottom: 10px; color: var(--muted); }
+  .rule-item { font-size: 0.8rem; padding: 4px 0; border-bottom: 1px solid #f0f4f8; display: flex; gap: 8px; align-items: center; }
+  .rule-item:last-child { border-bottom: none; }
+  .rule-arrow { color: var(--muted); }
+  .rule-badge { font-size: 0.65rem; font-weight: 700; padding: 1px 6px; border-radius: 8px; background: #ebf4ff; color: var(--accent); }
+
+  /* Ungrouped controls */
+  .ungrouped { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; margin-bottom: 14px; overflow: hidden; }
+  .ungrouped-header { padding: 14px 18px; font-weight: 600; font-size: 0.95rem; border-bottom: 1px solid var(--border); background: #f7fafc; }
+
+  .empty-state { text-align: center; padding: 60px 20px; color: var(--muted); }
+  .empty-state p { font-size: 0.95rem; }
+
+  /* JSON output */
+  .output { margin-top: 24px; }
+  .output summary { font-weight: 600; cursor: pointer; color: var(--muted); font-size: 0.9rem; }
+  .output pre { background: #1a202c; color: #a0aec0; padding: 16px; border-radius: 6px; font-size: 0.8rem; overflow-x: auto; margin-top: 8px; max-height: 400px; overflow-y: auto; }
+</style>
+</head>
+<body>
+
+<div class="container">
+  <h1 id="page-title">Compliance Viewer</h1>
+  <p class="subtitle" id="page-subtitle">Select a section or process to view its compliance controls, groups, and rules.</p>
+
+  <div id="intro-panel"></div>
+
+  <div class="mode-toggle" id="mode-toggle">
+    <button class="active" data-mode="section">Section View</button>
+    <button data-mode="process">Process View</button>
+  </div>
+
+  <div class="picker" id="picker"></div>
+  <div class="stats" id="stats"></div>
+  <div id="form"></div>
+
+  <details class="output">
+    <summary>Raw JSON</summary>
+    <pre id="json-output">{}</pre>
+  </details>
+</div>
+
+<script>
+// ─── STATE ──────────────────────────────────────────────────────────────────
+let sectionData = null;
+let answers = {};          // per-section/process answers (reset on navigation)
+let introAnswers = {};     // introduction answers (persist across navigation)
+let introSelections = new Set(); // selected option keys (e.g. "domestic_companies")
+let introData = null;      // loaded from data/introduction.json
+let currentMode = "section";
+let coverageAudit = null;
+
+const SECTION_LABELS = {
+  "4_1":  "Risk Assessment",
+  "4_2":  "Individuals",
+  "4_3":  "Companies",
+  "4_4":  "Trusts",
+  "4_5":  "Partnerships",
+  "4_6":  "Associations",
+  "4_7":  "Co-operatives",
+  "4_8":  "Government Bodies",
+  "4_9":  "Verification (Docs)",
+  "4_10": "Verification (Electronic)",
+  "4_11": "Customer Agents",
+  "4_12": "Beneficial Ownership",
+  "4_13": "PEPs",
+  "4_14": "Exemptions",
+  "4_15": "Alt Identity Proofing"
+};
+
+const PROCESS_LABELS = {
+  "cdd-individuals":        { title: "CDD — Individuals",         gated: true,  gatedBy: "4_1_4_1" },
+  "cdd-companies":          { title: "CDD — Companies",           gated: true,  gatedBy: "4_1_4_2" },
+  "cdd-trusts":             { title: "CDD — Trusts",              gated: true,  gatedBy: "4_1_4_3" },
+  "cdd-partnerships":       { title: "CDD — Partnerships",        gated: true,  gatedBy: "4_1_4_4" },
+  "cdd-associations":       { title: "CDD — Associations",        gated: true,  gatedBy: "4_1_4_5" },
+  "cdd-cooperatives":       { title: "CDD — Co-operatives",       gated: true,  gatedBy: "4_1_4_6" },
+  "cdd-government":         { title: "CDD — Government Bodies",   gated: true,  gatedBy: "4_1_4_7" },
+  "risk-assessment":        { title: "Risk Assessment",            gated: false, gatedBy: null },
+  "verification-documents": { title: "Verification (Docs)",        gated: false, gatedBy: null },
+  "verification-electronic":{ title: "Verification (Electronic)",  gated: false, gatedBy: null },
+  "agent-management":       { title: "Agent Management",           gated: true,  gatedBy: "4_1_8" },
+  "beneficial-ownership":   { title: "Beneficial Ownership",       gated: true,  gatedBy: "4_1_5_1" },
+  "pep-screening":          { title: "PEP Screening",              gated: true,  gatedBy: "4_1_5_2" },
+  "record-keeping":         { title: "Record Keeping",             gated: false, gatedBy: null },
+  "alternative-id":         { title: "Alt Identity Proofing",      gated: false, gatedBy: null },
+};
+
+const SECTIONS_DIR = "runs/1/sections/";
+const PROCESSES_DIR = "runs/1/processes/";
+const INTRO_PATH = "data/introduction.json";
+
+// ─── INTRODUCTION ───────────────────────────────────────────────────────────
+
+async function loadIntroduction() {
+  try {
+    const resp = await fetch(INTRO_PATH);
+    if (!resp.ok) return;
+    introData = await resp.json();
+    renderIntroPanel();
+  } catch { /* intro file not found — skip */ }
+}
+
+function rebuildIntroAnswers() {
+  // Derive controlId state from individual option selections
+  if (!introData) return;
+  introAnswers = {};
+  for (const group of Object.values(introData.buttonGroups || {})) {
+    for (const opt of group.options) {
+      if (introSelections.has(opt.key)) {
+        introAnswers[opt.controlId] = "Yes";
+      }
+    }
+  }
+}
+
+function computeDerived() {
+  if (!introData || !introData.derived) return;
+  for (const [derivedId, def] of Object.entries(introData.derived)) {
+    const active = def.appliesTo.some(id => introAnswers[id] === "Yes");
+    introAnswers[derivedId] = active ? "Yes" : undefined;
+  }
+}
+
+function isGatedActive(gatedBy) {
+  if (!gatedBy) return true;
+  return introAnswers[gatedBy] === "Yes";
+}
+
+function isSectionActive(sectionId) {
+  if (!introData) return true;
+  const always = introData.alwaysActive?.sections || [];
+  if (always.includes(sectionId)) return true;
+  // Check if any scoping entry activates this section
+  const scoping = introData.scoping || {};
+  for (const [controlId, mapping] of Object.entries(scoping)) {
+    if (mapping.sections.includes(sectionId) && introAnswers[controlId] === "Yes") {
+      return true;
+    }
+  }
+  return false;
+}
+
+function renderIntroPanel() {
+  if (!introData) return;
+  const el = document.getElementById("intro-panel");
+
+  const bg = introData.buttonGroups || {};
+  const derived = introData.derived || {};
+
+  let groupsHtml = "";
+  for (const [groupId, group] of Object.entries(bg)) {
+    const matchingGroupDef = (introData.groups || []).find(g => g.id === groupId);
+    const desc = matchingGroupDef ? `<div class="intro-group-desc">${matchingGroupDef.description}</div>` : "";
+
+    const optionsHtml = group.options.map(opt => {
+      const selected = introSelections.has(opt.key);
+      return `<span class="intro-option${selected ? " selected" : ""}" data-control-id="${opt.controlId}" data-key="${opt.key}">${opt.label}</span>`;
+    }).join("");
+
+    groupsHtml += `
+      <div class="intro-group">
+        <div class="intro-group-label">${group.label}</div>
+        ${desc}
+        <div class="intro-options">${optionsHtml}</div>
+      </div>`;
+  }
+
+  // Derived fields display
+  let derivedHtml = "";
+  if (Object.keys(derived).length > 0) {
+    const items = Object.entries(derived).map(([id, def]) => {
+      const active = introAnswers[id] === "Yes";
+      const color = active ? "var(--green)" : "#cbd5e0";
+      return `<div class="intro-derived-item">
+        <span class="intro-derived-dot" style="background:${color};"></span>
+        <span>${def.label}: ${active ? "Active" : "Inactive"}</span>
+      </div>`;
+    }).join("");
+    derivedHtml = `<div class="intro-derived">${items}</div>`;
+  }
+
+  // Count active selections
+  const activeCount = Object.values(introAnswers).filter(v => v === "Yes").length;
+  const summaryHtml = `<div class="intro-summary">${activeCount} scope${activeCount !== 1 ? "s" : ""} active</div>`;
+
+  el.innerHTML = `
+    <div class="intro-panel">
+      <div class="intro-header" id="intro-toggle">
+        <h2>Scoping — Customer Categories & Agents</h2>
+        <span class="intro-chevron open" id="intro-chevron">&#9654;</span>
+      </div>
+      <div class="intro-body" id="intro-body">
+        ${groupsHtml}
+        ${derivedHtml}
+        ${summaryHtml}
+      </div>
+    </div>`;
+
+  // Collapse toggle
+  document.getElementById("intro-toggle").addEventListener("click", () => {
+    document.getElementById("intro-body").classList.toggle("collapsed");
+    document.getElementById("intro-chevron").classList.toggle("open");
+  });
+
+  // Option click handlers
+  el.querySelectorAll(".intro-option").forEach(opt => {
+    opt.addEventListener("click", () => {
+      const key = opt.dataset.key;
+      if (introSelections.has(key)) {
+        introSelections.delete(key);
+      } else {
+        introSelections.add(key);
+      }
+      rebuildIntroAnswers();
+      computeDerived();
+      renderIntroPanel();
+      updatePickerGating();
+      if (sectionData) render();
+    });
+  });
+}
+
+// ─── HELPERS ────────────────────────────────────────────────────────────────
+function getParentId(id) {
+  const parts = id.split("_");
+  return parts.length <= 2 ? null : parts.slice(0, -1).join("_");
+}
+
+function statusColor(status) {
+  return { pending:"var(--orange)", success:"var(--green)", warning:"var(--yellow)", error:"var(--red)" }[status];
+}
+
+function getControlStatus(ctrl) {
+  const answer = answers[ctrl.id];
+  const detail = answers[ctrl.id + "_detail"];
+  if (answer === undefined || answer === "") return "pending";
+  if (!ctrl["correct-option"] || ctrl["correct-option"] === "N/A") return "success";
+  if (answer !== ctrl["correct-option"]) return "error";
+  if (ctrl["detail-required"] && (!detail || detail.trim() === "")) return "warning";
+  return "success";
+}
+
+function checkVisibility(id) {
+  if (!sectionData) return true;
+  // Check rules — scope may be in introAnswers (cross-section gating) or answers (local)
+  const rule = sectionData.rules.find(r => r.target === id);
+  if (!rule) return true;
+  const scopeAnswer = introAnswers[rule.scope] ?? answers[rule.scope];
+  return scopeAnswer === rule.schema.const;
+}
+
+function sortById(a, b) {
+  return (a.id || "").localeCompare(b.id || "", undefined, { numeric: true, sensitivity: "base" });
+}
+
+function getGroupScore(groupId) {
+  if (!sectionData) return { score: 1, total: 0, green: 0 };
+  const controls = sectionData.controls.filter(c => c.id.startsWith(groupId + "_") || c.id === groupId);
+  let total = 0, green = 0;
+  controls.forEach(c => {
+    if (!checkVisibility(c.id)) return;
+    total++;
+    if (getControlStatus(c) === "success") green++;
+  });
+  return { score: total === 0 ? 1 : green / total, total, green };
+}
+
+// ─── MODE TOGGLE ────────────────────────────────────────────────────────────
+function setupModeToggle() {
+  document.querySelectorAll(".mode-toggle button").forEach(btn => {
+    btn.addEventListener("click", () => {
+      const mode = btn.dataset.mode;
+      if (mode === currentMode) return;
+      currentMode = mode;
+      document.querySelectorAll(".mode-toggle button").forEach(b =>
+        b.classList.toggle("active", b.dataset.mode === mode)
+      );
+      buildPicker();
+    });
+  });
+}
+
+// ─── PICKER ─────────────────────────────────────────────────────────────────
+async function buildPicker() {
+  const pickerEl = document.getElementById("picker");
+  pickerEl.innerHTML = "";
+
+  document.getElementById("form").innerHTML = "";
+  document.getElementById("stats").innerHTML = "";
+  document.getElementById("json-output").textContent = "{}";
+  sectionData = null;
+  answers = {};
+
+  if (currentMode === "section") {
+    await buildSectionPicker(pickerEl);
+  } else {
+    await buildProcessPicker(pickerEl);
+  }
+}
+
+async function buildSectionPicker(pickerEl) {
+  document.getElementById("page-title").textContent = "Section Viewer";
+  document.getElementById("page-subtitle").textContent = "Select a section to view its compliance controls, groups, and rules.";
+
+  for (const [id, label] of Object.entries(SECTION_LABELS)) {
+    const btn = document.createElement("button");
+    btn.textContent = `${id.replace("_",".")} ${label}`;
+    btn.dataset.sectionId = id;
+
+    const active = isSectionActive(id);
+    if (!active) {
+      btn.classList.add("gated-off");
+      btn.title = "Activate via scoping above";
+    }
+
+    try {
+      const resp = await fetch(SECTIONS_DIR + id + ".json", { method: "HEAD" });
+      if (resp.ok) {
+        const data = await (await fetch(SECTIONS_DIR + id + ".json")).json();
+        if (data.controls.length === 0 && data.groups.length === 0) {
+          btn.classList.add("empty");
+          btn.title = "No controls yet";
+        }
+      } else {
+        btn.classList.add("empty");
+        btn.title = "Not generated yet";
+      }
+    } catch {
+      btn.classList.add("empty");
+      btn.title = "Not generated yet";
+    }
+
+    btn.addEventListener("click", () => loadItem(id, "section"));
+    pickerEl.appendChild(btn);
+  }
+}
+
+async function buildProcessPicker(pickerEl) {
+  document.getElementById("page-title").textContent = "Process Viewer";
+  document.getElementById("page-subtitle").textContent = "Select a process form to view its compliance controls.";
+
+  try {
+    const resp = await fetch(PROCESSES_DIR + "_coverage_audit.json");
+    if (resp.ok) coverageAudit = await resp.json();
+  } catch { coverageAudit = null; }
+
+  for (const [id, meta] of Object.entries(PROCESS_LABELS)) {
+    const btn = document.createElement("button");
+    const active = isGatedActive(meta.gatedBy);
+    const gatedIcon = meta.gated ? `<span class="gated-icon">${active ? "&#9989;" : "&#128274;"}</span>` : '';
+    btn.innerHTML = `${meta.title}${gatedIcon}`;
+    btn.dataset.sectionId = id;
+    btn.dataset.gatedBy = meta.gatedBy || "";
+
+    if (meta.gated && !active) {
+      btn.classList.add("gated-off");
+      btn.title = "Activate via scoping above";
+    }
+
+    try {
+      const resp = await fetch(PROCESSES_DIR + id + ".json", { method: "HEAD" });
+      if (resp.ok) {
+        const data = await (await fetch(PROCESSES_DIR + id + ".json")).json();
+        if (data.controls.length === 0 && data.groups.length === 0) {
+          btn.classList.add("empty");
+          btn.title = "No controls yet";
+        }
+      } else {
+        btn.classList.add("empty");
+        btn.title = "Not generated yet";
+      }
+    } catch {
+      btn.classList.add("empty");
+      btn.title = "Not generated yet";
+    }
+
+    btn.addEventListener("click", () => loadItem(id, currentMode));
+    pickerEl.appendChild(btn);
+  }
+}
+
+function updatePickerGating() {
+  // Update gating state on picker buttons without full rebuild
+  document.querySelectorAll(".picker button").forEach(btn => {
+    const id = btn.dataset.sectionId;
+    if (!id) return;
+
+    if (currentMode === "section") {
+      const active = isSectionActive(id);
+      btn.classList.toggle("gated-off", !active);
+      if (!active) btn.title = "Activate via scoping above";
+    } else {
+      const meta = PROCESS_LABELS[id];
+      if (meta && meta.gated) {
+        const active = isGatedActive(meta.gatedBy);
+        btn.classList.toggle("gated-off", !active);
+        // Update icon
+        const icon = btn.querySelector(".gated-icon");
+        if (icon) icon.innerHTML = active ? "&#9989;" : "&#128274;";
+        if (!active) btn.title = "Activate via scoping above";
+      }
+    }
+  });
+}
+
+async function loadItem(itemId, mode) {
+  const dir = mode === "process" ? PROCESSES_DIR : SECTIONS_DIR;
+  try {
+    const resp = await fetch(dir + itemId + ".json");
+    if (!resp.ok) throw new Error("Not found");
+    sectionData = await resp.json();
+    answers = {};
+
+    document.querySelectorAll(".picker button").forEach(b => {
+      b.classList.toggle("active", b.dataset.sectionId === itemId);
+    });
+
+    if (mode === "process") {
+      const meta = PROCESS_LABELS[itemId];
+      document.getElementById("page-title").textContent = meta ? meta.title : itemId;
+    } else {
+      const label = SECTION_LABELS[itemId] || itemId;
+      document.getElementById("page-title").textContent = `Part ${itemId.replace("_",".")}: ${label}`;
+    }
+    document.getElementById("page-subtitle").textContent =
+      `${sectionData.controls.length} controls, ${sectionData.groups.length} groups, ${sectionData.rules.length} rules`;
+
+    render();
+  } catch (e) {
+    document.getElementById("form").innerHTML =
+      `<div class="empty-state"><p>Could not load ${mode} ${itemId}.</p></div>`;
+  }
+}
+
+// ─── RENDER ─────────────────────────────────────────────────────────────────
+function render() {
+  if (!sectionData) return;
+
+  const formEl = document.getElementById("form");
+  formEl.innerHTML = "";
+
+  const statsEl = document.getElementById("stats");
+  const allVisible = sectionData.controls.filter(c => checkVisibility(c.id));
+  const answered = allVisible.filter(c => answers[c.id]);
+  const correct = allVisible.filter(c => getControlStatus(c) === "success");
+  statsEl.innerHTML = `
+    <div class="stat"><strong>${allVisible.length}</strong> visible controls</div>
+    <div class="stat"><strong>${answered.length}</strong> answered</div>
+    <div class="stat"><strong>${correct.length}</strong> compliant</div>
+  `;
+
+  // Coverage panel (process mode only)
+  if (currentMode === "process" && coverageAudit) {
+    const activeBtn = document.querySelector(".picker button.active");
+    const processId = activeBtn ? activeBtn.dataset.sectionId : null;
+    const procReport = processId && coverageAudit.processes ? coverageAudit.processes[processId] : null;
+    if (procReport) {
+      const panel = document.createElement("div");
+      panel.className = "coverage-panel";
+      const pct = procReport.coverage_pct;
+      const barColor = pct >= 90 ? "var(--green)" : pct >= 70 ? "var(--yellow)" : "var(--red)";
+      let unmappedHtml = "";
+      if (procReport.unmapped_codes && procReport.unmapped_codes.length > 0) {
+        unmappedHtml = `<div class="unmapped-list">Unmapped: ${procReport.unmapped_codes.map(c => `<code>${c}</code>`).join(" ")}</div>`;
+      }
+      const lowConf = procReport.low_confidence || [];
+      let lowConfHtml = "";
+      if (lowConf.length > 0) {
+        lowConfHtml = `<div class="unmapped-list" style="color:var(--orange);">Low confidence: ${lowConf.map(c => `<code>${c.id} (${Math.round(c.confidence*100)}%)</code>`).join(" ")}</div>`;
+      }
+      panel.innerHTML = `
+        <h3>Rule Coverage</h3>
+        <div class="coverage-bar"><div class="coverage-fill" style="width:${pct}%;background:${barColor};"></div></div>
+        <div class="coverage-stats">
+          <span><strong>${pct}%</strong> coverage</span>
+          <span><strong>${procReport.total_mapped}</strong>/${procReport.total_input} rules mapped</span>
+          <span><strong>${procReport.total_controls}</strong> controls</span>
+        </div>
+        ${unmappedHtml}${lowConfHtml}
+      `;
+      formEl.appendChild(panel);
+    }
+  }
+
+  // Rules panel (only gating rules whose scope is outside this section AND not in intro)
+  const gatingRules = sectionData.rules.filter(r => {
+    return !sectionData.controls.find(c => c.id === r.scope) && !(r.scope in (introAnswers || {}));
+  });
+  if (gatingRules.length > 0) {
+    const panel = document.createElement("div");
+    panel.className = "rules-panel";
+    panel.innerHTML = `<h3>Gating Rules</h3>` +
+      gatingRules.map(r =>
+        `<div class="rule-item">
+          <span class="rule-badge">${r.effect}</span>
+          <span>${r.target}</span>
+          <span class="rule-arrow">when</span>
+          <span style="font-weight:600;">${r.scope}</span>
+          <span class="rule-arrow">=</span>
+          <span>"${r.schema.const}"</span>
+        </div>`
+      ).join("");
+    formEl.appendChild(panel);
+  }
+
+  // Render groups
+  const groups = [...sectionData.groups].sort(sortById);
+  const groupIds = new Set(groups.map(g => g.id));
+
+  const controlsByGroup = {};
+  groups.forEach(g => { controlsByGroup[g.id] = []; });
+
+  sectionData.controls.forEach(ctrl => {
+    let assigned = false;
+    let parts = ctrl.id.split("_");
+    while (parts.length > 2) {
+      const candidate = parts.slice(0, -1).join("_");
+      if (groupIds.has(candidate)) {
+        controlsByGroup[candidate].push(ctrl);
+        assigned = true;
+        break;
+      }
+      parts = parts.slice(0, -1);
+    }
+    if (!assigned) {
+      const sectionGroup = groups.find(g => g.id === ctrl.id.split("_").slice(0, 2).join("_"));
+      if (sectionGroup) {
+        controlsByGroup[sectionGroup.id].push(ctrl);
+      } else {
+        if (!controlsByGroup["_ungrouped"]) controlsByGroup["_ungrouped"] = [];
+        controlsByGroup["_ungrouped"].push(ctrl);
+      }
+    }
+  });
+
+  groups.forEach(group => {
+    const controls = (controlsByGroup[group.id] || []).sort(sortById);
+    formEl.appendChild(renderGroup(group, controls));
+  });
+
+  const ungrouped = controlsByGroup["_ungrouped"] || [];
+  if (ungrouped.length > 0) {
+    const div = document.createElement("div");
+    div.className = "ungrouped";
+    const header = document.createElement("div");
+    header.className = "ungrouped-header";
+    header.textContent = "Other Controls";
+    div.appendChild(header);
+    ungrouped.sort(sortById).forEach(ctrl => div.appendChild(renderControl(ctrl)));
+    formEl.appendChild(div);
+  }
+
+  document.getElementById("json-output").textContent = JSON.stringify(sectionData, null, 2);
+}
+
+function renderGroup(group, controls) {
+  const div = document.createElement("div");
+  div.className = "group";
+
+  const { score, total, green } = getGroupScore(group.id);
+  const scoreColor = score >= 1 ? "var(--green)" : score >= 0.5 ? "var(--yellow)" : total === 0 ? "var(--muted)" : "var(--orange)";
+  const scoreBg = score >= 1 ? "var(--success-bg)" : score >= 0.5 ? "var(--warning-bg)" : total === 0 ? "#edf2f7" : "var(--pending-bg)";
+
+  const visible = checkVisibility(group.id);
+  if (!visible) div.style.display = "none";
+
+  const header = document.createElement("div");
+  header.className = "group-header";
+  header.innerHTML = `
+    <div style="display:flex;align-items:center;">
+      <span class="group-chevron open">&#9654;</span>
+      <span class="group-id">${group.id}</span>
+      <span class="group-title">${group.title}</span>
+    </div>
+    ${total > 0 ? `<span class="group-score" style="color:${scoreColor};background:${scoreBg};">${green}/${total}</span>` : ""}
+  `;
+
+  const body = document.createElement("div");
+  body.className = "group-body";
+
+  header.addEventListener("click", () => {
+    body.classList.toggle("collapsed");
+    header.querySelector(".group-chevron").classList.toggle("open");
+  });
+
+  div.appendChild(header);
+
+  if (group.description) {
+    const desc = document.createElement("div");
+    desc.className = "group-desc";
+    desc.textContent = group.description;
+    body.appendChild(desc);
+  }
+
+  controls.forEach(ctrl => body.appendChild(renderControl(ctrl)));
+
+  div.appendChild(body);
+  return div;
+}
+
+function renderControl(ctrl) {
+  const visible = checkVisibility(ctrl.id);
+  const status = getControlStatus(ctrl);
+
+  const div = document.createElement("div");
+  div.className = "control" + (visible ? "" : " hidden");
+  div.dataset.controlId = ctrl.id;
+
+  const processTag = ctrl["process-id"]
+    ? `<span class="process-tag">${ctrl["process-id"]}</span>`
+    : "";
+
+  const co = ctrl["correct-option"];
+  const correctClass = co === "Yes" ? "correct-yes" : co === "No" ? "correct-no" : "correct-na";
+  const correctTag = `<span class="correct-tag ${correctClass}">expects ${co}</span>`;
+
+  const sourceRules = (ctrl["source-rules"] || [])
+    .map(r => `<span class="source-rule">${r}</span>`)
+    .join("");
+
+  const conf = ctrl["mapping-confidence"];
+  let confidenceTag = "";
+  if (conf !== undefined && conf !== null) {
+    const confClass = conf >= 0.7 ? "conf-high" : conf >= 0.5 ? "conf-mid" : "conf-low";
+    confidenceTag = `<span class="confidence-tag ${confClass}">${Math.round(conf * 100)}%</span>`;
+  }
+
+  div.innerHTML = `
+    <div class="status-dot" style="background:${statusColor(status)};"></div>
+    <span class="control-id">${ctrl.id}</span>
+    <span class="control-label">${ctrl.label}${processTag}${correctTag}${confidenceTag}${sourceRules}</span>
+    <div class="control-answer">
+      <input type="radio" name="${ctrl.id}" id="${ctrl.id}_yes" value="Yes" ${answers[ctrl.id]==="Yes"?"checked":""}>
+      <label for="${ctrl.id}_yes" class="opt-yes">Yes</label>
+      <input type="radio" name="${ctrl.id}" id="${ctrl.id}_no" value="No" ${answers[ctrl.id]==="No"?"checked":""}>
+      <label for="${ctrl.id}_no" class="opt-no">No</label>
+    </div>
+  `;
+
+  if (ctrl["detail-required"]) {
+    const detailDiv = document.createElement("div");
+    detailDiv.className = "detail-row" + (answers[ctrl.id] === "Yes" ? " visible" : "");
+    detailDiv.innerHTML = `
+      <label>${ctrl["detail-label"] || "Please provide details:"}</label>
+      <textarea placeholder="Enter details...">${answers[ctrl.id + "_detail"] || ""}</textarea>
+    `;
+    detailDiv.querySelector("textarea").addEventListener("input", (e) => {
+      answers[ctrl.id + "_detail"] = e.target.value;
+      render();
+    });
+    div.appendChild(detailDiv);
+  }
+
+  div.querySelectorAll('input[type="radio"]').forEach(radio => {
+    radio.addEventListener("change", (e) => {
+      answers[ctrl.id] = e.target.value;
+      render();
+    });
+  });
+
+  return div;
+}
+
+// ─── INIT ───────────────────────────────────────────────────────────────────
+setupModeToggle();
+
+const hash = location.hash.replace("#", "");
+if (hash.startsWith("process:")) {
+  currentMode = "process";
+  document.querySelectorAll(".mode-toggle button").forEach(b =>
+    b.classList.toggle("active", b.dataset.mode === "process")
+  );
+}
+
+// Load introduction first, then build picker
+loadIntroduction().then(() => {
+  buildPicker().then(() => {
+    if (currentMode === "section") {
+      const initial = SECTION_LABELS[hash] ? hash : "4_1";
+      loadItem(initial, "section");
+    } else if (hash.startsWith("process:")) {
+      const processId = hash.replace("process:", "");
+      if (PROCESS_LABELS[processId]) loadItem(processId, "process");
+    }
+  });
+});
+</script>
+</body>
+</html>

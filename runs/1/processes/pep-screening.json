@@ -1,0 +1,211 @@
+{
+  "controls": [
+    {
+      "id": "4_13_1_1",
+      "label": "Does your AML/CTF program include appropriate risk-management systems to determine whether a customer or beneficial owner is a politically exposed person?",
+      "detail-required": true,
+      "detail-label": "Describe your risk-management systems for PEP determination",
+      "correct-option": "Yes",
+      "process-id": "PROC-AML-003b",
+      "source-rules": [
+        "4.13.1"
+      ],
+      "mapping-confidence": 1.0
+    },
+    {
+      "id": "4_13_1_2",
+      "label": "Do you undertake PEP determination before providing a designated service or as soon as practicable after provision?",
+      "detail-required": false,
+      "correct-option": "Yes",
+      "process-id": "PROC-AML-003b",
+      "source-rules": [
+        "4.13.1"
+      ],
+      "mapping-confidence": 1.0
+    },
+    {
+      "id": "4_13_2_1",
+      "label": "For domestic PEPs and international organisation PEPs, does your program comply with identification requirements (paragraphs 4.2.3 to 4.2.9) as if the PEP was the customer?",
+      "detail-required": true,
+      "detail-label": "Describe how you apply standard CID identification procedures to PEPs",
+      "correct-option": "Yes",
+      "process-id": "PROC-AML-003b",
+      "source-rules": [
+        "4.13.2(1)",
+        "4.13.2"
+      ],
+      "mapping-confidence": 1.0
+    },
+    {
+      "id": "4_13_2_2",
+      "label": "Do you determine whether domestic PEPs and international organisation PEPs are of high ML/TF risk?",
+      "detail-required": true,
+      "detail-label": "Describe your risk assessment methodology for these PEP categories",
+      "correct-option": "Yes",
+      "process-id": "PROC-AML-003b",
+      "source-rules": [
+        "4.13.2(2)",
+        "4.13.2"
+      ],
+      "mapping-confidence": 1.0
+    },
+    {
+      "id": "4_13_2_3",
+      "label": "Is this customer or beneficial owner a domestic PEP or international organisation PEP determined to be of high ML/TF risk?",
+      "detail-required": false,
+      "correct-option": "N/A",
+      "process-id": "PROC-AML-003b",
+      "source-rules": [
+        "4.13.2(3)",
+        "4.13.2"
+      ],
+      "mapping-confidence": 1.0
+    },
+    {
+      "id": "4_13_3_1",
+      "label": "For foreign PEPs or high ML/TF risk domestic or international organisation PEPs, does your program comply with identification requirements (paragraphs 4.2.3 to 4.2.9) as if the PEP was the customer?",
+      "detail-required": true,
+      "detail-label": "Describe how you apply standard CID identification procedures to these PEP categories",
+      "correct-option": "Yes",
+      "process-id": "PROC-AML-003b",
+      "source-rules": [
+        "4.13.3(1)",
+        "4.13.3"
+      ],
+      "mapping-confidence": 1.0
+    },
+    {
+      "id": "4_13_3_2",
+      "label": "Do you obtain senior management approval before establishing or continuing a business relationship with foreign PEPs or high ML/TF risk PEPs?",
+      "detail-required": true,
+      "detail-label": "Describe your senior management approval process and documentation",
+      "correct-option": "Yes",
+      "process-id": "PROC-AML-003b",
+      "source-rules": [
+        "4.13.3(2)",
+        "4.13.3"
+      ],
+      "mapping-confidence": 1.0
+    },
+    {
+      "id": "4_13_3_3",
+      "label": "Do you take reasonable measures to establish the source of wealth and source of funds for foreign PEPs or high ML/TF risk PEPs?",
+      "detail-required": true,
+      "detail-label": "Describe the reasonable measures you take to verify source of wealth and funds",
+      "correct-option": "Yes",
+      "process-id": "PROC-AML-003b",
+      "source-rules": [
+        "4.13.3(3)",
+        "4.13.3"
+      ],
+      "mapping-confidence": 1.0
+    },
+    {
+      "id": "4_13_3_4",
+      "label": "Do you comply with the transaction monitoring and ongoing reporting obligations in Chapter 15 for foreign PEPs or high ML/TF risk PEPs?",
+      "detail-required": false,
+      "correct-option": "Yes",
+      "process-id": "PROC-AML-003b",
+      "source-rules": [
+        "4.13.3(4)",
+        "4.13.3"
+      ],
+      "mapping-confidence": 1.0
+    },
+    {
+      "id": "4_13_4_1",
+      "label": "Does your AML/CTF program include appropriate risk-based systems and controls to respond to discrepancies that arise during PEP information verification?",
+      "detail-required": true,
+      "detail-label": "Describe your discrepancy handling procedures for PEP verification",
+      "correct-option": "Yes",
+      "process-id": "PROC-AML-003b",
+      "source-rules": [
+        "4.13.4"
+      ],
+      "mapping-confidence": 1.0
+    },
+    {
+      "id": "4_13_4_2",
+      "label": "Are you able to be reasonably satisfied that the PEP is the person they claim to be after responding to verification discrepancies?",
+      "detail-required": false,
+      "correct-option": "Yes",
+      "process-id": "PROC-AML-003b",
+      "source-rules": [
+        "4.13.4"
+      ],
+      "mapping-confidence": 0.9
+    }
+  ],
+  "groups": [
+    {
+      "id": "4_13_1",
+      "title": "PEP Determination",
+      "description": "Risk management systems to identify whether a customer or beneficial owner is a PEP, before or as soon as practicable after providing a designated service."
+    },
+    {
+      "id": "4_13_2",
+      "title": "Domestic and International Organisation PEP Procedures",
+      "description": "Procedures for domestic PEPs and international organisation PEPs, including identification, risk assessment, and enhanced measures for high ML/TF risk cases."
+    },
+    {
+      "id": "4_13_3",
+      "title": "Foreign and High ML/TF Risk PEP Procedures",
+      "description": "Enhanced procedures for foreign PEPs and high ML/TF risk domestic or international organisation PEPs, including senior management approval, source of wealth/funds verification, and transaction monitoring obligations."
+    },
+    {
+      "id": "4_13_4",
+      "title": "PEP Verification and Discrepancy Handling",
+      "description": "Risk-based systems and controls to respond to discrepancies arising during PEP information verification."
+    }
+  ],
+  "rules": [
+    {
+      "target": "4_13",
+      "scope": "4_1_5_2",
+      "effect": "SHOW",
+      "schema": {
+        "const": "Yes"
+      }
+    },
+    {
+      "target": "4_13_2_3",
+      "scope": "4_13_2_2",
+      "effect": "SHOW",
+      "schema": {
+        "const": "Yes"
+      }
+    },
+    {
+      "target": "4_13_3_1",
+      "scope": "4_13_2_3",
+      "effect": "SHOW",
+      "schema": {
+        "const": "Yes"
+      }
+    },
+    {
+      "target": "4_13_3_2",
+      "scope": "4_13_2_3",
+      "effect": "SHOW",
+      "schema": {
+        "const": "Yes"
+      }
+    },
+    {
+      "target": "4_13_3_3",
+      "scope": "4_13_2_3",
+      "effect": "SHOW",
+      "schema": {
+        "const": "Yes"
+      }
+    },
+    {
+      "target": "4_13_3_4",
+      "scope": "4_13_2_3",
+      "effect": "SHOW",
+      "schema": {
+        "const": "Yes"
+      }
+    }
+  ]
+}

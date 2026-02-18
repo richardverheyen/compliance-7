@@ -1,0 +1,80 @@
+{
+  "controls": [
+    {
+      "id": "4_14_1",
+      "label": "Does your reporting entity provide a designated service listed in the exemption tables and qualify for exemption under the specified AML/CTF Act or AML/CTF Rules references?",
+      "detail-required": true,
+      "detail-label": "Which designated service(s) and exemption provision(s) apply to your entity?",
+      "correct-option": "Yes",
+      "source-rules": [
+        "4.14.1",
+        "4.14.1(1)",
+        "4.14.1(2)"
+      ],
+      "mapping-confidence": 0.85,
+      "process-id": "PROC-AML-002"
+    },
+    {
+      "id": "4_15_1",
+      "label": "Does your entity have a documented procedure for handling cases where a customer cannot provide satisfactory evidence of identity in limited and exceptional circumstances?",
+      "detail-required": true,
+      "detail-label": "Describe your procedure for handling customers who cannot provide satisfactory identity evidence (e.g., unregistered birth, homelessness, family violence, undocumented arrivals, remote areas, transgender/intersex persons, natural disasters, institutional/foster care background, limited social footprint, or restricted access due to government measures or COVID-19 precautions).",
+      "correct-option": "Yes",
+      "source-rules": [
+        "4.15"
+      ],
+      "mapping-confidence": 0.9,
+      "process-id": "PROC-AML-002b"
+    },
+    {
+      "id": "4_15_2",
+      "label": "Does your procedure specifically address cases where identity documents are unavailable due to government-implemented measures or reasonable measures to prevent COVID-19 spread?",
+      "detail-required": true,
+      "detail-label": "How does your entity verify identity when customers are unable to provide documents due to government measures, self-isolation, business closures, office restrictions, or other COVID-19 precautions?",
+      "correct-option": "Yes",
+      "source-rules": [
+        "4.15"
+      ],
+      "mapping-confidence": 0.85,
+      "process-id": "PROC-AML-002b"
+    }
+  ],
+  "groups": [
+    {
+      "id": "4_14",
+      "title": "Exemptions from Customer Identification Requirements",
+      "description": "Conditions under which reporting entities are exempt from Parts 4.12 and 4.13 (customer identification) requirements based on designated service type and AML/CTF Act exemptions."
+    },
+    {
+      "id": "4_15",
+      "title": "Procedures for Limited Identity Evidence",
+      "description": "Procedures to follow where a customer cannot provide satisfactory evidence of identity in limited and exceptional circumstances."
+    }
+  ],
+  "rules": [
+    {
+      "target": "4_14_1",
+      "scope": "4_14_1",
+      "effect": "SHOW",
+      "schema": {
+        "const": "Yes"
+      }
+    },
+    {
+      "target": "4_15_1",
+      "scope": "4_15_1",
+      "effect": "SHOW",
+      "schema": {
+        "const": "Yes"
+      }
+    },
+    {
+      "target": "4_15_2",
+      "scope": "4_15_1",
+      "effect": "SHOW",
+      "schema": {
+        "const": "Yes"
+      }
+    }
+  ]
+}
