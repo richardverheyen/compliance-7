@@ -40,17 +40,7 @@
   .intro-derived-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
   .intro-summary { font-size: 0.75rem; color: var(--muted); margin-top: 8px; padding-top: 8px; border-top: 1px solid #f0f4f8; }
 
-  /* Mode toggle */
-  .mode-toggle { display: flex; gap: 0; margin-bottom: 16px; }
-  .mode-toggle button {
-    font-size: 0.85rem; padding: 6px 18px; border: 1px solid var(--border);
-    background: var(--surface); cursor: pointer; font-family: inherit; color: var(--muted); transition: all 0.15s;
-  }
-  .mode-toggle button:first-child { border-radius: 5px 0 0 5px; }
-  .mode-toggle button:last-child { border-radius: 0 5px 5px 0; border-left: none; }
-  .mode-toggle button.active { background: var(--accent); color: white; border-color: var(--accent); font-weight: 600; }
-
-  /* Section picker */
+  /* Process picker */
   .picker { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 24px; }
   .picker button {
     font-size: 0.8rem; padding: 5px 12px; border: 1px solid var(--border); border-radius: 5px;
@@ -131,6 +121,46 @@
   .ungrouped { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; margin-bottom: 14px; overflow: hidden; }
   .ungrouped-header { padding: 14px 18px; font-weight: 600; font-size: 0.95rem; border-bottom: 1px solid var(--border); background: #f7fafc; }
 
+  /* Subprocess group variant — visually nested */
+  .group.subprocess {
+    margin-left: 20px;
+    border-left: 3px solid #805ad5;
+    border-radius: 0 8px 8px 0;
+  }
+  .group.subprocess .group-header { background: #faf5ff; }
+  .group.subprocess .group-header:hover { background: #f3e8ff; }
+  .subprocess-label {
+    font-size: 0.65rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.07em;
+    color: #805ad5; background: #e9d8fd; padding: 1px 7px; border-radius: 10px; margin-left: 8px;
+  }
+
+  /* Sub-scoping panel */
+  .sub-scoping-panel { background: var(--surface); border: 1px solid #bee3f8; border-radius: 8px; margin-bottom: 14px; overflow: hidden; }
+  .sub-scoping-header { padding: 10px 18px 8px; background: #ebf8ff; border-bottom: 1px solid #bee3f8; }
+  .sub-scoping-header h3 { font-size: 0.8rem; font-weight: 700; color: #2b6cb0; text-transform: uppercase; letter-spacing: 0.06em; }
+  .sub-scoping-header p { font-size: 0.8rem; color: #4a5568; margin-top: 2px; }
+  .sub-scoping-options { display: flex; flex-wrap: wrap; gap: 8px; padding: 12px 18px; }
+  .sub-scoping-btn {
+    font-size: 0.82rem; padding: 6px 16px; border: 2px solid #bee3f8; border-radius: 6px;
+    background: var(--surface); cursor: pointer; font-family: inherit; color: #2d3748; transition: all 0.15s;
+  }
+  .sub-scoping-btn:hover { background: #ebf8ff; border-color: #90cdf4; }
+  .sub-scoping-btn.selected { background: #bee3f8; border-color: var(--accent); color: #2a4365; font-weight: 600; }
+
+  /* Form-link inline expansion */
+  .form-link-block { background: var(--surface); border: 1px solid #c6f6d5; border-radius: 8px; margin-left: 20px; margin-bottom: 14px; overflow: hidden; }
+  .form-link-header { display: flex; justify-content: space-between; align-items: center; padding: 12px 18px; cursor: pointer; user-select: none; background: #f0fff4; border-bottom: 1px solid #c6f6d5; }
+  .form-link-header:hover { background: #e6ffed; }
+  .form-link-title { font-size: 0.9rem; font-weight: 600; color: #22543d; display: flex; align-items: center; gap: 8px; }
+  .form-link-icon { font-size: 0.75rem; }
+  .form-link-chevron { font-size: 10px; color: #48bb78; transition: transform 0.2s; }
+  .form-link-chevron.open { transform: rotate(90deg); }
+  .form-link-badge { font-size: 0.65rem; background: #c6f6d5; color: #22543d; padding: 1px 7px; border-radius: 10px; font-weight: 700; }
+  .form-link-body { display: none; }
+  .form-link-body.open { display: block; }
+  .form-link-loading { padding: 14px 18px; font-size: 0.85rem; color: var(--muted); }
+  .form-link-hidden { display: none; }
+
   .empty-state { text-align: center; padding: 60px 20px; color: var(--muted); }
   .empty-state p { font-size: 0.95rem; }
 
@@ -144,14 +174,9 @@
 
 <div class="container">
   <h1 id="page-title">Compliance Viewer</h1>
-  <p class="subtitle" id="page-subtitle">Select a section or process to view its compliance controls, groups, and rules.</p>
+  <p class="subtitle" id="page-subtitle">Select a process to view its compliance controls, groups, and rules.</p>
 
   <div id="intro-panel"></div>
-
-  <div class="mode-toggle" id="mode-toggle">
-    <button class="active" data-mode="section">Section View</button>
-    <button data-mode="process">Process View</button>
-  </div>
 
   <div class="picker" id="picker"></div>
   <div class="stats" id="stats"></div>
@@ -166,30 +191,12 @@
 <script>
 // ─── STATE ──────────────────────────────────────────────────────────────────
 let sectionData = null;
-let answers = {};          // per-section/process answers (reset on navigation)
-let introAnswers = {};     // introduction answers (persist across navigation)
+let answers = {};             // per-section/process answers (reset on navigation)
+let introAnswers = {};        // introduction answers (persist across navigation)
 let introSelections = new Set(); // selected option keys (e.g. "domestic_companies")
-let introData = null;      // loaded from data/introduction.json
-let currentMode = "section";
+let introData = null;         // loaded from data/introduction.json
 let coverageAudit = null;
-
-const SECTION_LABELS = {
-  "4_1":  "Risk Assessment",
-  "4_2":  "Individuals",
-  "4_3":  "Companies",
-  "4_4":  "Trusts",
-  "4_5":  "Partnerships",
-  "4_6":  "Associations",
-  "4_7":  "Co-operatives",
-  "4_8":  "Government Bodies",
-  "4_9":  "Verification (Docs)",
-  "4_10": "Verification (Electronic)",
-  "4_11": "Customer Agents",
-  "4_12": "Beneficial Ownership",
-  "4_13": "PEPs",
-  "4_14": "Exemptions",
-  "4_15": "Alt Identity Proofing"
-};
+let subScopingSelections = {}; // sub-type toggle state for current form (reset on navigation)
 
 const PROCESS_LABELS = {
   "cdd-individuals":        { title: "CDD — Individuals",         gated: true,  gatedBy: "4_1_4_1" },
@@ -209,7 +216,6 @@ const PROCESS_LABELS = {
   "alternative-id":         { title: "Alt Identity Proofing",      gated: false, gatedBy: null },
 };
 
-const SECTIONS_DIR = "runs/1/sections/";
 const PROCESSES_DIR = "runs/1/processes/";
 const INTRO_PATH = "data/introduction.json";
 
@@ -248,20 +254,6 @@ function computeDerived() {
 function isGatedActive(gatedBy) {
   if (!gatedBy) return true;
   return introAnswers[gatedBy] === "Yes";
-}
-
-function isSectionActive(sectionId) {
-  if (!introData) return true;
-  const always = introData.alwaysActive?.sections || [];
-  if (always.includes(sectionId)) return true;
-  // Check if any scoping entry activates this section
-  const scoping = introData.scoping || {};
-  for (const [controlId, mapping] of Object.entries(scoping)) {
-    if (mapping.sections.includes(sectionId) && introAnswers[controlId] === "Yes") {
-      return true;
-    }
-  }
-  return false;
 }
 
 function renderIntroPanel() {
@@ -364,13 +356,17 @@ function getControlStatus(ctrl) {
   return "success";
 }
 
-function checkVisibility(id) {
-  if (!sectionData) return true;
-  // Check rules — scope may be in introAnswers (cross-section gating) or answers (local)
-  const rule = sectionData.rules.find(r => r.target === id);
-  if (!rule) return true;
-  const scopeAnswer = introAnswers[rule.scope] ?? answers[rule.scope];
-  return scopeAnswer === rule.schema.const;
+// formRules: optional override (used when rendering inline form-link expansions)
+function checkVisibility(id, formRules) {
+  const rules = formRules || (sectionData ? sectionData.rules : []);
+  // Collect all SHOW rules for this target
+  const showRules = rules.filter(r => r.target === id && r.effect === "SHOW");
+  if (showRules.length === 0) return true;
+  // OR semantics: visible if ANY show rule is satisfied
+  return showRules.some(rule => {
+    const scopeAnswer = introAnswers[rule.scope] ?? answers[rule.scope];
+    return scopeAnswer === rule.schema.const;
+  });
 }
 
 function sortById(a, b) {
@@ -379,7 +375,8 @@ function sortById(a, b) {
 
 function getGroupScore(groupId) {
   if (!sectionData) return { score: 1, total: 0, green: 0 };
-  const controls = sectionData.controls.filter(c => c.id.startsWith(groupId + "_") || c.id === groupId);
+  // Use explicit group membership via control.group field
+  const controls = sectionData.controls.filter(c => c.group === groupId);
   let total = 0, green = 0;
   controls.forEach(c => {
     if (!checkVisibility(c.id)) return;
@@ -387,21 +384,6 @@ function getGroupScore(groupId) {
     if (getControlStatus(c) === "success") green++;
   });
   return { score: total === 0 ? 1 : green / total, total, green };
-}
-
-// ─── MODE TOGGLE ────────────────────────────────────────────────────────────
-function setupModeToggle() {
-  document.querySelectorAll(".mode-toggle button").forEach(btn => {
-    btn.addEventListener("click", () => {
-      const mode = btn.dataset.mode;
-      if (mode === currentMode) return;
-      currentMode = mode;
-      document.querySelectorAll(".mode-toggle button").forEach(b =>
-        b.classList.toggle("active", b.dataset.mode === mode)
-      );
-      buildPicker();
-    });
-  });
 }
 
 // ─── PICKER ─────────────────────────────────────────────────────────────────
@@ -415,48 +397,7 @@ async function buildPicker() {
   sectionData = null;
   answers = {};
 
-  if (currentMode === "section") {
-    await buildSectionPicker(pickerEl);
-  } else {
-    await buildProcessPicker(pickerEl);
-  }
-}
-
-async function buildSectionPicker(pickerEl) {
-  document.getElementById("page-title").textContent = "Section Viewer";
-  document.getElementById("page-subtitle").textContent = "Select a section to view its compliance controls, groups, and rules.";
-
-  for (const [id, label] of Object.entries(SECTION_LABELS)) {
-    const btn = document.createElement("button");
-    btn.textContent = `${id.replace("_",".")} ${label}`;
-    btn.dataset.sectionId = id;
-
-    const active = isSectionActive(id);
-    if (!active) {
-      btn.classList.add("gated-off");
-      btn.title = "Activate via scoping above";
-    }
-
-    try {
-      const resp = await fetch(SECTIONS_DIR + id + ".json", { method: "HEAD" });
-      if (resp.ok) {
-        const data = await (await fetch(SECTIONS_DIR + id + ".json")).json();
-        if (data.controls.length === 0 && data.groups.length === 0) {
-          btn.classList.add("empty");
-          btn.title = "No controls yet";
-        }
-      } else {
-        btn.classList.add("empty");
-        btn.title = "Not generated yet";
-      }
-    } catch {
-      btn.classList.add("empty");
-      btn.title = "Not generated yet";
-    }
-
-    btn.addEventListener("click", () => loadItem(id, "section"));
-    pickerEl.appendChild(btn);
-  }
+  await buildProcessPicker(pickerEl);
 }
 
 async function buildProcessPicker(pickerEl) {
@@ -498,7 +439,7 @@ async function buildProcessPicker(pickerEl) {
       btn.title = "Not generated yet";
     }
 
-    btn.addEventListener("click", () => loadItem(id, currentMode));
+    btn.addEventListener("click", () => loadItem(id));
     pickerEl.appendChild(btn);
   }
 }
@@ -509,50 +450,38 @@ function updatePickerGating() {
     const id = btn.dataset.sectionId;
     if (!id) return;
 
-    if (currentMode === "section") {
-      const active = isSectionActive(id);
+    const meta = PROCESS_LABELS[id];
+    if (meta && meta.gated) {
+      const active = isGatedActive(meta.gatedBy);
       btn.classList.toggle("gated-off", !active);
+      const icon = btn.querySelector(".gated-icon");
+      if (icon) icon.innerHTML = active ? "&#9989;" : "&#128274;";
       if (!active) btn.title = "Activate via scoping above";
-    } else {
-      const meta = PROCESS_LABELS[id];
-      if (meta && meta.gated) {
-        const active = isGatedActive(meta.gatedBy);
-        btn.classList.toggle("gated-off", !active);
-        // Update icon
-        const icon = btn.querySelector(".gated-icon");
-        if (icon) icon.innerHTML = active ? "&#9989;" : "&#128274;";
-        if (!active) btn.title = "Activate via scoping above";
-      }
     }
   });
 }
 
-async function loadItem(itemId, mode) {
-  const dir = mode === "process" ? PROCESSES_DIR : SECTIONS_DIR;
+async function loadItem(itemId) {
   try {
-    const resp = await fetch(dir + itemId + ".json");
+    const resp = await fetch(PROCESSES_DIR + itemId + ".json");
     if (!resp.ok) throw new Error("Not found");
     sectionData = await resp.json();
     answers = {};
+    subScopingSelections = {};
 
     document.querySelectorAll(".picker button").forEach(b => {
       b.classList.toggle("active", b.dataset.sectionId === itemId);
     });
 
-    if (mode === "process") {
-      const meta = PROCESS_LABELS[itemId];
-      document.getElementById("page-title").textContent = meta ? meta.title : itemId;
-    } else {
-      const label = SECTION_LABELS[itemId] || itemId;
-      document.getElementById("page-title").textContent = `Part ${itemId.replace("_",".")}: ${label}`;
-    }
+    const meta = PROCESS_LABELS[itemId];
+    document.getElementById("page-title").textContent = meta ? meta.title : itemId;
     document.getElementById("page-subtitle").textContent =
       `${sectionData.controls.length} controls, ${sectionData.groups.length} groups, ${sectionData.rules.length} rules`;
 
     render();
   } catch (e) {
     document.getElementById("form").innerHTML =
-      `<div class="empty-state"><p>Could not load ${mode} ${itemId}.</p></div>`;
+      `<div class="empty-state"><p>Could not load process ${itemId}.</p></div>`;
   }
 }
 
@@ -573,8 +502,8 @@ function render() {
     <div class="stat"><strong>${correct.length}</strong> compliant</div>
   `;
 
-  // Coverage panel (process mode only)
-  if (currentMode === "process" && coverageAudit) {
+  // Coverage panel
+  if (coverageAudit) {
     const activeBtn = document.querySelector(".picker button.active");
     const processId = activeBtn ? activeBtn.dataset.sectionId : null;
     const procReport = processId && coverageAudit.processes ? coverageAudit.processes[processId] : null;
@@ -627,33 +556,24 @@ function render() {
     formEl.appendChild(panel);
   }
 
-  // Render groups
-  const groups = [...sectionData.groups].sort(sortById);
-  const groupIds = new Set(groups.map(g => g.id));
+  // Sub-scoping panel (button group for sub-type selection)
+  const subScoping = sectionData.sub_scoping || [];
+  if (subScoping.length > 0) {
+    formEl.appendChild(renderSubScopingPanel(subScoping));
+  }
 
+  // Render groups — use explicit control.group membership (not prefix matching)
+  const groups = [...sectionData.groups];
   const controlsByGroup = {};
   groups.forEach(g => { controlsByGroup[g.id] = []; });
 
   sectionData.controls.forEach(ctrl => {
-    let assigned = false;
-    let parts = ctrl.id.split("_");
-    while (parts.length > 2) {
-      const candidate = parts.slice(0, -1).join("_");
-      if (groupIds.has(candidate)) {
-        controlsByGroup[candidate].push(ctrl);
-        assigned = true;
-        break;
-      }
-      parts = parts.slice(0, -1);
-    }
-    if (!assigned) {
-      const sectionGroup = groups.find(g => g.id === ctrl.id.split("_").slice(0, 2).join("_"));
-      if (sectionGroup) {
-        controlsByGroup[sectionGroup.id].push(ctrl);
-      } else {
-        if (!controlsByGroup["_ungrouped"]) controlsByGroup["_ungrouped"] = [];
-        controlsByGroup["_ungrouped"].push(ctrl);
-      }
+    const groupId = ctrl.group;
+    if (groupId && controlsByGroup.hasOwnProperty(groupId)) {
+      controlsByGroup[groupId].push(ctrl);
+    } else {
+      if (!controlsByGroup["_ungrouped"]) controlsByGroup["_ungrouped"] = [];
+      controlsByGroup["_ungrouped"].push(ctrl);
     }
   });
 
@@ -674,27 +594,38 @@ function render() {
     formEl.appendChild(div);
   }
 
+  // Form-link inline expansions (e.g. safe harbour via verification-documents form)
+  const formLinks = sectionData.form_links || [];
+  for (const fl of formLinks) {
+    formEl.appendChild(renderFormLinkBlock(fl));
+  }
+
   document.getElementById("json-output").textContent = JSON.stringify(sectionData, null, 2);
 }
 
-function renderGroup(group, controls) {
+function renderGroup(group, controls, formRules) {
+  const isSubprocess = group.variant === "subprocess";
   const div = document.createElement("div");
-  div.className = "group";
+  div.className = "group" + (isSubprocess ? " subprocess" : "");
 
   const { score, total, green } = getGroupScore(group.id);
   const scoreColor = score >= 1 ? "var(--green)" : score >= 0.5 ? "var(--yellow)" : total === 0 ? "var(--muted)" : "var(--orange)";
   const scoreBg = score >= 1 ? "var(--success-bg)" : score >= 0.5 ? "var(--warning-bg)" : total === 0 ? "#edf2f7" : "var(--pending-bg)";
 
-  const visible = checkVisibility(group.id);
+  const visible = checkVisibility(group.id, formRules);
   if (!visible) div.style.display = "none";
+
+  const subprocessBadge = (isSubprocess && group["subprocess-label"])
+    ? `<span class="subprocess-label">${group["subprocess-label"]}</span>`
+    : (isSubprocess ? `<span class="subprocess-label">Sub-process</span>` : "");
 
   const header = document.createElement("div");
   header.className = "group-header";
   header.innerHTML = `
     <div style="display:flex;align-items:center;">
       <span class="group-chevron open">&#9654;</span>
-      <span class="group-id">${group.id}</span>
       <span class="group-title">${group.title}</span>
+      ${subprocessBadge}
     </div>
     ${total > 0 ? `<span class="group-score" style="color:${scoreColor};background:${scoreBg};">${green}/${total}</span>` : ""}
   `;
@@ -716,14 +647,14 @@ function renderGroup(group, controls) {
     body.appendChild(desc);
   }
 
-  controls.forEach(ctrl => body.appendChild(renderControl(ctrl)));
+  controls.forEach(ctrl => body.appendChild(renderControl(ctrl, formRules)));
 
   div.appendChild(body);
   return div;
 }
 
-function renderControl(ctrl) {
-  const visible = checkVisibility(ctrl.id);
+function renderControl(ctrl, formRules) {
+  const visible = checkVisibility(ctrl.id, formRules);
   const status = getControlStatus(ctrl);
 
   const div = document.createElement("div");
@@ -785,27 +716,120 @@ function renderControl(ctrl) {
   return div;
 }
 
+// ─── SUB-SCOPING PANEL ──────────────────────────────────────────────────────
+
+function renderSubScopingPanel(subScoping) {
+  const panel = document.createElement("div");
+  panel.className = "sub-scoping-panel";
+
+  const selectedCount = subScoping.filter(s => subScopingSelections[s.id]).length;
+
+  panel.innerHTML = `
+    <div class="sub-scoping-header">
+      <h3>Which sub-types apply to your organisation?</h3>
+      <p>Select all that apply — questions will be scoped to your selection.</p>
+    </div>
+    <div class="sub-scoping-options"></div>
+  `;
+
+  const optionsEl = panel.querySelector(".sub-scoping-options");
+  subScoping.forEach(sub => {
+    const btn = document.createElement("button");
+    btn.type = "button";
+    btn.className = "sub-scoping-btn" + (subScopingSelections[sub.id] ? " selected" : "");
+    btn.textContent = sub.label;
+    btn.addEventListener("click", () => {
+      subScopingSelections[sub.id] = !subScopingSelections[sub.id];
+      // Sync sub-type state into answers so checkVisibility can use it
+      answers[sub.id] = subScopingSelections[sub.id] ? "Yes" : undefined;
+      render();
+    });
+    optionsEl.appendChild(btn);
+  });
+
+  return panel;
+}
+
+// ─── FORM-LINK INLINE EXPANSION ─────────────────────────────────────────────
+
+function renderFormLinkBlock(fl) {
+  const block = document.createElement("div");
+
+  // Visibility: if gated_by is set, show only when that control is "Yes"
+  const isVisible = !fl.gated_by || answers[fl.gated_by] === "Yes";
+  block.className = "form-link-block" + (isVisible ? "" : " form-link-hidden");
+
+  block.innerHTML = `
+    <div class="form-link-header">
+      <div class="form-link-title">
+        <span class="form-link-icon">&#128279;</span>
+        ${fl.label}
+        <span class="form-link-badge">${fl.target}</span>
+      </div>
+      <span class="form-link-chevron">&#9654;</span>
+    </div>
+    <div class="form-link-body">
+      <div class="form-link-loading">Loading...</div>
+    </div>
+  `;
+
+  let loaded = false;
+  const header = block.querySelector(".form-link-header");
+  const body = block.querySelector(".form-link-body");
+  const chevron = block.querySelector(".form-link-chevron");
+
+  header.addEventListener("click", async () => {
+    const isOpen = body.classList.toggle("open");
+    chevron.classList.toggle("open", isOpen);
+
+    if (isOpen && !loaded) {
+      loaded = true;
+      try {
+        const resp = await fetch(PROCESSES_DIR + fl.target + ".json");
+        if (!resp.ok) throw new Error("Not found");
+        const linkedData = await resp.json();
+        body.innerHTML = "";
+
+        // Render linked form groups using the linked form's own rules
+        const linkedGroups = linkedData.groups || [];
+        const linkedControls = linkedData.controls || [];
+        const linkedRules = linkedData.rules || [];
+
+        const byGroup = {};
+        linkedGroups.forEach(g => { byGroup[g.id] = []; });
+        linkedControls.forEach(ctrl => {
+          const gid = ctrl.group;
+          if (gid && byGroup.hasOwnProperty(gid)) byGroup[gid].push(ctrl);
+        });
+
+        if (linkedGroups.length === 0 && linkedControls.length > 0) {
+          // Fallback: render controls directly
+          linkedControls.forEach(ctrl => body.appendChild(renderControl(ctrl, linkedRules)));
+        } else {
+          linkedGroups.forEach(group => {
+            const controls = (byGroup[group.id] || []).sort(sortById);
+            body.appendChild(renderGroup(group, controls, linkedRules));
+          });
+        }
+      } catch (e) {
+        body.innerHTML = `<div class="form-link-loading" style="color:var(--red);">Could not load ${fl.target}.</div>`;
+      }
+    }
+  });
+
+  return block;
+}
+
 // ─── INIT ───────────────────────────────────────────────────────────────────
-setupModeToggle();
 
 const hash = location.hash.replace("#", "");
-if (hash.startsWith("process:")) {
-  currentMode = "process";
-  document.querySelectorAll(".mode-toggle button").forEach(b =>
-    b.classList.toggle("active", b.dataset.mode === "process")
-  );
-}
 
 // Load introduction first, then build picker
 loadIntroduction().then(() => {
   buildPicker().then(() => {
-    if (currentMode === "section") {
-      const initial = SECTION_LABELS[hash] ? hash : "4_1";
-      loadItem(initial, "section");
-    } else if (hash.startsWith("process:")) {
-      const processId = hash.replace("process:", "");
-      if (PROCESS_LABELS[processId]) loadItem(processId, "process");
-    }
+    const processId = hash.startsWith("process:") ? hash.replace("process:", "") : null;
+    const initial = (processId && PROCESS_LABELS[processId]) ? processId : Object.keys(PROCESS_LABELS)[0];
+    loadItem(initial);
   });
 });
 </script>

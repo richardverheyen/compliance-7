@@ -1,19 +1,13 @@
 #!/usr/bin/env python3
 """
 Rules Architect Agent — LLM-powered pipeline that processes enriched groups
-and produces compliance form data files.
+and produces compliance form data files organized by business process.
 
 Usage:
-    # Section mode (default) — breadth-first by regulation group
-    python architect.py runs/1                                    # Full pipeline
-    python architect.py runs/1 --group 4_2                        # Single group
+    python architect.py runs/1                                    # All process forms
+    python architect.py runs/1 --process cdd-individuals          # Single process
     python architect.py runs/1 --dry-run                          # Print prompts only
     python architect.py runs/1 --model claude-sonnet-4-5-20250929 # Override model
-
-    # Process mode — one form per business process
-    python architect.py runs/1 --mode process                     # All process forms
-    python architect.py runs/1 --mode process --process cdd-individuals  # Single process
-    python architect.py runs/1 --mode process --dry-run           # Print prompts only
 """
 
 import argparse
@@ -42,6 +36,7 @@ logger = logging.getLogger(__name__)
 # ---------------------------------------------------------------------------
 
 ID_REGEX = re.compile(r"^4(_\d+)+(_[a-z])?$")
+SLUG_REGEX = re.compile(r"^[a-z][a-z0-9-]*$")
 
 PROCESSES = {
     "PROC-AML-001": "Agent Management Program",
@@ -67,118 +62,196 @@ TEXT_NODE_THRESHOLD = 50  # groups with >= this many nodes use the large model
 # ---------------------------------------------------------------------------
 
 PROCESS_FORMS = {
-    # CDD forms — one per customer type (collection + verification + discrepancies combined)
     "cdd-individuals": {
         "title": "Customer Due Diligence — Individuals",
         "source_groups": ["4_2"],
         "gated_by": "4_1_4_1",
+        "sub_types": [
+            {"id": "sub-individual", "label": "Individuals"},
+            {"id": "sub-sole-trader", "label": "Sole Traders"},
+        ],
+        "form_links": [
+            {"target": "verification-documents", "label": "Documentary Safe Harbour", "gated_by": "4_2_10"},
+            {"target": "verification-electronic", "label": "Electronic Safe Harbour", "gated_by": "4_2_12"},
+        ],
+        "subprocess_groups": [],
+        "architect_notes": [
+            "This form is already gated externally — the intro form has confirmed the entity serves individual customers. Do NOT generate a top-level scope gate question (e.g. 'Do you have individual customers?'). Begin directly with the KYC collection and verification obligations.",
+            "Sub-types are pre-defined: Individuals (id: sub-individual) and Sole Traders (id: sub-sole-trader). Use these exact IDs in any gating rules. Gate the individuals-specific KYC collection control on sub-individual and the sole-trader-specific control on sub-sole-trader.",
+            "Safe harbour procedures (rules 4.2.10 through 4.2.14) are handled via form-links to the verification-documents and verification-electronic forms. Do NOT generate controls for these rules — they are excluded from this form.",
+            "Pre-commencement customers (rule 4.1.2) are handled externally via an onboarding diagram. Do not generate a control for 4.1.2.",
+        ],
     },
     "cdd-companies": {
         "title": "Customer Due Diligence — Companies",
         "source_groups": ["4_3"],
         "gated_by": "4_1_4_2",
+        "sub_types": [
+            {"id": "sub-domestic", "label": "Domestic Companies"},
+            {"id": "sub-reg-foreign", "label": "Registered Foreign Companies"},
+            {"id": "sub-unreg-foreign", "label": "Unregistered Foreign Companies"},
+        ],
+        "form_links": [],
+        "subprocess_groups": ["safe-harbour-listed", "foreign-listed", "disclosure-certificates"],
+        "architect_notes": [
+            "This form is already gated externally — the intro form has confirmed the entity serves company customers. Do NOT generate a top-level scope gate question (e.g. 'Does your entity have company customers?'). Begin directly with the KYC obligations.",
+            "Sub-types are pre-defined: Domestic Companies (id: sub-domestic), Registered Foreign Companies (id: sub-reg-foreign), Unregistered Foreign Companies (id: sub-unreg-foreign). Use these exact IDs in gating rules. Gate KYC collection controls for each company type on the corresponding sub-type ID.",
+            "The simplified verification procedure (4.3.8) for listed public companies and their subsidiaries should be a group with variant 'subprocess'. The foreign listed public company procedure (4.3.9) should also be a subprocess group. Disclosure certificates (4.3.11–4.3.13) should be a subprocess group.",
+            "Pre-commencement customers (rule 4.1.2) are handled externally. Do not generate a control for 4.1.2.",
+        ],
     },
     "cdd-trusts": {
         "title": "Customer Due Diligence — Trusts",
         "source_groups": ["4_4"],
         "gated_by": "4_1_4_3",
+        "sub_types": [
+            {"id": "sub-private-trust", "label": "Private Trusts"},
+            {"id": "sub-asic-mis", "label": "ASIC-registered Managed Investment Schemes"},
+            {"id": "sub-govt-super", "label": "Government Superannuation Funds"},
+        ],
+        "form_links": [],
+        "subprocess_groups": ["simplified-trustee-verification", "custodians-nominees"],
+        "architect_notes": [
+            "This form is already gated externally. Do NOT generate a top-level scope gate question.",
+            "Sub-types are pre-defined: Private Trusts (id: sub-private-trust), ASIC-registered MIS (id: sub-asic-mis), Government Superannuation Funds (id: sub-govt-super). Use these exact IDs in gating rules for simplified verification eligibility (4.4.8, 4.4.13).",
+            "The simplified trustee verification procedure (4.4.8, 4.4.13) and the custodians/nominees of custodians section (4.4.18) should each be a group with variant 'subprocess'.",
+            "Trustee composition distinctions (individual vs company trustees) should be addressed within controls, not as separate sub-types.",
+        ],
     },
     "cdd-partnerships": {
         "title": "Customer Due Diligence — Partnerships",
         "source_groups": ["4_5"],
         "gated_by": "4_1_4_4",
+        "sub_types": [],
+        "form_links": [],
+        "subprocess_groups": [],
+        "architect_notes": [
+            "This form is already gated externally. Do NOT generate a top-level scope gate question.",
+            "No sub-types are defined for partnerships. Partner composition distinctions (individual vs entity partners) should be handled within individual controls.",
+            "Pre-commencement customers (rule 4.1.2) are handled externally. Do not generate a control for 4.1.2.",
+        ],
     },
     "cdd-associations": {
         "title": "Customer Due Diligence — Associations",
         "source_groups": ["4_6"],
         "gated_by": "4_1_4_5",
+        "sub_types": [],
+        "form_links": [],
+        "subprocess_groups": [],
+        "architect_notes": [
+            "This form is already gated externally. Do NOT generate a top-level scope gate question.",
+            "No sub-types are defined for associations. Member composition distinctions should be handled within controls.",
+        ],
     },
     "cdd-cooperatives": {
         "title": "Customer Due Diligence — Co-operatives",
         "source_groups": ["4_7"],
         "gated_by": "4_1_4_6",
+        "sub_types": [],
+        "form_links": [],
+        "subprocess_groups": [],
+        "architect_notes": [
+            "This form is already gated externally. Do NOT generate a top-level scope gate question.",
+            "No sub-types defined. Rules apply uniformly to all co-operatives.",
+        ],
     },
     "cdd-government": {
         "title": "Customer Due Diligence — Government Bodies",
         "source_groups": ["4_8"],
         "gated_by": "4_1_4_7",
+        "sub_types": [
+            {"id": "sub-domestic-govt", "label": "Domestic Government Bodies"},
+            {"id": "sub-foreign-govt", "label": "Foreign Government Bodies"},
+        ],
+        "form_links": [],
+        "subprocess_groups": ["foreign-government-entities"],
+        "architect_notes": [
+            "This form is already gated externally. Do NOT generate a top-level scope gate question.",
+            "Sub-types are pre-defined: Domestic Government Bodies (id: sub-domestic-govt) and Foreign Government Bodies (id: sub-foreign-govt). Gate beneficial ownership requirements (4.8) on sub-foreign-govt.",
+            "The foreign government entities section should be a group with variant 'subprocess'.",
+        ],
     },
-    # Cross-cutting forms
     "risk-assessment": {
         "title": "ML/TF Risk Assessment",
         "source_groups": ["4_1"],
         "gated_by": None,
+        "sub_types": [],
+        "form_links": [],
+        "subprocess_groups": [],
+        "architect_notes": [
+            "Pre-commencement customers (rule 4.1.2) are handled externally via an onboarding diagram. Do not generate a control for 4.1.2.",
+        ],
     },
     "verification-documents": {
         "title": "Verification Standards — Documents",
         "source_groups": ["4_9"],
         "gated_by": None,
+        "sub_types": [],
+        "form_links": [],
+        "subprocess_groups": [],
+        "architect_notes": [],
     },
     "verification-electronic": {
         "title": "Verification Standards — Electronic",
         "source_groups": ["4_10"],
         "gated_by": None,
+        "sub_types": [],
+        "form_links": [],
+        "subprocess_groups": [],
+        "architect_notes": [],
     },
     "agent-management": {
         "title": "Agent Management",
         "source_groups": ["4_11"],
         "gated_by": "4_1_8",
+        "sub_types": [],
+        "form_links": [],
+        "subprocess_groups": [],
+        "architect_notes": [
+            "This form is already gated externally. Do NOT generate a top-level scope gate question.",
+        ],
     },
     "beneficial-ownership": {
         "title": "Beneficial Ownership",
         "source_groups": ["4_12"],
         "gated_by": "4_1_5_1",
+        "sub_types": [],
+        "form_links": [],
+        "subprocess_groups": [],
+        "architect_notes": [
+            "This form is already gated externally. Do NOT generate a top-level scope gate question.",
+        ],
     },
     "pep-screening": {
         "title": "PEP Screening",
         "source_groups": ["4_13"],
         "gated_by": "4_1_5_2",
+        "sub_types": [],
+        "form_links": [],
+        "subprocess_groups": [],
+        "architect_notes": [
+            "This form is already gated externally. Do NOT generate a top-level scope gate question.",
+        ],
     },
     "record-keeping": {
         "title": "Record Keeping",
         "source_groups": ["4_14"],
         "gated_by": None,
+        "sub_types": [],
+        "form_links": [],
+        "subprocess_groups": [],
+        "architect_notes": [],
     },
     "alternative-id": {
         "title": "Alternative Identity Proofing",
         "source_groups": ["4_15"],
         "gated_by": None,
+        "sub_types": [],
+        "form_links": [],
+        "subprocess_groups": [],
+        "architect_notes": [],
     },
 }
-
-# ---------------------------------------------------------------------------
-# Section gating rules (deterministic, no LLM needed)
-# ---------------------------------------------------------------------------
-
-
-def generate_section_gating_rules(intro: dict) -> dict[str, list[dict]]:
-    """Compute deterministic section gating rules from the introduction's scoping map.
-
-    Returns a dict mapping section_id -> list of Rule dicts.
-    Always-active sections get an empty list.
-    """
-    scoping = intro.get("scoping", {})
-    always_active = set(intro.get("alwaysActive", {}).get("sections", []))
-
-    # Build reverse map: section -> scope control
-    section_rules: dict[str, list[dict]] = defaultdict(list)
-
-    for control_id, mapping in scoping.items():
-        for section_id in mapping.get("sections", []):
-            section_rules[section_id].append({
-                "target": section_id,
-                "scope": control_id,
-                "effect": "SHOW",
-                "schema": {"const": "Yes"},
-            })
-
-    # Ensure always-active sections have empty rule lists
-    for section_id in always_active:
-        if section_id not in section_rules:
-            section_rules[section_id] = []
-
-    return dict(section_rules)
-
 
 # ---------------------------------------------------------------------------
 # Tool schema for structured output
@@ -195,7 +268,8 @@ OUTPUT_TOOL = {
                 "items": {
                     "type": "object",
                     "properties": {
-                        "id": {"type": "string", "description": "Hierarchical ID using underscore notation, e.g. '4_2_3_1'"},
+                        "id": {"type": "string", "description": "Hierarchical regulatory ID using underscore notation, e.g. '4_2_3_1'. Must match the pattern 4_N_N... derived from regulatory rule codes."},
+                        "group": {"type": "string", "description": "Semantic slug identifying which process-step group this control belongs to, e.g. 'collection-kyc', 'verification', 'safe-harbour-listed'. Must exactly match a group id in the groups array. Use lowercase letters and hyphens only."},
                         "label": {"type": "string", "description": "The compliance question presented to the user"},
                         "detail-required": {"type": "boolean", "description": "Whether answering Yes requires supporting detail"},
                         "correct-option": {"type": "string", "enum": ["Yes", "No", "N/A"], "description": "Expected correct answer for compliance"},
@@ -211,7 +285,7 @@ OUTPUT_TOOL = {
                             "description": "Confidence in this mapping (0.0-1.0). 1.0=direct unambiguous, 0.7=clear but aggregated, 0.5=reasonable interpretation, <0.5=uncertain",
                         },
                     },
-                    "required": ["id", "label", "detail-required", "correct-option"],
+                    "required": ["id", "group", "label", "detail-required", "correct-option"],
                 },
             },
             "groups": {
@@ -219,11 +293,13 @@ OUTPUT_TOOL = {
                 "items": {
                     "type": "object",
                     "properties": {
-                        "id": {"type": "string", "description": "Hierarchical ID matching parent prefix of children"},
-                        "title": {"type": "string", "description": "Display title for this section"},
+                        "id": {"type": "string", "description": "Semantic slug ID for this process-step group, e.g. 'collection-kyc', 'verification', 'safe-harbour-listed'. Use lowercase letters and hyphens only. Do NOT use 4_x numbers as group IDs."},
+                        "title": {"type": "string", "description": "Display title for this process step"},
                         "description": {"type": "string", "description": "Explanatory text shown beneath the group heading"},
+                        "variant": {"type": "string", "enum": ["main", "subprocess"], "description": "'main' for primary process steps. 'subprocess' for secondary or optional paths (e.g. safe harbour procedures, disclosure certificates) that are visually nested."},
+                        "subprocess-label": {"type": "string", "description": "Short label shown on the subprocess visual indicator, e.g. 'Safe Harbour', 'Foreign Listed'"},
                     },
-                    "required": ["id", "title"],
+                    "required": ["id", "title", "variant"],
                 },
             },
             "rules": {
@@ -231,8 +307,8 @@ OUTPUT_TOOL = {
                 "items": {
                     "type": "object",
                     "properties": {
-                        "target": {"type": "string", "description": "Control or group ID whose visibility is affected"},
-                        "scope": {"type": "string", "description": "Control ID whose answer determines visibility"},
+                        "target": {"type": "string", "description": "Control ID (4_x format) or group slug whose visibility is affected"},
+                        "scope": {"type": "string", "description": "Control ID or sub-type ID whose answer determines visibility"},
                         "effect": {"type": "string", "enum": ["SHOW", "HIDE"]},
                         "schema": {
                             "type": "object",
@@ -252,204 +328,83 @@ OUTPUT_TOOL = {
 # System prompt
 # ---------------------------------------------------------------------------
 
-SYSTEM_PROMPT = f"""You are a compliance form architect. Your job is to analyse Australian AML/CTF regulatory text and produce structured form data.
-
-## Output Types
-
-### Control
-A compliance control point (question) within the form:
-- id: Hierarchical underscore ID, e.g. "4_2_3_1". MUST match the pattern 4_N_N... derived from the regulatory text's rule codes.
-- label: A clear Yes/No compliance question derived from the regulatory requirement.
-- detail-required: true if answering "Yes" should prompt the user to explain HOW they comply.
-- correct-option: "Yes" if compliance requires this, "No" if it should not happen, "N/A" for scope-gate questions.
-- detail-label: (optional) Custom label for the detail text input.
-- process-id: (optional) Business process ID from the PROCESSES map below.
-
-### Group
-An organisational container:
-- id: Hierarchical ID matching the parent prefix of its children.
-- title: Display title derived from bold text headings in the regulatory text.
-- description: (optional) Explanatory text, often from italic notes.
-
-### Rule
-Conditional visibility logic:
-- target: The control or group ID whose visibility is affected.
-- scope: The control ID whose answer determines visibility.
-- effect: "SHOW" or "HIDE".
-- schema: {{ "const": "Yes" }} or similar — the value the scope control must equal.
-
-## Control Creation Guidelines
-
-1. **Aggregate** related procedural requirements into single controls. For example, if the text lists "must collect name, DOB, address, occupation", create ONE control: "Does your program include a procedure to collect identifying information for [customer type]?" with detail-required: true.
-2. **Don't create 1:1 controls** for every text node. Group related requirements.
-3. Use **detail-required: true** for "how" questions where the user should explain their process.
-4. Use **detail-required: false** for simple yes/no compliance checks.
-5. **Skip** italic/note text — use it as group descriptions instead.
-6. Use **bold text** as group titles.
-7. Control IDs MUST follow the pattern derived from the regulatory section numbering.
-
-## Process IDs
-
-Available process IDs to assign to controls:
-{json.dumps(PROCESSES, indent=2)}
-
-## ID Format — CRITICAL
-
-All IDs MUST match the regex: ^4(_\\d+)+(_[a-z])?$
-- ONLY use numbers and single lowercase letters as segments
-- Derive IDs directly from the regulatory rule codes (e.g. rule 4.3.5(1) → id "4_3_5_1")
-- NEVER invent descriptive suffixes like "_simplified", "_methods", "_discrepancies"
-- NEVER add words to IDs — only digits and single letters from the rule numbering
-
-Valid: 4_2, 4_2_3, 4_2_3_1, 4_2_3_1_a, 4_3_5_3_b
-Invalid: 4_3_8_simplified, 4_3_10_methods, 4_2_collection
-"""
-
-
-def build_user_message(
-    group: dict,
-    depth: int,
-    parent_id: str | None,
-    parent_controls: list[dict],
-    intro: dict,
-) -> str:
-    """Build the per-group user message for the LLM."""
-    text_nodes = group.get("text_nodes", [])
-    gid = group["id"]
-
-    # Format text nodes
-    nodes_text = ""
-    for tn in text_nodes:
-        prefix = f"[{tn['rule_code']}] " if tn["rule_code"] else ""
-        style = ""
-        if tn["is_bold"]:
-            style = " **BOLD**"
-        elif tn["is_italic"]:
-            style = " *ITALIC/NOTE*"
-        nodes_text += f"  {prefix}{tn['text']}{style}\n"
-
-    # Parent controls context
-    parent_ctx = ""
-    if parent_controls:
-        parent_ctx = "\n## Parent Section Controls (already defined — you may reference these in rules)\n"
-        for c in parent_controls:
-            parent_ctx += f"  - {c['id']}: {c['label']}\n"
-
-    # Depth-specific instructions
-    if depth == 1:
-        depth_instructions = """## Depth-1 Instructions
-- Create controls for the core compliance questions in this top-level section.
-- Create sub-groups where the text has clear sub-sections (look for bold headings).
-- Section gating rules (showing/hiding this section based on introduction answers) are pre-computed — focus on controls and groups.
-- For section 4_1 specifically: focus on Risk Assessment content (4_1_2, 4_1_3, etc.), knowing customer categories and agents are handled by the introduction form."""
-    else:
-        depth_instructions = f"""## Depth-{depth} Instructions
-- Create controls for the detailed requirements in this sub-section.
-- Create rules that conditionally show this group or its controls based on parent controls where appropriate.
-- Reference parent controls (listed above) in rule scopes if this sub-section should only appear when a parent control is answered a certain way."""
-
-    # Introduction context
-    intro_ctx = ""
-    if intro:
-        scoping_keys = list(intro.get("scoping", {}).keys())
-        always_active = intro.get("alwaysActive", {}).get("sections", [])
-        intro_ctx = f"""
-## Introduction Form Context
-The introduction form handles customer category selection and agent selection.
-Scoping controls: {', '.join(scoping_keys)}
-Always-active sections: {', '.join(always_active)}
-Do NOT duplicate controls that exist in the introduction form."""
-
-    return f"""## Group: {gid}
-Depth: {depth}
-Parent: {parent_id or 'None (top-level section)'}
-Text nodes: {len(text_nodes)}
-
-## Regulatory Text
-{nodes_text}
-{parent_ctx}
-{depth_instructions}
-{intro_ctx}
-
-Analyse the regulatory text above and produce the controls, groups, and rules for group {gid}.
-"""
-
-
-# ---------------------------------------------------------------------------
-# Process mode — system prompt, helpers, pipeline
-# ---------------------------------------------------------------------------
-
 PROCESS_SYSTEM_PROMPT = f"""You are a compliance **process** architect. Your job is to analyse Australian AML/CTF regulatory text and produce structured form data organized by **business process step**, not by regulation sub-section.
 
 ## Output Types
 
 ### Control
 A compliance control point (question) within the form:
-- id: Hierarchical underscore ID, e.g. "4_2_3_1". MUST match the pattern 4_N_N... derived from the regulatory text's rule codes.
+- id: Hierarchical regulatory ID, e.g. "4_2_3_1". MUST match the pattern 4_N_N... derived from the regulatory text's rule codes.
+- group: REQUIRED. Semantic slug of the process-step group this control belongs to, e.g. "collection-kyc". Must exactly match a group id in your groups array.
 - label: A clear Yes/No compliance question derived from the regulatory requirement.
 - detail-required: true if answering "Yes" should prompt the user to explain HOW they comply.
-- correct-option: "Yes" if compliance requires this, "No" if it should not happen, "N/A" for scope-gate questions.
+- correct-option: "Yes" if compliance requires this, "No" if it should not happen, "N/A" for informational questions.
 - detail-label: (optional) Custom label for the detail text input.
 - process-id: (optional) Business process ID from the PROCESSES map below.
-- source-rules: REQUIRED array of regulation rule codes this control derives from, e.g. ["4.3.5(1)", "4.3.5(2)"]. Every control MUST include this.
-- mapping-confidence: REQUIRED number 0.0-1.0 indicating confidence in the regulation-to-control mapping:
-  - 1.0 = direct, unambiguous 1:1 mapping from a single rule
-  - 0.7 = clear mapping but aggregated from multiple related rules
-  - 0.5 = reasonable interpretation, some judgement applied
-  - <0.5 = uncertain mapping, rule text is ambiguous or tangentially related
+- source-rules: REQUIRED array of regulation rule codes this control derives from.
+- mapping-confidence: REQUIRED number 0.0-1.0 indicating confidence in the regulation-to-control mapping.
 
 ### Group
-An organisational container representing a **process step**:
-- id: Hierarchical ID matching the parent prefix of its children.
+An organisational container representing a **process step**. Groups use semantic slugs — NOT regulation section numbers:
+- id: Semantic slug, e.g. "collection-kyc", "verification", "safe-harbour-listed". Lowercase letters and hyphens only. NEVER use 4_x numbers as group IDs.
 - title: Display title for this process step.
 - description: (optional) Explanatory text.
+- variant: REQUIRED. "main" for primary sequential steps. "subprocess" for optional or secondary paths (safe harbour, disclosure certificates, foreign entity procedures). Subprocess groups render visually nested with a left border and tinted background.
+- subprocess-label: (optional) Short label for the subprocess indicator, e.g. "Safe Harbour", "Foreign Listed".
 
 ### Rule
 Conditional visibility logic:
-- target: The control or group ID whose visibility is affected.
-- scope: The control ID whose answer determines visibility.
+- target: The control ID (4_x format) or group slug whose visibility is affected.
+- scope: The control ID or sub-type ID whose answer determines visibility.
 - effect: "SHOW" or "HIDE".
-- schema: {{ "const": "Yes" }} or similar — the value the scope control must equal.
+- schema: {{ "const": "Yes" }} or similar.
 
-## Process Step Organization
+## Sub-Type Gating
 
-Organize controls into groups representing **process steps**, NOT regulation sub-sections. For CDD forms, use this pattern:
+When sub-types are provided (e.g. Domestic / Registered Foreign / Unregistered Foreign companies), generate SHOW rules that gate sub-type-specific controls on the corresponding sub-type ID. Sub-type IDs use the format provided in the prompt (e.g. "sub-domestic"). A SHOW rule with scope "sub-domestic" will show the control only when the user has selected Domestic Companies in the sub-scoping panel.
 
-1. **General CDD Obligation** — top-level "does your program cover this customer type"
-2. **Collection of KYC Information** — what minimum info to collect
-3. **Verification of Information** — how to verify what was collected
-4. **Additional KYC Assessment** — risk-based decisions on extra collection/verification
-5. **Safe Harbour Procedures** (if applicable) — simplified verification options
-6. **Discrepancy Handling** — responding to verification issues
+## Process Step Organisation
 
-For non-CDD forms, organize by logical workflow steps appropriate to the topic.
+Organise controls into groups representing **process steps**, NOT regulation sub-sections. For CDD forms, use this pattern:
+
+1. **General CDD Obligation** (variant: main) — top-level risk-based obligation
+2. **Collection of KYC Information** (variant: main) — minimum + additional collection
+3. **Verification of Information** (variant: main) — how to verify what was collected
+4. **Additional KYC Assessment** (variant: main) — risk-based decisions on extra collection/verification
+5. **Safe Harbour Procedures** (variant: subprocess) — only if NOT handled via form-links
+6. **Discrepancy Handling** (variant: main) — responding to verification issues
+
+For non-CDD forms, organise by logical workflow steps.
 
 ## Control Creation Guidelines
 
-1. **Aggregate** related procedural requirements into single controls. For example, if the text lists "must collect name, DOB, address, occupation", create ONE control: "Does your program include a procedure to collect identifying information for [customer type]?" with detail-required: true.
+1. **Aggregate** related procedural requirements into single controls where possible.
 2. **Don't create 1:1 controls** for every text node. Group related requirements.
 3. Use **detail-required: true** for "how" questions where the user should explain their process.
 4. Use **detail-required: false** for simple yes/no compliance checks.
 5. **Skip** italic/note text — use it as group descriptions instead.
-6. Every control MUST include **source-rules** listing the specific regulation codes it derives from.
-7. Every control MUST include **mapping-confidence** (0.0-1.0) indicating how confident the mapping is.
-8. Control IDs MUST follow the pattern derived from the regulatory section numbering.
+6. Every control MUST include **source-rules** and **mapping-confidence**.
+7. Every control MUST include a **group** field matching a group slug in your output.
+
+## Critical Rules
+
+### Control IDs — REQUIRED format
+Control IDs MUST match: ^4(_\\d+)+(_[a-z])?$
+- Derive from regulatory rule codes (e.g. rule 4.3.5(1) → id "4_3_5_1")
+- NEVER invent descriptive suffixes
+- Valid: 4_2, 4_2_3, 4_2_3_1, 4_2_3_1_a
+- Invalid: 4_3_8_simplified, 4_2_collection
+
+### Group IDs — semantic slugs ONLY
+Group IDs MUST match: ^[a-z][a-z0-9-]*$
+- Use descriptive slugs: "collection-kyc", "verification", "safe-harbour-listed"
+- NEVER use 4_x numbers as group IDs
+- Valid: "collection-kyc", "verification", "discrepancy-handling"
+- Invalid: "4_3", "4_3_3", "4_2_5"
 
 ## Process IDs
 
-Available process IDs to assign to controls:
 {json.dumps(PROCESSES, indent=2)}
-
-## ID Format — CRITICAL
-
-All IDs MUST match the regex: ^4(_\\d+)+(_[a-z])?$
-- ONLY use numbers and single lowercase letters as segments
-- Derive IDs directly from the regulatory rule codes (e.g. rule 4.3.5(1) → id "4_3_5_1")
-- NEVER invent descriptive suffixes like "_simplified", "_methods", "_discrepancies"
-- NEVER add words to IDs — only digits and single letters from the rule numbering
-
-Valid: 4_2, 4_2_3, 4_2_3_1, 4_2_3_1_a, 4_3_5_3_b
-Invalid: 4_3_8_simplified, 4_3_10_methods, 4_2_collection
 """
 
 
@@ -480,17 +435,68 @@ def build_process_user_message(process_id: str, form_def: dict, text_nodes: list
             style = " *ITALIC/NOTE*"
         nodes_text += f"  {prefix}{tn['text']}{style}\n"
 
+    # Gating context
+    gating_section = ""
+    if form_def.get("gated_by"):
+        gating_section = f"""
+## Gating Context
+This form is gated by intro answer `{form_def['gated_by']}`. The user has already confirmed they serve the relevant customer type via the introduction form. Do NOT generate a scope gate question — the form's visibility is managed externally.
+"""
+
+    # Sub-types
+    sub_types_section = ""
+    if form_def.get("sub_types"):
+        sub_types_json = json.dumps(form_def["sub_types"], indent=2)
+        sub_type_ids = [st["id"] for st in form_def["sub_types"]]
+        sub_types_section = f"""
+## Sub-Type Definitions (Pre-defined — do not modify)
+Generate sub_scoping entries that match these exactly. Use the id values in SHOW rules to gate sub-type-specific controls:
+{sub_types_json}
+
+Sub-type IDs to use in rules: {sub_type_ids}
+When a control applies only to one sub-type, add a SHOW rule with scope = <sub-type-id> and schema.const = "Yes".
+"""
+
+    # Subprocess groups
+    subprocess_section = ""
+    if form_def.get("subprocess_groups"):
+        subprocess_section = f"""
+## Subprocess Group Hints
+The following process steps should be marked with variant "subprocess" (visual nesting with left border):
+{json.dumps(form_def['subprocess_groups'], indent=2)}
+Use these as guidance for which groups to mark as subprocess. You may use different slug names if more appropriate, but keep the same semantic intent.
+"""
+
+    # Form links (excluded rules)
+    form_links_section = ""
+    if form_def.get("form_links"):
+        excluded_rules = []
+        for fl in form_def["form_links"]:
+            excluded_rules.append(f"  - {fl['label']} (linked form: {fl['target']}, gated by: {fl.get('gated_by', 'none')})")
+        form_links_section = f"""
+## Form Links (Excluded from this form)
+The following sub-processes are handled via links to separate forms. Do NOT generate controls for the regulatory text that covers these:
+{chr(10).join(excluded_rules)}
+"""
+
+    # Architect notes (human feedback)
+    notes_section = ""
+    if form_def.get("architect_notes"):
+        notes_lines = "\n".join(f"- {note}" for note in form_def["architect_notes"])
+        notes_section = f"""
+## Architect Notes (Follow these precisely)
+{notes_lines}
+"""
+
     return f"""## Process Form: {form_def['title']}
 Process ID: {process_id}
-
-You are producing a single form that covers ALL aspects of this process.
-Organize controls by process step (Collect → Verify → Handle Discrepancies), NOT by regulation sub-section.
-Every control MUST include source-rules listing the regulation codes it derives from.
-
+{gating_section}{sub_types_section}{subprocess_section}{form_links_section}{notes_section}
 ## Regulatory Text ({len(text_nodes)} text nodes)
 {nodes_text}
-
-Analyse ALL the regulatory text above and produce the controls, groups, and rules for the "{form_def['title']}" process form.
+Analyse the regulatory text above and produce the controls, groups, and rules for the "{form_def['title']}" process form. Remember:
+- Every control MUST have a "group" field matching a slug in your groups array
+- Group IDs MUST be semantic slugs (e.g. "collection-kyc"), NEVER 4_x numbers
+- Use variant "subprocess" for optional/secondary process paths
 """
 
 
@@ -519,16 +525,7 @@ def extract_output_rule_codes(result: dict) -> set[str]:
 
 
 def compute_coverage_report(process_id: str, text_nodes: list[dict], result: dict) -> dict:
-    """Compare input rule codes against output source-rules to find coverage gaps.
-
-    Returns a report dict with:
-    - input_codes: all rule codes from the input text
-    - mapped_codes: rule codes that appear in at least one control's source-rules
-    - unmapped_codes: input codes not referenced by any control (potential gaps)
-    - extra_codes: codes in source-rules that weren't in the input (hallucinations?)
-    - coverage_pct: percentage of input codes that were mapped
-    - low_confidence: controls with mapping-confidence < 0.5
-    """
+    """Compare input rule codes against output source-rules to find coverage gaps."""
     input_codes = extract_input_rule_codes(text_nodes)
     output_codes = extract_output_rule_codes(result)
 
@@ -538,7 +535,6 @@ def compute_coverage_report(process_id: str, text_nodes: list[dict], result: dic
 
     coverage_pct = (len(mapped) / len(input_codes) * 100) if input_codes else 100.0
 
-    # Find low-confidence controls
     low_confidence = []
     for ctrl in result.get("controls", []):
         conf = ctrl.get("mapping-confidence")
@@ -620,14 +616,25 @@ def call_process_architect(
     for block in response.content:
         if block.type == "tool_use" and block.name == "output_section_data":
             data = block.input
-            warnings = validate_ids(data)
+            warnings = validate_output(data)
             for w in warnings:
                 logger.warning(f"  {process_id}: {w}")
-            data = strip_invalid_ids(data)
+            data = strip_invalid_items(data)
             return data
 
     logger.error(f"No tool_use block in response for process {process_id}")
     return None
+
+
+def inject_static_fields(result: dict, form_def: dict) -> dict:
+    """Inject statically-defined sub_scoping and form_links into the result."""
+    # Sub-scoping: always comes from PROCESS_FORMS, not from LLM
+    result["sub_scoping"] = form_def.get("sub_types", [])
+
+    # Form links: always comes from PROCESS_FORMS, not from LLM
+    result["form_links"] = form_def.get("form_links", [])
+
+    return result
 
 
 def run_process_architect(run_dir: str, single_process: str | None = None,
@@ -675,7 +682,7 @@ def run_process_architect(run_dir: str, single_process: str | None = None,
             logger.info(f"[{i}/{total}] Skipping {process_id} (no text nodes)")
             continue
 
-        # Select model: large for big forms, small for smaller ones
+        # Select model
         if model_override:
             model = model_override
         else:
@@ -689,6 +696,9 @@ def run_process_architect(run_dir: str, single_process: str | None = None,
 
         if result is None:
             continue
+
+        # Inject static fields (sub_scoping, form_links)
+        result = inject_static_fields(result, form_def)
 
         # Coverage audit
         report = compute_coverage_report(process_id, text_nodes, result)
@@ -715,7 +725,9 @@ def run_process_architect(run_dir: str, single_process: str | None = None,
                 f"Wrote {process_id}.json — "
                 f"{len(result['controls'])} controls, "
                 f"{len(result['groups'])} groups, "
-                f"{len(result['rules'])} rules"
+                f"{len(result['rules'])} rules, "
+                f"{len(result['sub_scoping'])} sub-types, "
+                f"{len(result['form_links'])} form-links"
             )
 
         # Rate limiting
@@ -726,7 +738,6 @@ def run_process_architect(run_dir: str, single_process: str | None = None,
         # Write coverage audit report
         if coverage_reports:
             audit_path = os.path.join(processes_dir, "_coverage_audit.json")
-            # Compute summary
             total_input = sum(r["total_input"] for r in coverage_reports.values())
             total_mapped = sum(r["total_mapped"] for r in coverage_reports.values())
             total_unmapped = sum(r["total_unmapped"] for r in coverage_reports.values())
@@ -754,7 +765,6 @@ def run_process_architect(run_dir: str, single_process: str | None = None,
             if total_low_conf > 0:
                 print(f"  Low confidence controls: {total_low_conf}")
 
-        # Run second-pass review if requested
         if run_review and coverage_reports:
             logger.info("Starting second-pass review...")
             review_results = run_review_pass(client, run_dir, groups, coverage_reports)
@@ -786,16 +796,11 @@ REVIEW_TOOL = {
                         "quality": {
                             "type": "string",
                             "enum": ["good", "acceptable", "questionable", "incorrect"],
-                            "description": "Mapping quality assessment",
                         },
-                        "confidence": {
-                            "type": "number",
-                            "description": "Reviewer confidence in mapping (0.0-1.0)",
-                        },
+                        "confidence": {"type": "number"},
                         "issues": {
                             "type": "array",
                             "items": {"type": "string"},
-                            "description": "Specific issues found with this mapping",
                         },
                     },
                     "required": ["control_id", "quality", "confidence"],
@@ -810,7 +815,6 @@ REVIEW_TOOL = {
                         "reason": {
                             "type": "string",
                             "enum": ["correctly_omitted", "should_be_mapped", "already_covered"],
-                            "description": "Why this rule was not mapped",
                         },
                         "explanation": {"type": "string"},
                     },
@@ -824,7 +828,7 @@ REVIEW_TOOL = {
 
 REVIEW_SYSTEM_PROMPT = """You are an independent compliance mapping reviewer. You are reviewing mappings produced by another LLM that converted regulatory text into compliance form controls.
 
-Your job is to assess the quality of each control's mapping to the source regulation text. You have access to both the original regulatory text and the controls that were produced.
+Your job is to assess the quality of each control's mapping to the source regulation text.
 
 For each control, evaluate:
 1. Does the control's label accurately reflect the regulation text cited in source-rules?
@@ -834,14 +838,14 @@ For each control, evaluate:
 
 Quality ratings:
 - "good": Direct, accurate mapping. Source rules match. No issues.
-- "acceptable": Reasonable mapping with minor imprecision. Aggregation is fine but might lose nuance.
+- "acceptable": Reasonable mapping with minor imprecision.
 - "questionable": Mapping has issues — wrong source rules, misleading label, or missed requirements.
-- "incorrect": Fundamentally wrong mapping — source rules don't relate, or control contradicts the regulation.
+- "incorrect": Fundamentally wrong mapping.
 
-For unmapped rules (rules from the input that no control references), assess whether:
+For unmapped rules, assess whether:
 - "correctly_omitted": The rule is a heading, note, or doesn't warrant a control
 - "should_be_mapped": The rule contains a substantive requirement that should have a control
-- "already_covered": The rule's substance is covered by another control, just not listed in source-rules
+- "already_covered": The rule's substance is covered by another control
 """
 
 
@@ -851,12 +855,11 @@ def run_review_pass(
     groups: list[dict],
     coverage_reports: dict[str, dict],
 ) -> dict:
-    """Run second-pass review on process forms that have coverage issues or low confidence."""
+    """Run second-pass review on process forms."""
     processes_dir = os.path.join(run_dir, "processes")
     all_reviews = {}
 
     for process_id, report in coverage_reports.items():
-        # Review all processes (not just problematic ones) for completeness
         process_path = os.path.join(processes_dir, f"{process_id}.json")
         if not os.path.exists(process_path):
             continue
@@ -864,10 +867,8 @@ def run_review_pass(
         with open(process_path) as f:
             result = json.load(f)
 
-        # Gather text nodes for context
         text_nodes = gather_process_nodes(process_id, groups)
 
-        # Build review prompt
         nodes_text = ""
         for tn in text_nodes:
             prefix = f"[{tn['rule_code']}] " if tn["rule_code"] else ""
@@ -877,16 +878,15 @@ def run_review_pass(
         for ctrl in result.get("controls", []):
             src = ", ".join(ctrl.get("source-rules", []))
             conf = ctrl.get("mapping-confidence", "N/A")
-            controls_text += f"  {ctrl['id']}: {ctrl['label']}\n"
+            controls_text += f"  {ctrl['id']} (group: {ctrl.get('group', '?')}): {ctrl['label']}\n"
             controls_text += f"    source-rules: [{src}]\n"
             controls_text += f"    mapping-confidence: {conf}\n"
             controls_text += f"    correct-option: {ctrl.get('correct-option', '?')}\n\n"
 
         unmapped_text = ""
         if report["unmapped_codes"]:
-            unmapped_text = f"\n## Unmapped Rules ({len(report['unmapped_codes'])})\nThese rule codes from the input were NOT referenced by any control's source-rules:\n"
+            unmapped_text = f"\n## Unmapped Rules ({len(report['unmapped_codes'])})\n"
             for code in report["unmapped_codes"]:
-                # Find the text for this code
                 matching = [tn for tn in text_nodes if tn.get("rule_code") == code]
                 text = matching[0]["text"] if matching else "(text not found)"
                 unmapped_text += f"  [{code}] {text}\n"
@@ -906,7 +906,7 @@ Review each control mapping and assess the unmapped rules.
         logger.info(f"  Reviewing {process_id}...")
 
         response = client.messages.create(
-            model=MODEL_SMALL,  # Use Haiku for cost efficiency
+            model=MODEL_SMALL,
             max_tokens=4096,
             system=REVIEW_SYSTEM_PROMPT,
             messages=[{"role": "user", "content": user_msg}],
@@ -919,7 +919,6 @@ Review each control mapping and assess the unmapped rules.
                 review_data = block.input
                 all_reviews[process_id] = review_data
 
-                # Log summary
                 reviews = review_data.get("reviews", [])
                 quality_counts = defaultdict(int)
                 for r in reviews:
@@ -949,286 +948,84 @@ Review each control mapping and assess the unmapped rules.
 # ---------------------------------------------------------------------------
 
 
-def validate_ids(data: dict) -> list[str]:
-    """Validate that all IDs match the expected format. Returns list of warnings."""
+def validate_output(data: dict) -> list[str]:
+    """Validate controls, groups, and rules. Returns list of warnings."""
     warnings = []
-    for control in data.get("controls", []):
-        if not ID_REGEX.match(control["id"]):
-            warnings.append(f"Invalid control ID: {control['id']}")
+
+    # Collect valid group slugs
+    valid_group_slugs = set()
     for group in data.get("groups", []):
-        if not ID_REGEX.match(group["id"]):
-            warnings.append(f"Invalid group ID: {group['id']}")
+        gid = group.get("id", "")
+        if not SLUG_REGEX.match(gid):
+            warnings.append(f"Invalid group ID (must be slug): '{gid}'")
+        else:
+            valid_group_slugs.add(gid)
+        if group.get("variant") not in ("main", "subprocess"):
+            warnings.append(f"Group '{gid}' missing valid variant ('main' or 'subprocess')")
+
+    # Validate controls
+    control_ids = set()
+    for control in data.get("controls", []):
+        cid = control.get("id", "")
+        if not ID_REGEX.match(cid):
+            warnings.append(f"Invalid control ID: '{cid}'")
+        else:
+            control_ids.add(cid)
+
+        group_ref = control.get("group", "")
+        if not group_ref:
+            warnings.append(f"Control '{cid}' missing 'group' field")
+        elif group_ref not in valid_group_slugs:
+            warnings.append(f"Control '{cid}' references unknown group slug: '{group_ref}'")
+
+    # Check for orphan groups (groups with no controls)
+    referenced_groups = {c.get("group") for c in data.get("controls", []) if c.get("group")}
+    for gid in valid_group_slugs:
+        if gid not in referenced_groups:
+            warnings.append(f"Orphan group: '{gid}' has no controls referencing it")
+
+    # Validate rules
     for rule in data.get("rules", []):
-        if not ID_REGEX.match(rule["target"]):
-            warnings.append(f"Invalid rule target ID: {rule['target']}")
+        target = rule.get("target", "")
+        # Target can be either a control ID or a group slug
+        if not ID_REGEX.match(target) and not SLUG_REGEX.match(target):
+            warnings.append(f"Invalid rule target: '{target}'")
+
     return warnings
 
 
-def strip_invalid_ids(data: dict) -> dict:
-    """Remove controls, groups, and rules with invalid IDs from the output."""
-    valid_controls = [c for c in data.get("controls", []) if ID_REGEX.match(c["id"])]
-    valid_groups = [g for g in data.get("groups", []) if ID_REGEX.match(g["id"])]
+def strip_invalid_items(data: dict) -> dict:
+    """Remove controls with invalid IDs or missing group refs, groups with invalid slugs."""
+    # Collect valid group slugs first
+    valid_groups = [g for g in data.get("groups", []) if SLUG_REGEX.match(g.get("id", ""))]
+    valid_group_slugs = {g["id"] for g in valid_groups}
 
-    # For rules, check both target and scope
-    valid_ids = {c["id"] for c in valid_controls} | {g["id"] for g in valid_groups}
+    # Filter controls: must have valid ID and valid group reference
+    valid_controls = []
+    for c in data.get("controls", []):
+        if not ID_REGEX.match(c.get("id", "")):
+            continue
+        if c.get("group", "") not in valid_group_slugs:
+            continue
+        valid_controls.append(c)
+
+    # Filter rules: target must be valid (control ID or group slug)
     valid_rules = []
     for rule in data.get("rules", []):
-        if not ID_REGEX.match(rule["target"]):
-            continue
-        # Keep rules whose target references a valid control/group in this output,
-        # OR whose target is a section-level ID (gating rules reference external IDs)
-        valid_rules.append(rule)
+        target = rule.get("target", "")
+        if ID_REGEX.match(target) or SLUG_REGEX.match(target):
+            valid_rules.append(rule)
 
     stripped_controls = len(data.get("controls", [])) - len(valid_controls)
     stripped_groups = len(data.get("groups", [])) - len(valid_groups)
     stripped_rules = len(data.get("rules", [])) - len(valid_rules)
     if stripped_controls or stripped_groups or stripped_rules:
         logger.warning(
-            f"  Stripped invalid IDs: {stripped_controls} controls, "
+            f"  Stripped invalid items: {stripped_controls} controls, "
             f"{stripped_groups} groups, {stripped_rules} rules"
         )
 
     return {"controls": valid_controls, "groups": valid_groups, "rules": valid_rules}
-
-
-# ---------------------------------------------------------------------------
-# API call
-# ---------------------------------------------------------------------------
-
-
-def call_architect(
-    client: anthropic.Anthropic,
-    group: dict,
-    depth: int,
-    parent_id: str | None,
-    parent_controls: list[dict],
-    intro: dict,
-    model: str,
-    dry_run: bool = False,
-) -> dict | None:
-    """Call the LLM for a single group and return parsed SectionData."""
-    user_msg = build_user_message(group, depth, parent_id, parent_controls, intro)
-
-    if dry_run:
-        print(f"\n{'='*60}")
-        print(f"DRY RUN — Group: {group['id']} | Model: {model}")
-        print(f"{'='*60}")
-        print(f"SYSTEM PROMPT: ({len(SYSTEM_PROMPT)} chars)")
-        print(f"USER MESSAGE:\n{user_msg}")
-        return None
-
-    logger.info(f"Calling API for group {group['id']} with model {model}...")
-
-    response = client.messages.create(
-        model=model,
-        max_tokens=4096,
-        system=SYSTEM_PROMPT,
-        messages=[{"role": "user", "content": user_msg}],
-        tools=[OUTPUT_TOOL],
-        tool_choice={"type": "tool", "name": "output_section_data"},
-    )
-
-    # Extract tool use result
-    for block in response.content:
-        if block.type == "tool_use" and block.name == "output_section_data":
-            data = block.input
-            # Validate and strip invalid IDs
-            warnings = validate_ids(data)
-            for w in warnings:
-                logger.warning(f"  {group['id']}: {w}")
-            data = strip_invalid_ids(data)
-            return data
-
-    logger.error(f"No tool_use block in response for group {group['id']}")
-    return None
-
-
-# ---------------------------------------------------------------------------
-# Pipeline
-# ---------------------------------------------------------------------------
-
-
-def get_top_level_section(group_id: str) -> str:
-    """Extract top-level section from a group ID: '4_2_3_1' -> '4_2'."""
-    parts = group_id.split("_")
-    if len(parts) >= 2:
-        return "_".join(parts[:2])
-    return group_id
-
-
-def select_model(group: dict, override: str | None) -> str:
-    """Select model based on group size or override."""
-    if override:
-        return override
-    node_count = len(group.get("text_nodes", []))
-    return MODEL_LARGE if node_count >= TEXT_NODE_THRESHOLD else MODEL_SMALL
-
-
-def run_architect(run_dir: str, single_group: str | None = None,
-                  dry_run: bool = False, model_override: str | None = None):
-    """Main pipeline: process groups breadth-first and produce section files."""
-
-    # Load data
-    enriched_path = os.path.join(run_dir, "groups_enriched.json")
-    if not os.path.exists(enriched_path):
-        logger.error(f"groups_enriched.json not found in {run_dir}. Run 'python main.py enrich' first.")
-        sys.exit(1)
-
-    with open(enriched_path) as f:
-        groups = json.load(f)
-
-    intro_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "data", "introduction.json")
-    with open(intro_path) as f:
-        intro = json.load(f)
-
-    # Compute section gating rules
-    gating_rules = generate_section_gating_rules(intro)
-
-    # Build group lookup
-    group_map = {g["id"]: g for g in groups}
-
-    # Filter to single group if requested
-    if single_group:
-        if single_group not in group_map:
-            logger.error(f"Group {single_group} not found in groups_enriched.json")
-            sys.exit(1)
-        groups = [group_map[single_group]]
-
-    # Sort by depth (breadth-first), skip depth 0 (root "4")
-    groups_by_depth = sorted(
-        [g for g in groups if g["depth"] > 0],
-        key=lambda g: (g["depth"], g["id"]),
-    )
-
-    # Accumulator: completed section data
-    completed_sections: dict[str, dict] = {}  # group_id -> SectionData
-
-    # Output accumulator: section_id -> merged SectionData
-    section_outputs: dict[str, dict] = defaultdict(lambda: {
-        "controls": [], "groups": [], "rules": [],
-    })
-
-    # In single-group mode, load existing section files so we merge rather than overwrite
-    sections_dir = os.path.join(run_dir, "sections")
-    if single_group:
-        if os.path.isdir(sections_dir):
-            for fname in os.listdir(sections_dir):
-                if fname.endswith(".json"):
-                    sid = fname[:-5]
-                    with open(os.path.join(sections_dir, fname)) as f:
-                        section_outputs[sid] = json.load(f)
-                    logger.info(f"Loaded existing {fname}")
-
-    # Initialize gating rules for sections that don't have them yet
-    for section_id, rules in gating_rules.items():
-        existing_rules = section_outputs[section_id].get("rules", [])
-        existing_gating = {(r["target"], r["scope"]) for r in existing_rules}
-        for rule in rules:
-            if (rule["target"], rule["scope"]) not in existing_gating:
-                section_outputs[section_id].setdefault("rules", []).append(rule)
-
-    # Create API client (unless dry run)
-    client = None
-    if not dry_run:
-        client = anthropic.Anthropic()
-
-    # Track which sections are modified in this run
-    touched_sections: set[str] = set()
-
-    # Process groups breadth-first
-    total = len(groups_by_depth)
-    for i, group in enumerate(groups_by_depth, 1):
-        gid = group["id"]
-        depth = group["depth"]
-
-        # Skip groups with no text nodes
-        if not group.get("text_nodes"):
-            logger.info(f"[{i}/{total}] Skipping {gid} (no text nodes)")
-            continue
-
-        # Determine parent
-        parts = gid.split("_")
-        parent_id = "_".join(parts[:-1]) if len(parts) > 2 else None
-
-        # Gather parent controls from completed sections
-        parent_controls = []
-        if parent_id and parent_id in completed_sections:
-            parent_controls = completed_sections[parent_id].get("controls", [])
-
-        # Select model
-        model = select_model(group, model_override)
-
-        logger.info(f"[{i}/{total}] Processing {gid} (depth={depth}, nodes={len(group['text_nodes'])}, model={model.split('-')[1] if '-' in model else model})")
-
-        # Call the LLM
-        result = call_architect(
-            client, group, depth, parent_id, parent_controls,
-            intro, model, dry_run,
-        )
-
-        if result is None:
-            continue
-
-        # Store in completed sections
-        completed_sections[gid] = result
-
-        # Merge into top-level section output
-        section_id = get_top_level_section(gid)
-        touched_sections.add(section_id)
-        section = section_outputs[section_id]
-
-        # Dedup controls and groups by ID
-        existing_control_ids = {c["id"] for c in section["controls"]}
-        for control in result.get("controls", []):
-            if control["id"] not in existing_control_ids:
-                section["controls"].append(control)
-                existing_control_ids.add(control["id"])
-
-        existing_group_ids = {g["id"] for g in section["groups"]}
-        for grp in result.get("groups", []):
-            if grp["id"] not in existing_group_ids:
-                section["groups"].append(grp)
-                existing_group_ids.add(grp["id"])
-
-        # Append rules (no dedup — rules can stack)
-        section["rules"].extend(result.get("rules", []))
-
-        # Rate limiting
-        if not dry_run:
-            time.sleep(0.5)
-
-    # Write output files
-    if not dry_run:
-        sections_dir = os.path.join(run_dir, "sections")
-        os.makedirs(sections_dir, exist_ok=True)
-
-        # In single-group mode, only write sections that were touched
-        sections_to_write = sorted(section_outputs.items()) if not single_group else \
-            [(sid, section_outputs[sid]) for sid in sorted(touched_sections)]
-
-        for section_id, data in sections_to_write:
-            output_path = os.path.join(sections_dir, f"{section_id}.json")
-            with open(output_path, "w") as f:
-                json.dump(data, f, indent=2)
-            logger.info(
-                f"Wrote {section_id}.json — "
-                f"{len(data['controls'])} controls, "
-                f"{len(data['groups'])} groups, "
-                f"{len(data['rules'])} rules"
-            )
-
-        # Save raw responses for audit
-        audit_path = os.path.join(run_dir, "architect_results.json")
-        with open(audit_path, "w") as f:
-            json.dump(completed_sections, f, indent=2)
-        logger.info(f"Audit trail → {audit_path}")
-
-        print(f"\nDone! Section files written to {sections_dir}/")
-        print(f"  Sections: {len(section_outputs)}")
-        total_controls = sum(len(d["controls"]) for d in section_outputs.values())
-        total_rules = sum(len(d["rules"]) for d in section_outputs.values())
-        print(f"  Total controls: {total_controls}")
-        print(f"  Total rules: {total_rules}")
 
 
 # ---------------------------------------------------------------------------
@@ -1240,18 +1037,12 @@ if __name__ == "__main__":
         description="Rules Architect — LLM pipeline for compliance form generation"
     )
     parser.add_argument("run_dir", help="Path to run directory (e.g. runs/1)")
-    parser.add_argument("--mode", choices=["section", "process"], default="section",
-                        help="Pipeline mode: section (default) or process")
-    parser.add_argument("--group", help="Process a single group (section mode)")
-    parser.add_argument("--process", help="Process a single process form (process mode)")
+    parser.add_argument("--process", help="Process a single process form")
     parser.add_argument("--dry-run", action="store_true", help="Print prompts without API calls")
     parser.add_argument("--model", help="Override model for all groups")
     parser.add_argument("--review", action="store_true",
-                        help="Run second-pass review after process mode (process mode only)")
+                        help="Run second-pass review after generation")
 
     args = parser.parse_args()
 
-    if args.mode == "process":
-        run_process_architect(args.run_dir, args.process, args.dry_run, args.model, args.review)
-    else:
-        run_architect(args.run_dir, args.group, args.dry_run, args.model)
+    run_process_architect(args.run_dir, args.process, args.dry_run, args.model, args.review)

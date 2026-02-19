@@ -480,7 +480,7 @@ function render() {
   });
 
   renderScopingSummary();
-  renderSectionSummary();
+  renderProcessSummary();
   document.getElementById("json-output").textContent = JSON.stringify({ answers, toggles, derived: getDerived() }, null, 2);
 }
 
@@ -764,48 +764,42 @@ function renderScopingSummary() {
   `;
 }
 
-// ─── SIDEBAR SECTION SUMMARY ────────────────────────────────────────────────
+// ─── SIDEBAR PROCESS SUMMARY ────────────────────────────────────────────────
 
-const SECTION_LABELS = {
-  "4_1":  "Introduction",
-  "4_2":  "Individuals & Sole Traders",
-  "4_3":  "Companies",
-  "4_4":  "Trusts",
-  "4_5":  "Partnerships",
-  "4_6":  "Associations",
-  "4_7":  "Co-operatives",
-  "4_8":  "Government Bodies",
-  "4_9":  "Verification (Documents)",
-  "4_10": "Verification (Electronic)",
-  "4_11": "Customer Agents",
-  "4_12": "Beneficial Ownership",
-  "4_13": "Politically Exposed Persons",
-  "4_14": "Exemptions & Special Provisions",
-  "4_15": "Alternative Identity Proofing"
+const PROCESS_LABELS = {
+  "risk-assessment":        { title: "Risk Assessment",            gatedBy: null },
+  "cdd-individuals":        { title: "CDD — Individuals",         gatedBy: "4_1_4_1" },
+  "cdd-companies":          { title: "CDD — Companies",           gatedBy: "4_1_4_2" },
+  "cdd-trusts":             { title: "CDD — Trusts",              gatedBy: "4_1_4_3" },
+  "cdd-partnerships":       { title: "CDD — Partnerships",        gatedBy: "4_1_4_4" },
+  "cdd-associations":       { title: "CDD — Associations",        gatedBy: "4_1_4_5" },
+  "cdd-cooperatives":       { title: "CDD — Co-operatives",       gatedBy: "4_1_4_6" },
+  "cdd-government":         { title: "CDD — Government Bodies",   gatedBy: "4_1_4_7" },
+  "verification-documents": { title: "Verification (Docs)",        gatedBy: null },
+  "verification-electronic":{ title: "Verification (Electronic)",  gatedBy: null },
+  "agent-management":       { title: "Agent Management",           gatedBy: "4_1_8" },
+  "beneficial-ownership":   { title: "Beneficial Ownership",       gatedBy: "4_1_5_1" },
+  "pep-screening":          { title: "PEP Screening",              gatedBy: "4_1_5_2" },
+  "record-keeping":         { title: "Record Keeping",             gatedBy: null },
+  "alternative-id":         { title: "Alt Identity Proofing",      gatedBy: null },
 };
 
-function renderSectionSummary() {
+function renderProcessSummary() {
   const el = document.getElementById("section-summary");
   const d = getDerived();
-  const alwaysIds = new Set(ALWAYS_ACTIVE.sections.map(s => s.id));
 
-  // Build set of active scoped section IDs
-  const activeScopedIds = new Set();
-  Object.entries(SCOPING).forEach(([controlId, scope]) => {
-    if (answers[controlId] === "Yes") {
-      scope.sections.forEach(sId => activeScopedIds.add(sId));
-    }
-  });
+  const processIds = Object.keys(PROCESS_LABELS);
+  const activeCount = processIds.filter(id => {
+    const meta = PROCESS_LABELS[id];
+    return !meta.gatedBy || answers[meta.gatedBy] === "Yes";
+  }).length;
 
-  // Build ordered section list
-  const sectionIds = Object.keys(SECTION_LABELS);
-  const activeCount = sectionIds.filter(id => alwaysIds.has(id) || activeScopedIds.has(id)).length;
+  let html = `<h3>Applicable Process Forms <span style="float:right;color:#94a3b8;font-weight:400;text-transform:none;letter-spacing:0;">${activeCount} / ${processIds.length}</span></h3>`;
 
-  let html = `<h3>Applicable Sections <span style="float:right;color:#94a3b8;font-weight:400;text-transform:none;letter-spacing:0;">${activeCount} / ${sectionIds.length}</span></h3>`;
-
-  sectionIds.forEach(id => {
-    const isAlways = alwaysIds.has(id);
-    const isActive = activeScopedIds.has(id);
+  processIds.forEach(id => {
+    const meta = PROCESS_LABELS[id];
+    const isAlways = !meta.gatedBy;
+    const isActive = meta.gatedBy && answers[meta.gatedBy] === "Yes";
     let dotClass, badgeClass, badgeText;
 
     if (isAlways) {
@@ -827,8 +821,7 @@ function renderSectionSummary() {
     html += `
       <div class="section-item" style="${opacity}">
         <span class="s-dot ${dotClass}"></span>
-        <span class="s-id">${id.replace("_",".")}</span>
-        <span class="s-label">${SECTION_LABELS[id]}</span>
+        <span class="s-label">${meta.title}</span>
         ${badgeText ? `<span class="s-badge ${badgeClass}">${badgeText}</span>` : ""}
       </div>`;
   });

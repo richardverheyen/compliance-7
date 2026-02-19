@@ -1,168 +1,218 @@
 {
   "controls": [
     {
-      "id": "4_11_2",
-      "label": "Does your AML/CTF program include a procedure to collect the full name and authorisation evidence for each individual agent authorised to act on behalf of individual customers?",
+      "id": "4_11_2_1",
+      "group": "agent-collection-individual",
+      "label": "Do you have a procedure to collect the full name of each individual who acts for or on behalf of the customer?",
       "detail-required": true,
+      "detail-label": "Describe your procedure for collecting agent names",
       "correct-option": "Yes",
-      "detail-label": "Describe your procedure for collecting agent names and authorisation evidence",
       "process-id": "PROC-AML-001",
       "source-rules": [
-        "4.11.2",
-        "4.11.2(1)",
+        "4.11.2(1)"
+      ],
+      "mapping-confidence": 1.0
+    },
+    {
+      "id": "4_11_2_2",
+      "group": "agent-collection-individual",
+      "label": "Do you have a procedure to collect evidence of the customer's authorisation of agents acting on their behalf?",
+      "detail-required": true,
+      "detail-label": "Describe your procedure for collecting authorisation evidence",
+      "correct-option": "Yes",
+      "process-id": "PROC-AML-001",
+      "source-rules": [
         "4.11.2(2)"
       ],
-      "mapping-confidence": 0.95
+      "mapping-confidence": 1.0
     },
     {
       "id": "4_11_3",
-      "label": "Does your AML/CTF program include appropriate risk-based systems and controls to determine whether and to what extent to verify the identity of agents of individual customers?",
+      "group": "agent-verification-individual",
+      "label": "Do you have appropriate risk-based systems and controls to determine whether and to what extent to verify the identity of agents?",
       "detail-required": true,
+      "detail-label": "Describe your risk-based verification systems and controls",
       "correct-option": "Yes",
-      "detail-label": "Describe your risk-based systems and controls for agent identity verification",
       "process-id": "PROC-AML-001",
       "source-rules": [
         "4.11.3"
       ],
-      "mapping-confidence": 0.95
+      "mapping-confidence": 1.0
     },
     {
       "id": "4_11_4",
-      "label": "When determining the extent of identity verification for agents of individual customers, does your program have regard to the ML/TF risk relevant to the provision of the designated service?",
+      "group": "agent-verification-individual",
+      "label": "Do you have regard to the ML/TF risk relevant to the designated service when determining agent identity verification requirements?",
       "detail-required": true,
+      "detail-label": "Describe how you consider ML/TF risk in agent verification decisions",
       "correct-option": "Yes",
-      "detail-label": "Explain how you apply ML/TF risk assessment when determining verification extent",
       "process-id": "PROC-AML-001",
       "source-rules": [
         "4.11.4"
       ],
-      "mapping-confidence": 0.95
+      "mapping-confidence": 1.0
     },
     {
-      "id": "4_11_6",
-      "label": "Does your AML/CTF program include a procedure to collect the full name and authorisation evidence for each individual agent authorised to act on behalf of non-individual customers?",
+      "id": "4_11_6_1",
+      "group": "agent-collection-non-individual",
+      "label": "Do you have a procedure to collect the full name of each individual who acts for or on behalf of a non-natural customer?",
       "detail-required": true,
+      "detail-label": "Describe your procedure for collecting agent names",
       "correct-option": "Yes",
-      "detail-label": "Describe your procedure for collecting agent names and authorisation evidence",
       "process-id": "PROC-AML-001",
       "source-rules": [
-        "4.11.6",
-        "4.11.6(1)",
+        "4.11.6(1)"
+      ],
+      "mapping-confidence": 1.0
+    },
+    {
+      "id": "4_11_6_2",
+      "group": "agent-collection-non-individual",
+      "label": "Do you have a procedure to collect evidence of the customer's authorisation of agents acting on their behalf?",
+      "detail-required": true,
+      "detail-label": "Describe your procedure for collecting authorisation evidence",
+      "correct-option": "Yes",
+      "process-id": "PROC-AML-001",
+      "source-rules": [
         "4.11.6(2)"
       ],
-      "mapping-confidence": 0.95
+      "mapping-confidence": 1.0
     },
     {
       "id": "4_11_7",
-      "label": "Does your AML/CTF program include appropriate risk-based systems and controls to determine whether and to what extent to verify the identity of agents of non-individual customers?",
+      "group": "agent-verification-non-individual",
+      "label": "Do you have appropriate risk-based systems and controls to determine whether and to what extent to verify the identity of agents of non-natural customers?",
       "detail-required": true,
+      "detail-label": "Describe your risk-based verification systems and controls",
       "correct-option": "Yes",
-      "detail-label": "Describe your risk-based systems and controls for agent identity verification",
       "process-id": "PROC-AML-001",
       "source-rules": [
         "4.11.7"
       ],
-      "mapping-confidence": 0.95
+      "mapping-confidence": 1.0
     },
     {
       "id": "4_11_8",
-      "label": "When determining the extent of identity verification for agents of non-individual customers, does your program have regard to the ML/TF risk relevant to the provision of the designated service?",
+      "group": "agent-verification-non-individual",
+      "label": "Do you have regard to the ML/TF risk relevant to the designated service when determining agent identity verification requirements for non-natural customers?",
       "detail-required": true,
+      "detail-label": "Describe how you consider ML/TF risk in agent verification decisions",
       "correct-option": "Yes",
-      "detail-label": "Explain how you apply ML/TF risk assessment when determining verification extent",
       "process-id": "PROC-AML-001",
       "source-rules": [
         "4.11.8"
       ],
-      "mapping-confidence": 0.95
+      "mapping-confidence": 1.0
     },
     {
       "id": "4_11_9",
-      "label": "Does your AML/CTF program provide for agents of non-natural customers to be identified by a customer-appointed verifying officer (as an alternative to direct agent verification)?",
+      "group": "verifying-officer-process",
+      "label": "Do you allow agents of non-natural customers to be identified by the customer's verifying officer?",
       "detail-required": false,
       "correct-option": "N/A",
       "process-id": "PROC-AML-001",
       "source-rules": [
-        "4.11.9",
-        "4.11.10"
+        "4.11.9"
+      ],
+      "mapping-confidence": 1.0
+    },
+    {
+      "id": "4_11_10_1",
+      "group": "verifying-officer-process",
+      "label": "If agents are identified by a verifying officer, have you confirmed that the requirements in paragraphs 4.11.12 to 4.11.13 are met?",
+      "detail-required": true,
+      "detail-label": "Describe how you ensure verifying officer requirements are met",
+      "correct-option": "Yes",
+      "process-id": "PROC-AML-001",
+      "source-rules": [
+        "4.11.10(1)"
+      ],
+      "mapping-confidence": 0.9
+    },
+    {
+      "id": "4_11_10_2",
+      "group": "verifying-officer-process",
+      "label": "If verifying officer identification is used, do you apply exemptions from the standard agent collection and verification requirements (4.11.6 to 4.11.8)?",
+      "detail-required": false,
+      "correct-option": "N/A",
+      "process-id": "PROC-AML-001",
+      "source-rules": [
+        "4.11.10(2)"
       ],
       "mapping-confidence": 0.9
     },
     {
       "id": "4_11_12_1",
-      "label": "Does your program require agents identified by a verifying officer to be identified in accordance with your verifying officer procedures?",
+      "group": "verifying-officer-identification",
+      "label": "Do you require the agent to be identified by the customer's verifying officer in accordance with your procedures?",
       "detail-required": true,
+      "detail-label": "Describe your agent identification procedures involving the verifying officer",
       "correct-option": "Yes",
-      "detail-label": "Describe the procedures for agent identification by the verifying officer",
       "process-id": "PROC-AML-001",
       "source-rules": [
-        "4.11.12(1)",
-        "4.11.13"
+        "4.11.12(1)"
       ],
-      "mapping-confidence": 0.95
+      "mapping-confidence": 1.0
     },
     {
       "id": "4_11_12_2",
-      "label": "Does your program require verifying officers to be identified and verified by your reporting entity in accordance with Chapter 4 requirements?",
+      "group": "verifying-officer-identification",
+      "label": "Do you have a procedure to identify and verify the verifying officer in accordance with Chapter 4 of the Rules?",
       "detail-required": true,
-      "correct-option": "Yes",
       "detail-label": "Describe how you identify and verify verifying officers",
+      "correct-option": "Yes",
       "process-id": "PROC-AML-001",
       "source-rules": [
         "4.11.12(2)"
       ],
-      "mapping-confidence": 0.95
+      "mapping-confidence": 1.0
     },
     {
       "id": "4_11_12_3",
-      "label": "Does your program require evidence of the customer's authorisation of the verifying officer to be provided to your reporting entity?",
+      "group": "verifying-officer-identification",
+      "label": "Do you collect evidence of the customer's authorisation of the verifying officer?",
       "detail-required": true,
+      "detail-label": "Describe how you obtain and retain authorisation evidence",
       "correct-option": "Yes",
-      "detail-label": "Describe what authorisation evidence you require from the customer",
       "process-id": "PROC-AML-001",
       "source-rules": [
         "4.11.12(3)"
       ],
-      "mapping-confidence": 0.95
+      "mapping-confidence": 1.0
     },
     {
       "id": "4_11_12_4",
-      "label": "Does your program require the verifying officer to make a record of all matters collected and the customer to retain this record?",
+      "group": "verifying-officer-identification",
+      "label": "Do you require the verifying officer to make and the customer to retain a record of all matters collected about the agent?",
       "detail-required": true,
+      "detail-label": "Describe your record-keeping procedures",
       "correct-option": "Yes",
-      "detail-label": "Describe the record-keeping requirements and retention procedures",
       "process-id": "PROC-AML-004",
       "source-rules": [
         "4.11.12(4)"
       ],
-      "mapping-confidence": 0.95
+      "mapping-confidence": 1.0
     },
     {
-      "id": "4_11_12_5_a",
-      "label": "Does your program require the verifying officer to provide the agent's full name to your reporting entity?",
-      "detail-required": false,
+      "id": "4_11_12_5",
+      "group": "verifying-officer-identification",
+      "label": "Do you require the verifying officer to provide you with the agent's full name and a copy of their signature?",
+      "detail-required": true,
+      "detail-label": "Describe how you collect and retain this information",
       "correct-option": "Yes",
       "process-id": "PROC-AML-001",
       "source-rules": [
-        "4.11.12(5)(a)"
-      ],
-      "mapping-confidence": 0.95
-    },
-    {
-      "id": "4_11_12_5_b",
-      "label": "Does your program require the verifying officer to provide a copy of the agent's signature to your reporting entity?",
-      "detail-required": false,
-      "correct-option": "Yes",
-      "process-id": "PROC-AML-001",
-      "source-rules": [
+        "4.11.12(5)(a)",
         "4.11.12(5)(b)"
       ],
-      "mapping-confidence": 0.95
+      "mapping-confidence": 1.0
     },
     {
       "id": "4_11_13_1",
-      "label": "Does your verifying officer procedure require collection of the agent's full name?",
-      "detail-required": false,
+      "group": "verifying-officer-agent-identification",
+      "label": "Does your procedure require the verifying officer to collect the full name of the agent?",
+      "detail-required": true,
+      "detail-label": "Describe how the verifying officer collects agent names",
       "correct-option": "Yes",
       "process-id": "PROC-AML-001",
       "source-rules": [
@@ -172,8 +222,10 @@
     },
     {
       "id": "4_11_13_2",
-      "label": "Does your verifying officer procedure require collection of the agent's title or position held with the customer?",
-      "detail-required": false,
+      "group": "verifying-officer-agent-identification",
+      "label": "Does your procedure require the verifying officer to collect the title or role held by the agent?",
+      "detail-required": true,
+      "detail-label": "Describe how the verifying officer collects agent title/role information",
       "correct-option": "Yes",
       "process-id": "PROC-AML-001",
       "source-rules": [
@@ -183,8 +235,10 @@
     },
     {
       "id": "4_11_13_3",
-      "label": "Does your verifying officer procedure require collection of a copy of the agent's signature?",
-      "detail-required": false,
+      "group": "verifying-officer-agent-identification",
+      "label": "Does your procedure require the verifying officer to collect a copy of the agent's signature?",
+      "detail-required": true,
+      "detail-label": "Describe how the verifying officer obtains agent signatures",
       "correct-option": "Yes",
       "process-id": "PROC-AML-001",
       "source-rules": [
@@ -194,8 +248,10 @@
     },
     {
       "id": "4_11_13_4",
-      "label": "Does your verifying officer procedure require collection of evidence of the agent's authorisation to act on behalf of the customer?",
-      "detail-required": false,
+      "group": "verifying-officer-agent-identification",
+      "label": "Does your procedure require the verifying officer to collect evidence of the agent's authorisation to act on behalf of the customer?",
+      "detail-required": true,
+      "detail-label": "Describe how the verifying officer obtains authorisation evidence",
       "correct-option": "Yes",
       "process-id": "PROC-AML-001",
       "source-rules": [
@@ -206,19 +262,49 @@
   ],
   "groups": [
     {
-      "id": "4_11_1",
-      "title": "Agents of Individual Customers",
-      "description": "Procedures for collecting and verifying information about individuals authorised to act on behalf of individual customers"
+      "id": "agent-collection-individual",
+      "title": "Collection of Agent Information \u2014 Individual Customers",
+      "description": "Procedures for collecting information about individuals authorised to act for individual customers in relation to designated services.",
+      "variant": "main"
     },
     {
-      "id": "4_11_5",
-      "title": "Agents of Non-Individual Customers",
-      "description": "Procedures for collecting and verifying information about individuals authorised to act on behalf of non-individual customers"
+      "id": "agent-verification-individual",
+      "title": "Verification of Agent Identity \u2014 Individual Customers",
+      "description": "Risk-based systems and controls for verifying the identity of agents of individual customers, taking account of ML/TF risk.",
+      "variant": "main"
     },
     {
-      "id": "4_11_9",
-      "title": "Verifying Officer Model (Non-Natural Customers)",
-      "description": "Alternative procedure allowing agents of non-natural customers to be identified by a customer-appointed verifying officer"
+      "id": "agent-collection-non-individual",
+      "title": "Collection of Agent Information \u2014 Non-Natural Customers",
+      "description": "Procedures for collecting information about individuals authorised to act for non-natural (corporate) customers in relation to designated services.",
+      "variant": "main"
+    },
+    {
+      "id": "agent-verification-non-individual",
+      "title": "Verification of Agent Identity \u2014 Non-Natural Customers",
+      "description": "Risk-based systems and controls for verifying the identity of agents of non-natural customers, taking account of ML/TF risk.",
+      "variant": "main"
+    },
+    {
+      "id": "verifying-officer-process",
+      "title": "Verifying Officer Appointment and Alternative Pathway",
+      "description": "Optional process allowing agents of non-natural customers to be identified by an appointed verifying officer instead of direct reporting entity verification.",
+      "variant": "subprocess",
+      "subprocess-label": "Verifying Officer"
+    },
+    {
+      "id": "verifying-officer-identification",
+      "title": "Requirements for Verifying Officer Identification",
+      "description": "Mandatory requirements when using the verifying officer pathway, including identification and verification of the verifying officer, authorisation evidence, and record-keeping.",
+      "variant": "subprocess",
+      "subprocess-label": "Verifying Officer Requirements"
+    },
+    {
+      "id": "verifying-officer-agent-identification",
+      "title": "Information to be Identified by Verifying Officer",
+      "description": "Specific information and documentation that the verifying officer must collect about each agent.",
+      "variant": "subprocess",
+      "subprocess-label": "Agent Details"
     }
   ],
   "rules": [
@@ -231,7 +317,7 @@
       }
     },
     {
-      "target": "4_11_12_1",
+      "target": "verifying-officer-identification",
       "scope": "4_11_9",
       "effect": "SHOW",
       "schema": {
@@ -239,44 +325,14 @@
       }
     },
     {
-      "target": "4_11_12_2",
-      "scope": "4_11_9",
-      "effect": "SHOW",
-      "schema": {
-        "const": "Yes"
-      }
-    },
-    {
-      "target": "4_11_12_3",
-      "scope": "4_11_9",
-      "effect": "SHOW",
-      "schema": {
-        "const": "Yes"
-      }
-    },
-    {
-      "target": "4_11_12_4",
-      "scope": "4_11_9",
-      "effect": "SHOW",
-      "schema": {
-        "const": "Yes"
-      }
-    },
-    {
-      "target": "4_11_12_5_a",
-      "scope": "4_11_9",
-      "effect": "SHOW",
-      "schema": {
-        "const": "Yes"
-      }
-    },
-    {
-      "target": "4_11_12_5_b",
-      "scope": "4_11_9",
+      "target": "verifying-officer-agent-identification",
+      "scope": "4_11_12_1",
       "effect": "SHOW",
       "schema": {
         "const": "Yes"
       }
     }
-  ]
+  ],
+  "sub_scoping": [],
+  "form_links": []
 }

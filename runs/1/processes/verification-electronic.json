@@ -2,173 +2,195 @@
   "controls": [
     {
       "id": "4_10_1",
-      "label": "Does your AML/CTF program provide for verification of KYC information using reliable and independent electronic data?",
+      "group": "electronic-verification-scope",
+      "label": "Does your AML/CTF program provide for verification of KYC information by reliable and independent electronic data?",
       "detail-required": false,
       "correct-option": "N/A",
-      "process-id": "PROC-AML-002b",
       "source-rules": [
         "4.10.1"
       ],
-      "mapping-confidence": 1.0
+      "mapping-confidence": 0.95,
+      "process-id": "PROC-AML-002b"
+    },
+    {
+      "id": "4_10_2",
+      "group": "electronic-data-assessment",
+      "label": "Does your AML/CTF program include risk-based systems and controls to assess whether electronic data is reliable and independent?",
+      "detail-required": true,
+      "detail-label": "Describe your systems and controls for assessing reliability and independence",
+      "correct-option": "Yes",
+      "source-rules": [
+        "4.10.2"
+      ],
+      "mapping-confidence": 0.95,
+      "process-id": "PROC-AML-002b"
     },
     {
       "id": "4_10_2_1_a",
-      "label": "Has your program established risk-based systems and controls to assess the accuracy of electronic data used for verification?",
+      "group": "electronic-data-assessment",
+      "label": "Does your assessment of electronic data evaluate the accuracy of the data?",
       "detail-required": true,
-      "detail-label": "Describe how you assess data accuracy",
+      "detail-label": "Explain how you assess data accuracy",
       "correct-option": "Yes",
-      "process-id": "PROC-AML-002b",
       "source-rules": [
-        "4.10.2(1)",
         "4.10.2(1)(a)"
       ],
-      "mapping-confidence": 0.9
+      "mapping-confidence": 0.95,
+      "process-id": "PROC-AML-002b"
     },
     {
       "id": "4_10_2_1_b",
-      "label": "Has your program established risk-based systems and controls to assess the security of electronic data sources used for verification?",
+      "group": "electronic-data-assessment",
+      "label": "Does your assessment of electronic data evaluate how secure the data is?",
       "detail-required": true,
-      "detail-label": "Describe the security assessment criteria you apply",
+      "detail-label": "Explain how you assess data security",
       "correct-option": "Yes",
-      "process-id": "PROC-AML-002b",
       "source-rules": [
-        "4.10.2(1)",
         "4.10.2(1)(b)"
       ],
-      "mapping-confidence": 0.9
+      "mapping-confidence": 0.95,
+      "process-id": "PROC-AML-002b"
     },
     {
       "id": "4_10_2_1_c",
-      "label": "Has your program established risk-based systems and controls to assess how frequently electronic data is kept up-to-date?",
+      "group": "electronic-data-assessment",
+      "label": "Does your assessment of electronic data evaluate how the data is kept up-to-date?",
       "detail-required": true,
-      "detail-label": "Describe how you evaluate data currency and update frequency",
+      "detail-label": "Explain how you assess data currency and maintenance procedures",
       "correct-option": "Yes",
-      "process-id": "PROC-AML-002b",
       "source-rules": [
-        "4.10.2(1)",
         "4.10.2(1)(c)"
       ],
-      "mapping-confidence": 0.9
+      "mapping-confidence": 0.95,
+      "process-id": "PROC-AML-002b"
     },
     {
       "id": "4_10_2_1_d",
-      "label": "Has your program established risk-based systems and controls to assess the comprehensiveness of electronic data (including the range of persons and collection period)?",
+      "group": "electronic-data-assessment",
+      "label": "Does your assessment of electronic data evaluate how comprehensive the data is (including range of persons covered and collection period)?",
       "detail-required": true,
-      "detail-label": "Describe how you evaluate data comprehensiveness",
+      "detail-label": "Explain how you assess data comprehensiveness",
       "correct-option": "Yes",
-      "process-id": "PROC-AML-002b",
       "source-rules": [
-        "4.10.2(1)",
         "4.10.2(1)(d)"
       ],
-      "mapping-confidence": 0.9
+      "mapping-confidence": 0.95,
+      "process-id": "PROC-AML-002b"
     },
     {
       "id": "4_10_2_1_e",
-      "label": "Has your program established risk-based systems and controls to verify that electronic data has been obtained from a reliable and independent source?",
+      "group": "electronic-data-assessment",
+      "label": "Does your assessment of electronic data verify whether the data has been obtained from a reliable and independent source?",
       "detail-required": true,
-      "detail-label": "Describe how you verify source reliability and independence",
+      "detail-label": "Explain how you verify source reliability and independence",
       "correct-option": "Yes",
-      "process-id": "PROC-AML-002b",
       "source-rules": [
-        "4.10.2(1)",
         "4.10.2(1)(e)"
       ],
-      "mapping-confidence": 0.9
+      "mapping-confidence": 0.95,
+      "process-id": "PROC-AML-002b"
     },
     {
       "id": "4_10_2_1_f",
-      "label": "Has your program established risk-based systems and controls to confirm whether electronic data is maintained by a government body or pursuant to legislation?",
+      "group": "electronic-data-assessment",
+      "label": "Does your assessment of electronic data determine whether the data is maintained by a government body or pursuant to legislation?",
       "detail-required": true,
-      "detail-label": "Describe how you verify government or legislative basis for data sources",
+      "detail-label": "List the government-maintained or legislatively-mandated data sources used",
       "correct-option": "Yes",
-      "process-id": "PROC-AML-002b",
       "source-rules": [
-        "4.10.2(1)",
         "4.10.2(1)(f)"
       ],
-      "mapping-confidence": 0.9
+      "mapping-confidence": 0.95,
+      "process-id": "PROC-AML-002b"
     },
     {
       "id": "4_10_2_1_g",
-      "label": "Has your program established risk-based systems and controls to determine whether electronic data can be additionally authenticated?",
+      "group": "electronic-data-assessment",
+      "label": "Does your assessment of electronic data consider whether the electronic data can be additionally authenticated?",
       "detail-required": true,
-      "detail-label": "Describe the authentication methods you support or assess",
+      "detail-label": "Explain what additional authentication methods are available",
       "correct-option": "Yes",
-      "process-id": "PROC-AML-002b",
       "source-rules": [
-        "4.10.2(1)",
         "4.10.2(1)(g)"
       ],
-      "mapping-confidence": 0.9
+      "mapping-confidence": 0.95,
+      "process-id": "PROC-AML-002b"
     },
     {
       "id": "4_10_2_2",
-      "label": "Has your program established and documented which reliable and independent electronic data sources you will use for verifying KYC information?",
+      "group": "data-source-selection",
+      "label": "Has your AML/CTF program pre-identified which reliable and independent electronic data sources it will use for verification?",
       "detail-required": true,
-      "detail-label": "List the electronic data sources your program uses for verification",
+      "detail-label": "List the electronic data sources you will use for verification",
       "correct-option": "Yes",
-      "process-id": "PROC-AML-002b",
       "source-rules": [
         "4.10.2(2)"
       ],
-      "mapping-confidence": 1.0
+      "mapping-confidence": 0.95,
+      "process-id": "PROC-AML-002b"
     },
     {
       "id": "4_10_2_3",
-      "label": "Has your program established pre-defined tolerance levels for accepting matches and managing errors in electronic verification results?",
+      "group": "match-tolerance",
+      "label": "Has your AML/CTF program established pre-defined tolerance levels for matches and errors in electronic verification?",
       "detail-required": true,
-      "detail-label": "Describe your tolerance levels and error thresholds",
+      "detail-label": "Document your pre-defined tolerance levels for matches and errors",
       "correct-option": "Yes",
-      "process-id": "PROC-AML-002b",
       "source-rules": [
         "4.10.2(3)"
       ],
-      "mapping-confidence": 1.0
+      "mapping-confidence": 0.95,
+      "process-id": "PROC-AML-002b"
     },
     {
       "id": "4_10_2_4",
-      "label": "Has your program established a procedure to independently confirm KYC information by contacting the person the customer claims to be, where appropriate?",
+      "group": "independent-contact",
+      "label": "Does your AML/CTF program define whether and how to independently confirm KYC information by initiating contact with the person the customer claims to be?",
       "detail-required": true,
-      "detail-label": "Describe when and how you conduct independent confirmation contact",
+      "detail-label": "Describe your independent contact procedures and decision criteria",
       "correct-option": "Yes",
-      "process-id": "PROC-AML-002b",
       "source-rules": [
         "4.10.2(4)"
       ],
-      "mapping-confidence": 1.0
+      "mapping-confidence": 0.95,
+      "process-id": "PROC-AML-002b"
     }
   ],
   "groups": [
     {
-      "id": "4_10",
-      "title": "Verification Standards \u2014 Electronic",
-      "description": "Controls for verifying KYC information using reliable and independent electronic data."
+      "id": "electronic-verification-scope",
+      "title": "Electronic Verification Scope",
+      "description": "Determines whether your AML/CTF program uses reliable and independent electronic data to verify KYC information.",
+      "variant": "main"
     },
     {
-      "id": "4_10_2_1",
-      "title": "Assessment of Electronic Data Reliability and Independence",
-      "description": "Systems and controls to evaluate whether electronic data meets reliability and independence criteria."
+      "id": "electronic-data-assessment",
+      "title": "Electronic Data Reliability Assessment",
+      "description": "Risk-based assessment of whether electronic data sources are reliable and independent, based on accuracy, security, currency, comprehensiveness, source verification, legislative basis, and authentication capability.",
+      "variant": "main"
     },
     {
-      "id": "4_10_2_2",
-      "title": "Selection of Verification Data Sources",
-      "description": "Determination of which reliable and independent electronic data sources to use for verification."
+      "id": "data-source-selection",
+      "title": "Selection of Electronic Data Sources",
+      "description": "Pre-identification of which reliable and independent electronic data sources your reporting entity will use for KYC verification.",
+      "variant": "main"
     },
     {
-      "id": "4_10_2_3",
-      "title": "Tolerance and Match Standards",
-      "description": "Pre-defined thresholds for accepting matches and managing errors in electronic verification."
+      "id": "match-tolerance",
+      "title": "Match and Error Tolerance Levels",
+      "description": "Establishment of pre-defined tolerance levels for matches and errors in electronic verification results.",
+      "variant": "main"
     },
     {
-      "id": "4_10_2_4",
-      "title": "Independent Confirmation Procedures",
-      "description": "Processes for independently verifying customer identity through direct contact when necessary."
+      "id": "independent-contact",
+      "title": "Independent Contact Verification",
+      "description": "Procedures for independently confirming KYC information by directly contacting the person the customer claims to be, where appropriate.",
+      "variant": "main"
     }
   ],
   "rules": [
     {
-      "target": "4_10_2_1",
+      "target": "electronic-data-assessment",
       "scope": "4_10_1",
       "effect": "SHOW",
       "schema": {
@@ -176,7 +198,7 @@
       }
     },
     {
-      "target": "4_10_2_2",
+      "target": "data-source-selection",
       "scope": "4_10_1",
       "effect": "SHOW",
       "schema": {
@@ -184,7 +206,7 @@
       }
     },
     {
-      "target": "4_10_2_3",
+      "target": "match-tolerance",
       "scope": "4_10_1",
       "effect": "SHOW",
       "schema": {
@@ -192,12 +214,14 @@
       }
     },
     {
-      "target": "4_10_2_4",
+      "target": "independent-contact",
       "scope": "4_10_1",
       "effect": "SHOW",
       "schema": {
         "const": "Yes"
       }
     }
-  ]
+  ],
+  "sub_scoping": [],
+  "form_links": []
 }

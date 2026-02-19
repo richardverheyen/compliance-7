@@ -2,9 +2,10 @@
   "controls": [
     {
       "id": "4_12_1",
-      "label": "Does your AML/CTF program include systems and controls to determine the beneficial owner of each customer?",
+      "group": "general-obligation",
+      "label": "Does your AML/CTF program include appropriate systems and controls to determine the beneficial owner of each customer, and carry out collection and verification either before providing a designated service or as soon as practicable after?",
       "detail-required": true,
-      "detail-label": "Describe your systems and controls for determining beneficial owners, including timing (before or as soon as practicable after designated service provision)",
+      "detail-label": "Describe your systems and controls for determining beneficial owners and the timing of collection/verification",
       "correct-option": "Yes",
       "process-id": "PROC-AML-003a",
       "source-rules": [
@@ -14,7 +15,8 @@
     },
     {
       "id": "4_12_2_1",
-      "label": "For customers who are individuals, does your program allow the assumption that the customer and beneficial owner are the same unless you have reasonable grounds to consider otherwise?",
+      "group": "exemptions",
+      "label": "For customers who are individuals, does your program assume the customer and beneficial owner are the same person unless you have reasonable grounds to consider otherwise?",
       "detail-required": false,
       "correct-option": "Yes",
       "process-id": "PROC-AML-003a",
@@ -25,9 +27,10 @@
     },
     {
       "id": "4_12_2_2",
-      "label": "Does your program exempt beneficial owner collection for customers that are: companies verified under simplified company procedure (4.3.8), trusts verified under simplified trustee procedure (4.4.8), Australian Government entities, or foreign listed public companies subject to beneficial ownership transparency requirements?",
+      "group": "exemptions",
+      "label": "Does your program exempt the following customer types from beneficial ownership requirements: companies verified under simplified procedures (4.3.8), trusts verified under simplified procedures (4.4.8), Australian Government Entities, and foreign listed public companies (or their majority-owned subsidiaries) subject to disclosure requirements?",
       "detail-required": true,
-      "detail-label": "Describe how your program identifies and exempts these customer types from beneficial owner collection",
+      "detail-label": "Describe how your program identifies and exempts these customer types from beneficial ownership collection",
       "correct-option": "Yes",
       "process-id": "PROC-AML-003a",
       "source-rules": [
@@ -38,11 +41,12 @@
         "4.12.2(2)(d)",
         "4.12.2(2)(e)"
       ],
-      "mapping-confidence": 0.7
+      "mapping-confidence": 0.9
     },
     {
       "id": "4_12_1_1",
-      "label": "Does your program include a procedure to collect each beneficial owner's full name?",
+      "group": "collection-bo",
+      "label": "Does your program collect each beneficial owner's full name?",
       "detail-required": false,
       "correct-option": "Yes",
       "process-id": "PROC-AML-002a",
@@ -53,8 +57,9 @@
       "mapping-confidence": 1.0
     },
     {
-      "id": "4_12_1_2",
-      "label": "Does your program include a procedure to collect either the beneficial owner's date of birth OR full residential address (or both)?",
+      "id": "4_12_1_1_b",
+      "group": "collection-bo",
+      "label": "Does your program collect either the beneficial owner's date of birth OR full residential address (or both)?",
       "detail-required": false,
       "correct-option": "Yes",
       "process-id": "PROC-AML-002a",
@@ -67,9 +72,10 @@
     },
     {
       "id": "4_12_3",
-      "label": "Does your program include risk-based systems and controls to determine whether to collect and verify additional information about beneficial owners beyond the minimum requirements?",
+      "group": "collection-bo",
+      "label": "Does your program include appropriate risk-based systems and controls to determine whether any additional information (beyond the minimum required) should be collected and verified about any beneficial owner?",
       "detail-required": true,
-      "detail-label": "Describe your risk-based approach for determining when additional beneficial owner information is required",
+      "detail-label": "Describe your risk-based approach to determining when additional beneficial owner information should be collected and verified",
       "correct-option": "Yes",
       "process-id": "PROC-AML-002c",
       "source-rules": [
@@ -79,9 +85,10 @@
     },
     {
       "id": "4_12_4",
-      "label": "Does your program require verification of beneficial owner information using reliable and independent documentation, reliable and independent electronic data, or a combination of both?",
+      "group": "verification-bo",
+      "label": "Does your program require that verification of beneficial owner information be based on reliable and independent documentation, reliable and independent electronic data, or a combination of both?",
       "detail-required": true,
-      "detail-label": "Describe your verification methods and what constitutes reliable and independent sources",
+      "detail-label": "Describe your verification approach and the sources you consider reliable and independent",
       "correct-option": "Yes",
       "process-id": "PROC-AML-002b",
       "source-rules": [
@@ -94,9 +101,9 @@
     },
     {
       "id": "4_12_6",
-      "label": "Does your program identify when a beneficial owner is a foreign politically exposed person (PEP)?",
-      "detail-required": true,
-      "detail-label": "Describe how you screen for and identify foreign PEPs among beneficial owners",
+      "group": "safe-harbour-bo",
+      "label": "Does your program prevent use of the safe harbour procedure (4.12.7) when any beneficial owner is a foreign politically exposed person?",
+      "detail-required": false,
       "correct-option": "Yes",
       "process-id": "PROC-AML-003b",
       "source-rules": [
@@ -105,38 +112,39 @@
       "mapping-confidence": 1.0
     },
     {
-      "id": "4_12_5_1",
-      "label": "For beneficial owners who are NOT foreign PEPs and are assessed as medium or lower ML/TF risk, does your program allow use of the safe harbour verification procedures?",
+      "id": "4_12_7_1",
+      "group": "safe-harbour-bo",
+      "label": "When using the safe harbour procedure for medium or lower risk beneficial owners, does your program collect the information required by 4.12.1 for each beneficial owner?",
       "detail-required": false,
-      "correct-option": "N/A",
-      "process-id": "PROC-AML-002b",
+      "correct-option": "Yes",
+      "process-id": "PROC-AML-002a",
       "source-rules": [
-        "4.12.5",
-        "4.12.6",
-        "4.12.7"
+        "4.12.7",
+        "4.12.7(1)"
       ],
-      "mapping-confidence": 0.8
+      "mapping-confidence": 1.0
     },
     {
       "id": "4_12_7_2",
-      "label": "For documentation-based safe harbour verification, does your program verify beneficial owner's full name and either residential address or date of birth using: (a) original or certified copy of primary photographic ID, OR (b) original or certified copy of primary non-photographic ID plus secondary ID?",
+      "group": "safe-harbour-bo",
+      "label": "When using documentation-based safe harbour verification, does your program verify each beneficial owner's full name and either their full residential address or date of birth (or both) from: (a) an original or certified copy of a primary photographic ID, OR (b) both a primary non-photographic ID and a secondary ID?",
       "detail-required": true,
-      "detail-label": "Describe your documentation-based safe harbour procedure and acceptable document types",
+      "detail-label": "Describe your documentation-based verification procedure and acceptable document types",
       "correct-option": "Yes",
       "process-id": "PROC-AML-002b",
       "source-rules": [
-        "4.12.7(1)",
         "4.12.7(2)",
         "4.12.7(2)(a)",
         "4.12.7(2)(b)",
         "4.12.7(2)(i)",
         "4.12.7(2)(i)(ii)"
       ],
-      "mapping-confidence": 0.7
+      "mapping-confidence": 0.95
     },
     {
       "id": "4_12_7_3",
-      "label": "Does your safe harbour documentation procedure verify that documents have not expired (except Commonwealth passports expired within the preceding two years)?",
+      "group": "safe-harbour-bo",
+      "label": "When using documentation-based safe harbour verification, does your program verify that documents have not expired (except Commonwealth passports expired within the preceding two years)?",
       "detail-required": false,
       "correct-option": "Yes",
       "process-id": "PROC-AML-002b",
@@ -147,9 +155,10 @@
     },
     {
       "id": "4_12_7_4",
-      "label": "For electronic-based safe harbour verification, does your program verify beneficial owner's full name and either residential address or date of birth using reliable and independent electronic data from at least two separate data sources?",
+      "group": "safe-harbour-bo",
+      "label": "When using electronic-based safe harbour verification, does your program verify each beneficial owner's full name and either their full residential address or date of birth (or both) using reliable and independent electronic data from at least two separate data sources?",
       "detail-required": true,
-      "detail-label": "Describe your electronic verification procedure including the data sources used",
+      "detail-label": "Describe your electronic verification procedure and the data sources used",
       "correct-option": "Yes",
       "process-id": "PROC-AML-002b",
       "source-rules": [
@@ -159,9 +168,10 @@
     },
     {
       "id": "4_12_8",
-      "label": "Does your program include risk-based systems and controls to respond to discrepancies that arise during beneficial owner verification to determine that you are reasonably satisfied the beneficial owner is who the customer claims?",
+      "group": "discrepancy-bo",
+      "label": "Does your program include appropriate risk-based systems and controls to respond to any discrepancy that arises when verifying beneficial owner information, so that you can determine you are reasonably satisfied each beneficial owner is who the customer claims they are?",
       "detail-required": true,
-      "detail-label": "Describe your procedures for identifying and responding to verification discrepancies",
+      "detail-label": "Describe your risk-based approach to responding to beneficial owner verification discrepancies",
       "correct-option": "Yes",
       "process-id": "PROC-AML-002b",
       "source-rules": [
@@ -171,55 +181,105 @@
     },
     {
       "id": "4_12_9",
-      "label": "If you are unable to ascertain a beneficial owner, does your program identify and take reasonable measures to verify an individual with significant control or senior management position as specified in the fallback procedures?",
+      "group": "fallback-procedure",
+      "label": "When unable to ascertain a beneficial owner, does your program require you to identify and take reasonable measures to verify specified individuals (based on customer type and control thresholds)?",
       "detail-required": true,
-      "detail-label": "Describe your fallback procedures for different entity types (companies, partnerships, trusts, associations, co-operatives)",
+      "detail-label": "Describe your fallback procedure when beneficial owners cannot be determined",
       "correct-option": "Yes",
       "process-id": "PROC-AML-003a",
       "source-rules": [
-        "4.12.9",
+        "4.12.9"
+      ],
+      "mapping-confidence": 0.9
+    },
+    {
+      "id": "4_12_9_1",
+      "group": "fallback-procedure",
+      "label": "For companies (not verified under simplified procedures) or partnerships where the beneficial owner cannot be ascertained, does your program identify and verify individuals entitled to exercise 25%+ voting rights (including veto power) OR who hold senior managing official positions?",
+      "detail-required": true,
+      "detail-label": "Describe how you identify and verify these individuals for companies/partnerships",
+      "correct-option": "Yes",
+      "process-id": "PROC-AML-003a",
+      "source-rules": [
         "4.12.9(1)",
         "4.12.9(1)(a)",
-        "4.12.9(1)(b)",
-        "4.12.9(2)",
+        "4.12.9(1)(b)"
+      ],
+      "mapping-confidence": 1.0
+    },
+    {
+      "id": "4_12_9_2",
+      "group": "fallback-procedure",
+      "label": "For trusts (not verified under simplified procedures) where the beneficial owner cannot be ascertained, does your program identify and verify individuals who hold the power to appoint or remove trustees?",
+      "detail-required": true,
+      "detail-label": "Describe how you identify and verify individuals with trustee appointment/removal power",
+      "correct-option": "Yes",
+      "process-id": "PROC-AML-003a",
+      "source-rules": [
+        "4.12.9(2)"
+      ],
+      "mapping-confidence": 1.0
+    },
+    {
+      "id": "4_12_9_3",
+      "group": "fallback-procedure",
+      "label": "For associations or registered co-operatives where the beneficial owner cannot be ascertained, does your program identify and verify individuals entitled to 25%+ voting rights (including veto), entitled to 25%+ property on dissolution, OR who hold senior managing official positions?",
+      "detail-required": true,
+      "detail-label": "Describe how you identify and verify these individuals for associations/co-operatives",
+      "correct-option": "Yes",
+      "process-id": "PROC-AML-003a",
+      "source-rules": [
         "4.12.9(3)",
         "4.12.9(3)(a)",
         "4.12.9(3)(b)",
         "4.12.9(3)(c)"
       ],
-      "mapping-confidence": 0.7
+      "mapping-confidence": 1.0
     }
   ],
   "groups": [
     {
-      "id": "4_12",
-      "title": "Beneficial Ownership Identification Program",
-      "description": "Systems and controls to determine and verify the beneficial owners of customers, with risk-based procedures and exemptions for certain customer types."
+      "id": "general-obligation",
+      "title": "General Beneficial Ownership Obligation",
+      "description": "Top-level obligation to determine beneficial owners and collect/verify their information before or as soon as practicable after providing a designated service.",
+      "variant": "main"
     },
     {
-      "id": "4_12_1",
-      "title": "Scope and General Obligation",
-      "description": "Determine whether beneficial ownership collection and verification applies to this customer type."
+      "id": "exemptions",
+      "title": "Exemptions and Simplifications",
+      "description": "Circumstances where beneficial ownership collection requirements may be modified or exempted.",
+      "variant": "main"
     },
     {
-      "id": "4_12_2",
+      "id": "collection-bo",
       "title": "Collection of Beneficial Owner Information",
-      "description": "Collect identifying information about each beneficial owner, or determine if exemptions apply."
+      "description": "Minimum required information to collect about each beneficial owner, and risk-based decisions on additional collection.",
+      "variant": "main"
     },
     {
-      "id": "4_12_3",
+      "id": "verification-bo",
       "title": "Verification of Beneficial Owner Information",
-      "description": "Verify beneficial owner information using reliable and independent sources."
+      "description": "How to verify collected beneficial owner information using reliable and independent sources.",
+      "variant": "main"
     },
     {
-      "id": "4_12_4",
-      "title": "Safe Harbour Verification Procedures",
-      "description": "Simplified verification options for medium or lower ML/TF risk beneficial owners (not applicable to foreign PEPs)."
+      "id": "safe-harbour-bo",
+      "title": "Safe Harbour Procedures (Medium or Lower Risk)",
+      "description": "Optional safe harbour verification procedures for beneficial owners assessed as medium or lower ML/TF risk. Not applicable if any beneficial owner is a foreign PEP.",
+      "variant": "subprocess",
+      "subprocess-label": "Safe Harbour"
     },
     {
-      "id": "4_12_5",
-      "title": "Discrepancy Handling and Fallback Procedures",
-      "description": "Respond to verification discrepancies and apply fallback procedures when beneficial owner cannot be determined."
+      "id": "discrepancy-bo",
+      "title": "Responding to Verification Discrepancies",
+      "description": "Risk-based systems to respond when verification of beneficial owner information reveals discrepancies.",
+      "variant": "main"
+    },
+    {
+      "id": "fallback-procedure",
+      "title": "Unable to Determine Beneficial Owner",
+      "description": "Fallback procedures when beneficial owner cannot be ascertained\u2014identify and verify individuals meeting specified thresholds or holding key positions.",
+      "variant": "main"
     }
   ],
   "rules": [
@@ -230,38 +290,8 @@
       "schema": {
         "const": "Yes"
       }
-    },
-    {
-      "target": "4_12_5_1",
-      "scope": "4_12_6",
-      "effect": "SHOW",
-      "schema": {
-        "const": "Yes"
-      }
-    },
-    {
-      "target": "4_12_7_2",
-      "scope": "4_12_5_1",
-      "effect": "SHOW",
-      "schema": {
-        "const": "Yes"
-      }
-    },
-    {
-      "target": "4_12_7_3",
-      "scope": "4_12_5_1",
-      "effect": "SHOW",
-      "schema": {
-        "const": "Yes"
-      }
-    },
-    {
-      "target": "4_12_7_4",
-      "scope": "4_12_5_1",
-      "effect": "SHOW",
-      "schema": {
-        "const": "Yes"
-      }
     }
-  ]
+  ],
+  "sub_scoping": [],
+  "form_links": []
 }

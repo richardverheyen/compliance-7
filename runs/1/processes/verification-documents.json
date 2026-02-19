@@ -1,339 +1,289 @@
 {
   "controls": [
     {
-      "id": "4_9_1_a",
-      "label": "Does your AML/CTF program provide for the verification of KYC information about individuals by means of reliable and independent documentation?",
+      "id": "4_9_1",
+      "group": "document-verification-framework",
+      "label": "Does your AML/CTF program provide for verification of KYC information about individuals using reliable and independent documentation?",
       "detail-required": false,
-      "correct-option": "N/A",
-      "mapping-confidence": 1.0,
+      "correct-option": "Yes",
       "source-rules": [
         "4.9.1"
-      ]
-    },
-    {
-      "id": "4_9_1_b",
-      "label": "Does your AML/CTF program provide for the verification of KYC information about customers who are not individuals by means of reliable and independent documentation?",
-      "detail-required": false,
-      "correct-option": "N/A",
-      "mapping-confidence": 1.0,
-      "source-rules": [
-        "4.9.4"
-      ]
-    },
-    {
-      "id": "4_9_2_1",
-      "label": "Does your program include risk-based systems and controls to determine what reliable and independent documentation will be required to verify an individual's name and date of birth and/or residential address?",
-      "detail-required": true,
-      "detail-label": "Describe the documentation standards and risk-based criteria you use to determine acceptable documents for individual identity and address verification.",
-      "correct-option": "Yes",
-      "mapping-confidence": 1.0,
-      "source-rules": [
-        "4.9.3(1)"
       ],
-      "process-id": "PROC-AML-002b"
+      "mapping-confidence": 1.0
     },
     {
-      "id": "4_9_2_2",
-      "label": "Does your program include risk-based systems and controls to determine what reliable and independent documentation may be used to verify other KYC information about individuals (beyond name, DOB, and address)?",
+      "id": "4_9_2",
+      "group": "document-validity-checks",
+      "label": "Does your AML/CTF program require that documents used to verify KYC information have not expired (except for Commonwealth passports expired within the preceding two years)?",
       "detail-required": true,
-      "detail-label": "Describe how you determine which documents are acceptable for verification of other KYC information (e.g., occupation, beneficial ownership).",
+      "detail-label": "Describe your document expiration checking procedures",
       "correct-option": "Yes",
-      "mapping-confidence": 1.0,
-      "source-rules": [
-        "4.9.3(2)"
-      ],
-      "process-id": "PROC-AML-002a"
-    },
-    {
-      "id": "4_9_2_3",
-      "label": "Does your program include risk-based systems and controls to determine what and how many reliable and independent documents will be required for verification of KYC information about customers who are not individuals?",
-      "detail-required": true,
-      "detail-label": "Describe your standards for the number and type of documents required for non-individual customers and how these are determined by risk assessment.",
-      "correct-option": "Yes",
-      "mapping-confidence": 1.0,
-      "source-rules": [
-        "4.9.5(1)"
-      ],
-      "process-id": "PROC-AML-002b"
-    },
-    {
-      "id": "4_9_3_1",
-      "label": "Does your program include satisfaction and controls that documents used to verify KYC information about individuals have not expired (excluding Commonwealth passports that expired within the preceding two years)?",
-      "detail-required": true,
-      "detail-label": "Describe your procedures to verify that documents are current and not expired, including any exceptions you permit.",
-      "correct-option": "Yes",
-      "mapping-confidence": 1.0,
       "source-rules": [
         "4.9.2"
       ],
+      "mapping-confidence": 1.0,
       "process-id": "PROC-AML-002b"
     },
     {
-      "id": "4_9_3_2",
-      "label": "Does your program include risk-based systems and controls to determine whether a document is sufficiently contemporaneous for use in verification of KYC information about non-individual customers?",
+      "id": "4_9_3",
+      "group": "document-standards-individuals",
+      "label": "Does your AML/CTF program include risk-based systems and controls to determine which reliable and independent documents are required to verify individual customer KYC information?",
       "detail-required": true,
-      "detail-label": "Describe how you determine whether a document is current enough for verification and what risk factors influence this decision.",
+      "detail-label": "Describe your risk-based document selection framework for individuals",
       "correct-option": "Yes",
-      "mapping-confidence": 1.0,
       "source-rules": [
-        "4.9.5(2)"
+        "4.9.3",
+        "4.9.3(1)",
+        "4.9.3(2)"
       ],
+      "mapping-confidence": 0.9,
       "process-id": "PROC-AML-002b"
     },
     {
-      "id": "4_9_5_1",
-      "label": "Does your program include risk-based systems and controls to determine whether you are prepared to rely upon a copy of a reliable and independent document (for individuals)?",
+      "id": "4_9_3_3",
+      "group": "document-standards-individuals",
+      "label": "Does your AML/CTF program establish risk-based policies on when you will accept copies of reliable and independent documents?",
       "detail-required": true,
-      "detail-label": "Describe your policy on accepting copies of documents versus originals, including any risk-based conditions or restrictions.",
+      "detail-label": "Describe the circumstances where you accept document copies and relevant controls",
       "correct-option": "Yes",
-      "mapping-confidence": 1.0,
       "source-rules": [
         "4.9.3(3)"
       ],
+      "mapping-confidence": 1.0,
       "process-id": "PROC-AML-002b"
     },
     {
-      "id": "4_9_5_2",
-      "label": "Does your program include risk-based systems and controls to determine whether you are prepared to rely upon a copy of a reliable and independent document (for non-individuals)?",
+      "id": "4_9_3_4",
+      "group": "document-authentication-checks",
+      "label": "Does your AML/CTF program include risk-based systems to determine when you will check whether individual documents may have been forged, tampered with, cancelled or stolen?",
       "detail-required": true,
-      "detail-label": "Describe your policy on accepting copies of documents versus originals for non-individual customers, including any risk-based conditions or restrictions.",
+      "detail-label": "Describe your fraud detection procedures and the steps you take to verify document authenticity",
       "correct-option": "Yes",
-      "mapping-confidence": 1.0,
       "source-rules": [
-        "4.9.5(3)"
+        "4.9.3(4)"
       ],
+      "mapping-confidence": 1.0,
+      "process-id": "PROC-AML-002b"
+    },
+    {
+      "id": "4_9_3_5",
+      "group": "document-authentication-checks",
+      "label": "Does your AML/CTF program determine whether you will use any available authentication services for verifying individual documents?",
+      "detail-required": true,
+      "detail-label": "Describe any authentication services you use or why they are not used",
+      "correct-option": "Yes",
+      "source-rules": [
+        "4.9.3(5)"
+      ],
+      "mapping-confidence": 1.0,
+      "process-id": "PROC-AML-002b"
+    },
+    {
+      "id": "4_9_3_6",
+      "group": "document-independent-confirmation",
+      "label": "Does your AML/CTF program determine how and whether you will independently contact individuals to confirm KYC information?",
+      "detail-required": true,
+      "detail-label": "Describe your independent confirmation procedures and the circumstances triggering their use",
+      "correct-option": "Yes",
+      "source-rules": [
+        "4.9.3(6)"
+      ],
+      "mapping-confidence": 1.0,
+      "process-id": "PROC-AML-002b"
+    },
+    {
+      "id": "4_9_4",
+      "group": "document-verification-non-individuals",
+      "label": "Does your AML/CTF program provide for verification of KYC information about customers who are not individuals using reliable and independent documentation?",
+      "detail-required": false,
+      "correct-option": "Yes",
+      "source-rules": [
+        "4.9.4"
+      ],
+      "mapping-confidence": 1.0
+    },
+    {
+      "id": "4_9_5",
+      "group": "document-standards-non-individuals",
+      "label": "Does your AML/CTF program include risk-based systems and controls to determine what reliable and independent documents you will use to verify non-individual customer information?",
+      "detail-required": true,
+      "detail-label": "Describe your risk-based document selection framework for non-individual customers",
+      "correct-option": "Yes",
+      "source-rules": [
+        "4.9.5",
+        "4.9.5(1)",
+        "4.9.5(2)"
+      ],
+      "mapping-confidence": 0.9,
       "process-id": "PROC-AML-002b"
     },
     {
       "id": "4_9_5_3",
-      "label": "Does your program include risk-based systems and controls to determine in what circumstances you will take steps to verify whether a document about an individual may have been forged, tampered with, cancelled or stolen?",
+      "group": "document-standards-non-individuals",
+      "label": "Does your AML/CTF program establish risk-based policies on when you will accept copies of reliable and independent documents for non-individual customers?",
       "detail-required": true,
-      "detail-label": "Describe the circumstances and risk factors that trigger document fraud/authenticity checks, and what steps you will take to verify document integrity.",
+      "detail-label": "Describe the circumstances where you accept document copies for non-individuals and relevant controls",
       "correct-option": "Yes",
-      "mapping-confidence": 1.0,
       "source-rules": [
-        "4.9.3(4)"
+        "4.9.5(3)"
       ],
+      "mapping-confidence": 1.0,
       "process-id": "PROC-AML-002b"
     },
     {
       "id": "4_9_5_4",
-      "label": "Does your program include risk-based systems and controls to determine in what circumstances you will take steps to verify whether a document about a non-individual customer may have been cancelled, forged, tampered with or stolen?",
+      "group": "document-authentication-checks-non-individuals",
+      "label": "Does your AML/CTF program include risk-based systems to determine when you will check whether non-individual documents may have been forged, tampered with, cancelled or stolen?",
       "detail-required": true,
-      "detail-label": "Describe the circumstances and risk factors that trigger document fraud/authenticity checks for non-individual customers, and what steps you will take.",
+      "detail-label": "Describe your fraud detection procedures for non-individual documents and the verification steps you take",
       "correct-option": "Yes",
-      "mapping-confidence": 1.0,
       "source-rules": [
         "4.9.5(4)"
       ],
+      "mapping-confidence": 1.0,
       "process-id": "PROC-AML-002b"
     },
     {
-      "id": "4_9_6_1",
-      "label": "Does your program include risk-based systems and controls to determine whether you will use any available authentication service in respect of documents used to verify KYC information about individuals?",
+      "id": "4_9_5_5",
+      "group": "document-authentication-checks-non-individuals",
+      "label": "Does your AML/CTF program determine whether you will use any available authentication services for verifying non-individual documents?",
       "detail-required": true,
-      "detail-label": "Describe which authentication services you use or are available to you for document verification, and how you determine when to use them.",
+      "detail-label": "Describe any authentication services you use for non-individuals or why they are not used",
       "correct-option": "Yes",
-      "mapping-confidence": 1.0,
-      "source-rules": [
-        "4.9.3(5)"
-      ],
-      "process-id": "PROC-AML-002b"
-    },
-    {
-      "id": "4_9_6_2",
-      "label": "Does your program include risk-based systems and controls to determine whether you will use any available authentication service in respect of documents used to verify KYC information about non-individual customers?",
-      "detail-required": true,
-      "detail-label": "Describe which authentication services you use or are available to you for non-individual document verification, and how you determine when to use them.",
-      "correct-option": "Yes",
-      "mapping-confidence": 1.0,
       "source-rules": [
         "4.9.5(5)"
       ],
+      "mapping-confidence": 1.0,
       "process-id": "PROC-AML-002b"
     },
     {
-      "id": "4_9_6_3",
-      "label": "Does your program include risk-based systems and controls to determine whether and how you will confirm KYC information about an individual by independently initiating contact with the person that the individual claims to be?",
+      "id": "4_9_5_6",
+      "group": "document-independent-confirmation-non-individuals",
+      "label": "Does your AML/CTF program determine how and whether you will independently contact non-individual customers to confirm their information?",
       "detail-required": true,
-      "detail-label": "Describe your procedures for independent verification through direct contact, including when and how you conduct such verification.",
+      "detail-label": "Describe your independent confirmation procedures for non-individuals and the circumstances triggering their use",
       "correct-option": "Yes",
-      "mapping-confidence": 1.0,
-      "source-rules": [
-        "4.9.3(6)"
-      ],
-      "process-id": "PROC-AML-002b"
-    },
-    {
-      "id": "4_9_6_4",
-      "label": "Does your program include risk-based systems and controls to determine whether and how you will confirm KYC information about a non-individual customer by independently initiating contact with the customer?",
-      "detail-required": true,
-      "detail-label": "Describe your procedures for independent verification of non-individual customer information through direct contact, including when and how you conduct such verification.",
-      "correct-option": "Yes",
-      "mapping-confidence": 1.0,
       "source-rules": [
         "4.9.5(6)"
       ],
+      "mapping-confidence": 1.0,
       "process-id": "PROC-AML-002b"
     }
   ],
   "groups": [
     {
-      "id": "4_9",
-      "title": "Verification Standards \u2014 Documents",
-      "description": "Systems and controls for verification of KYC information using reliable and independent documentation for both individuals and non-individuals."
+      "id": "document-verification-framework",
+      "title": "Document Verification Framework",
+      "description": "Establish whether your AML/CTF program uses reliable and independent documentation to verify KYC information.",
+      "variant": "main"
     },
     {
-      "id": "4_9_1",
-      "title": "Program Scope & Eligibility",
-      "description": "Establishing whether the AML/CTF program uses document-based verification."
+      "id": "document-validity-checks",
+      "title": "Document Expiration & Validity",
+      "description": "Ensure documents used for verification have not expired and are still valid for use.",
+      "variant": "main"
     },
     {
-      "id": "4_9_2",
-      "title": "Collection & Selection of Documents",
-      "description": "Determining which reliable and independent documents will be used for verification."
+      "id": "document-standards-individuals",
+      "title": "Document Standards for Individuals",
+      "description": "Define risk-based requirements for which documents you will accept to verify information about individual customers, including name, date of birth, and residential address.",
+      "variant": "main"
     },
     {
-      "id": "4_9_3",
-      "title": "Verification of Individual KYC Information",
-      "description": "Specific controls for verifying information about individuals using documents."
+      "id": "document-authentication-checks",
+      "title": "Document Authentication for Individuals",
+      "description": "Establish procedures to detect and verify authenticity of individual documents, including fraud checks and authentication services.",
+      "variant": "main"
     },
     {
-      "id": "4_9_4",
-      "title": "Verification of Non-Individual KYC Information",
-      "description": "Specific controls for verifying information about customers who are not individuals using documents."
+      "id": "document-independent-confirmation",
+      "title": "Independent Confirmation for Individuals",
+      "description": "Define when and how you will independently contact individuals to confirm their KYC information.",
+      "variant": "main"
     },
     {
-      "id": "4_9_5",
-      "title": "Document Authenticity & Validity Checks",
-      "description": "Systems and controls for verifying document authenticity, currency, and integrity."
+      "id": "document-verification-non-individuals",
+      "title": "Document Verification for Non-Individuals",
+      "description": "Establish whether your AML/CTF program uses reliable and independent documentation to verify KYC information about customers that are not individuals.",
+      "variant": "main"
     },
     {
-      "id": "4_9_6",
-      "title": "Discrepancy Resolution & Independent Contact",
-      "description": "Procedures for handling verification failures and independently confirming KYC information."
+      "id": "document-standards-non-individuals",
+      "title": "Document Standards for Non-Individuals",
+      "description": "Define risk-based requirements for which documents you will accept to verify information about non-individual customers, including document contemporaneity and copy acceptance policies.",
+      "variant": "main"
+    },
+    {
+      "id": "document-authentication-checks-non-individuals",
+      "title": "Document Authentication for Non-Individuals",
+      "description": "Establish procedures to detect and verify authenticity of documents relating to non-individual customers, including fraud checks and authentication services.",
+      "variant": "main"
+    },
+    {
+      "id": "document-independent-confirmation-non-individuals",
+      "title": "Independent Confirmation for Non-Individuals",
+      "description": "Define when and how you will independently contact non-individual customers to confirm their information.",
+      "variant": "main"
     }
   ],
   "rules": [
     {
-      "target": "4_9_3",
-      "scope": "4_9_1_a",
+      "target": "document-validity-checks",
+      "scope": "4_9_1",
       "effect": "SHOW",
       "schema": {
         "const": "Yes"
       }
     },
     {
-      "target": "4_9_4",
-      "scope": "4_9_1_b",
+      "target": "document-standards-individuals",
+      "scope": "4_9_1",
       "effect": "SHOW",
       "schema": {
         "const": "Yes"
       }
     },
     {
-      "target": "4_9_2_1",
-      "scope": "4_9_1_a",
+      "target": "document-authentication-checks",
+      "scope": "4_9_1",
       "effect": "SHOW",
       "schema": {
         "const": "Yes"
       }
     },
     {
-      "target": "4_9_2_2",
-      "scope": "4_9_1_a",
+      "target": "document-independent-confirmation",
+      "scope": "4_9_1",
       "effect": "SHOW",
       "schema": {
         "const": "Yes"
       }
     },
     {
-      "target": "4_9_3_1",
-      "scope": "4_9_1_a",
+      "target": "document-standards-non-individuals",
+      "scope": "4_9_4",
       "effect": "SHOW",
       "schema": {
         "const": "Yes"
       }
     },
     {
-      "target": "4_9_6_1",
-      "scope": "4_9_1_a",
+      "target": "document-authentication-checks-non-individuals",
+      "scope": "4_9_4",
       "effect": "SHOW",
       "schema": {
         "const": "Yes"
       }
     },
     {
-      "target": "4_9_6_3",
-      "scope": "4_9_1_a",
-      "effect": "SHOW",
-      "schema": {
-        "const": "Yes"
-      }
-    },
-    {
-      "target": "4_9_2_3",
-      "scope": "4_9_1_b",
-      "effect": "SHOW",
-      "schema": {
-        "const": "Yes"
-      }
-    },
-    {
-      "target": "4_9_3_2",
-      "scope": "4_9_1_b",
-      "effect": "SHOW",
-      "schema": {
-        "const": "Yes"
-      }
-    },
-    {
-      "target": "4_9_5_2",
-      "scope": "4_9_1_b",
-      "effect": "SHOW",
-      "schema": {
-        "const": "Yes"
-      }
-    },
-    {
-      "target": "4_9_5_4",
-      "scope": "4_9_1_b",
-      "effect": "SHOW",
-      "schema": {
-        "const": "Yes"
-      }
-    },
-    {
-      "target": "4_9_6_2",
-      "scope": "4_9_1_b",
-      "effect": "SHOW",
-      "schema": {
-        "const": "Yes"
-      }
-    },
-    {
-      "target": "4_9_6_4",
-      "scope": "4_9_1_b",
-      "effect": "SHOW",
-      "schema": {
-        "const": "Yes"
-      }
-    },
-    {
-      "target": "4_9_5_1",
-      "scope": "4_9_1_a",
-      "effect": "SHOW",
-      "schema": {
-        "const": "Yes"
-      }
-    },
-    {
-      "target": "4_9_5_3",
-      "scope": "4_9_1_a",
+      "target": "document-independent-confirmation-non-individuals",
+      "scope": "4_9_4",
       "effect": "SHOW",
       "schema": {
         "const": "Yes"
       }
     }
-  ]
+  ],
+  "sub_scoping": [],
+  "form_links": []
 }

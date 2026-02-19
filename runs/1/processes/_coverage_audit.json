@@ -1,9 +1,9 @@
 {
   "summary": {
-    "overall_coverage_pct": 85.5,
+    "overall_coverage_pct": 78.3,
     "total_input_rules": 448,
-    "total_mapped_rules": 383,
-    "total_unmapped_rules": 65,
+    "total_mapped_rules": 351,
+    "total_unmapped_rules": 97,
     "total_low_confidence_controls": 0,
     "processes_audited": 15
   },
@@ -58,20 +58,6 @@
         "4.9.3(3)"
       ],
       "mapped_codes": [
-        "4.2.1",
-        "4.2.10",
-        "4.2.11",
-        "4.2.12",
-        "4.2.13",
-        "4.2.13(1)",
-        "4.2.13(2)",
-        "4.2.13(2)(a)",
-        "4.2.13(2)(b)",
-        "4.2.13(2)(c)",
-        "4.2.13(2)(i)",
-        "4.2.13(2)(i)(ii)",
-        "4.2.13(2)(i)(iii)",
-        "4.2.14",
         "4.2.2",
         "4.2.3",
         "4.2.3(1)",
@@ -94,7 +80,24 @@
         "4.2.7(2)",
         "4.2.7(3)",
         "4.2.8",
-        "4.2.9",
+        "4.2.9"
+      ],
+      "unmapped_codes": [
+        "4.2.1",
+        "4.2.10",
+        "4.2.11",
+        "4.2.12",
+        "4.2.13",
+        "4.2.13(1)",
+        "4.2.13(2)",
+        "4.2.13(2)(a)",
+        "4.2.13(2)(b)",
+        "4.2.13(2)(c)",
+        "4.2.13(2)(i)",
+        "4.2.13(2)(i)(ii)",
+        "4.2.13(2)(i)(iii)",
+        "4.2.14",
+        "4.9.3",
         "4.9.3(1)",
         "4.9.3(2)",
         "4.9.3(2)(a)",
@@ -103,15 +106,12 @@
         "4.9.3(2)(i)(ii)",
         "4.9.3(3)"
       ],
-      "unmapped_codes": [
-        "4.9.3"
-      ],
       "extra_codes": [],
-      "coverage_pct": 97.8,
+      "coverage_pct": 51.1,
       "total_input": 45,
-      "total_mapped": 44,
-      "total_unmapped": 1,
-      "total_controls": 17,
+      "total_mapped": 23,
+      "total_unmapped": 22,
+      "total_controls": 8,
       "low_confidence": []
     },
     "cdd-companies": {
@@ -184,7 +184,6 @@
         "4.3.9(3)"
       ],
       "mapped_codes": [
-        "4.3.1",
         "4.3.10",
         "4.3.10(1)",
         "4.3.10(2)",
@@ -218,6 +217,7 @@
         "4.3.3(3)(c)",
         "4.3.3(3)(d)",
         "4.3.3(3)(e)",
+        "4.3.3(3)(i)",
         "4.3.3(3)(i)(ii)",
         "4.3.3(3)(i)(iii)",
         "4.3.4",
@@ -248,19 +248,18 @@
         "4.3.9(2)"
       ],
       "unmapped_codes": [
-        "4.3.3(3)(i)",
+        "4.3.1",
         "4.3.9",
         "4.3.9(3)"
       ],
       "extra_codes": [
-        "4.3.3(3)(c)(i)",
         "4.3.9(1)"
       ],
       "coverage_pct": 95.4,
       "total_input": 65,
       "total_mapped": 62,
       "total_unmapped": 3,
-      "total_controls": 20,
+      "total_controls": 17,
       "low_confidence": []
     },
     "cdd-trusts": {
@@ -356,15 +355,9 @@
         "4.4.9(2)(b)"
       ],
       "mapped_codes": [
-        "4.4.1",
         "4.4.10",
         "4.4.11",
         "4.4.12",
-        "4.4.13",
-        "4.4.13(1)",
-        "4.4.13(2)",
-        "4.4.13(3)",
-        "4.4.14",
         "4.4.15",
         "4.4.15(1)",
         "4.4.15(2)",
@@ -378,49 +371,59 @@
         "4.4.18(1)",
         "4.4.18(2)",
         "4.4.18(3)",
-        "4.4.19",
-        "4.4.19(1)",
-        "4.4.19(2)",
-        "4.4.19(3)",
-        "4.4.19(4)",
-        "4.4.19(5)",
-        "4.4.19(6)",
+        "4.4.18(3)(a)",
+        "4.4.18(3)(b)",
+        "4.4.18(3)(c)",
         "4.4.2",
         "4.4.2(1)",
         "4.4.2(2)",
-        "4.4.3",
         "4.4.3(1)",
         "4.4.3(2)",
         "4.4.3(3)",
         "4.4.3(4)",
         "4.4.3(5)",
+        "4.4.3(5)(a)",
+        "4.4.3(5)(b)",
+        "4.4.3(5)(c)",
+        "4.4.3(5)(d)",
         "4.4.3(6)",
         "4.4.3(7)",
         "4.4.3(8)",
         "4.4.4",
-        "4.4.5",
         "4.4.5(1)",
         "4.4.5(2)",
         "4.4.5(3)",
         "4.4.5(4)",
         "4.4.5(5)",
+        "4.4.5(5)(a)",
+        "4.4.5(5)(b)",
+        "4.4.5(5)(c)",
+        "4.4.5(5)(d)",
         "4.4.6",
         "4.4.7",
         "4.4.8",
         "4.4.8(1)",
         "4.4.8(2)",
+        "4.4.8(2)(a)",
+        "4.4.8(2)(b)",
         "4.4.8(3)",
         "4.4.8(4)",
-        "4.4.9",
         "4.4.9(1)",
-        "4.4.9(2)"
+        "4.4.9(2)",
+        "4.4.9(2)(a)",
+        "4.4.9(2)(b)"
       ],
       "unmapped_codes": [
+        "4.4.1",
+        "4.4.13",
+        "4.4.13(1)",
+        "4.4.13(2)",
         "4.4.13(2)(a)",
         "4.4.13(2)(b)",
-        "4.4.18(3)(a)",
-        "4.4.18(3)(b)",
-        "4.4.18(3)(c)",
+        "4.4.13(3)",
+        "4.4.14",
+        "4.4.19",
+        "4.4.19(1)",
         "4.4.19(1)(a)",
         "4.4.19(1)(b)",
         "4.4.19(1)(c)",
@@ -428,31 +431,27 @@
         "4.4.19(1)(e)",
         "4.4.19(1)(i)",
         "4.4.19(1)(i)(ii)",
+        "4.4.19(2)",
+        "4.4.19(3)",
+        "4.4.19(4)",
         "4.4.19(4)(a)",
         "4.4.19(4)(b)",
         "4.4.19(4)(i)",
         "4.4.19(4)(i)(ii)",
-        "4.4.3(5)(a)",
-        "4.4.3(5)(b)",
-        "4.4.3(5)(c)",
-        "4.4.3(5)(d)",
+        "4.4.19(5)",
+        "4.4.19(6)",
+        "4.4.3",
+        "4.4.5",
         "4.4.5(2)(a)",
         "4.4.5(2)(b)",
-        "4.4.5(5)(a)",
-        "4.4.5(5)(b)",
-        "4.4.5(5)(c)",
-        "4.4.5(5)(d)",
-        "4.4.8(2)(a)",
-        "4.4.8(2)(b)",
-        "4.4.9(2)(a)",
-        "4.4.9(2)(b)"
+        "4.4.9"
       ],
       "extra_codes": [],
-      "coverage_pct": 65.9,
+      "coverage_pct": 64.8,
       "total_input": 88,
-      "total_mapped": 58,
-      "total_unmapped": 30,
-      "total_controls": 20,
+      "total_mapped": 57,
+      "total_unmapped": 31,
+      "total_controls": 27,
       "low_confidence": []
     },
     "cdd-partnerships": {
@@ -485,7 +484,6 @@
         "4.5.9"
       ],
       "mapped_codes": [
-        "4.5.1",
         "4.5.2",
         "4.5.2(1)",
         "4.5.2(2)",
@@ -511,13 +509,15 @@
         "4.5.8(2)",
         "4.5.9"
       ],
-      "unmapped_codes": [],
+      "unmapped_codes": [
+        "4.5.1"
+      ],
       "extra_codes": [],
-      "coverage_pct": 100.0,
+      "coverage_pct": 96.0,
       "total_input": 25,
-      "total_mapped": 25,
-      "total_unmapped": 0,
-      "total_controls": 18,
+      "total_mapped": 24,
+      "total_unmapped": 1,
+      "total_controls": 14,
       "low_confidence": []
     },
     "cdd-associations": {
@@ -560,27 +560,18 @@
         "4.6.9"
       ],
       "mapped_codes": [
-        "4.6.1",
         "4.6.2",
-        "4.6.2(1)",
-        "4.6.2(2)",
-        "4.6.3",
-        "4.6.3(1)",
         "4.6.3(1)(a)",
         "4.6.3(1)(b)",
         "4.6.3(1)(c)",
         "4.6.3(1)(d)",
-        "4.6.3(2)",
         "4.6.3(2)(a)",
         "4.6.3(2)(b)",
         "4.6.3(2)(c)",
         "4.6.3(2)(d)",
         "4.6.4",
-        "4.6.5",
-        "4.6.5(1)",
         "4.6.5(1)(a)",
         "4.6.5(1)(b)",
-        "4.6.5(2)",
         "4.6.5(2)(a)",
         "4.6.5(2)(b)",
         "4.6.6",
@@ -596,13 +587,23 @@
         "4.6.8(2)",
         "4.6.9"
       ],
-      "unmapped_codes": [],
+      "unmapped_codes": [
+        "4.6.1",
+        "4.6.2(1)",
+        "4.6.2(2)",
+        "4.6.3",
+        "4.6.3(1)",
+        "4.6.3(2)",
+        "4.6.5",
+        "4.6.5(1)",
+        "4.6.5(2)"
+      ],
       "extra_codes": [],
-      "coverage_pct": 100.0,
+      "coverage_pct": 74.3,
       "total_input": 35,
-      "total_mapped": 35,
-      "total_unmapped": 0,
-      "total_controls": 11,
+      "total_mapped": 26,
+      "total_unmapped": 9,
+      "total_controls": 18,
       "low_confidence": []
     },
     "cdd-cooperatives": {
@@ -635,7 +636,6 @@
         "4.7.9"
       ],
       "mapped_codes": [
-        "4.7.1",
         "4.7.2",
         "4.7.2(1)",
         "4.7.2(2)",
@@ -661,13 +661,15 @@
         "4.7.8(2)",
         "4.7.9"
       ],
-      "unmapped_codes": [],
+      "unmapped_codes": [
+        "4.7.1"
+      ],
       "extra_codes": [],
-      "coverage_pct": 100.0,
+      "coverage_pct": 96.0,
       "total_input": 25,
-      "total_mapped": 25,
-      "total_unmapped": 0,
-      "total_controls": 9,
+      "total_mapped": 24,
+      "total_unmapped": 1,
+      "total_controls": 13,
       "low_confidence": []
     },
     "cdd-government": {
@@ -690,10 +692,7 @@
         "4.8.9"
       ],
       "mapped_codes": [
-        "4.8.1",
         "4.8.2",
-        "4.8.2(1)",
-        "4.8.2(2)",
         "4.8.3",
         "4.8.3(1)",
         "4.8.3(2)",
@@ -706,13 +705,17 @@
         "4.8.8",
         "4.8.9"
       ],
-      "unmapped_codes": [],
+      "unmapped_codes": [
+        "4.8.1",
+        "4.8.2(1)",
+        "4.8.2(2)"
+      ],
       "extra_codes": [],
-      "coverage_pct": 100.0,
+      "coverage_pct": 80.0,
       "total_input": 15,
-      "total_mapped": 15,
-      "total_unmapped": 0,
-      "total_controls": 9,
+      "total_mapped": 12,
+      "total_unmapped": 3,
+      "total_controls": 8,
       "low_confidence": []
     },
     "risk-assessment": {
@@ -748,8 +751,6 @@
         "4.1.8"
       ],
       "mapped_codes": [
-        "4.1.2(1)",
-        "4.1.2(2)",
         "4.1.3(1)",
         "4.1.3(1)(a)",
         "4.1.3(1)(b)",
@@ -758,13 +759,7 @@
         "4.1.3(4)",
         "4.1.3(5)",
         "4.1.3(6)",
-        "4.1.3(7)"
-      ],
-      "unmapped_codes": [
-        "4.1.1",
-        "4.1.2",
-        "4.1.3",
-        "4.1.4",
+        "4.1.3(7)",
         "4.1.4(1)",
         "4.1.4(2)",
         "4.1.4(3)",
@@ -772,19 +767,27 @@
         "4.1.4(5)",
         "4.1.4(6)",
         "4.1.4(7)",
-        "4.1.5",
         "4.1.5(1)",
         "4.1.5(2)",
-        "4.1.6",
         "4.1.7",
         "4.1.8"
       ],
+      "unmapped_codes": [
+        "4.1.1",
+        "4.1.2",
+        "4.1.2(1)",
+        "4.1.2(2)",
+        "4.1.3",
+        "4.1.4",
+        "4.1.5",
+        "4.1.6"
+      ],
       "extra_codes": [],
-      "coverage_pct": 39.3,
+      "coverage_pct": 71.4,
       "total_input": 28,
-      "total_mapped": 11,
-      "total_unmapped": 17,
-      "total_controls": 8,
+      "total_mapped": 20,
+      "total_unmapped": 8,
+      "total_controls": 19,
       "low_confidence": []
     },
     "verification-documents": {
@@ -811,6 +814,7 @@
       "mapped_codes": [
         "4.9.1",
         "4.9.2",
+        "4.9.3",
         "4.9.3(1)",
         "4.9.3(2)",
         "4.9.3(3)",
@@ -818,6 +822,7 @@
         "4.9.3(5)",
         "4.9.3(6)",
         "4.9.4",
+        "4.9.5",
         "4.9.5(1)",
         "4.9.5(2)",
         "4.9.5(3)",
@@ -825,16 +830,13 @@
         "4.9.5(5)",
         "4.9.5(6)"
       ],
-      "unmapped_codes": [
-        "4.9.3",
-        "4.9.5"
-      ],
+      "unmapped_codes": [],
       "extra_codes": [],
-      "coverage_pct": 88.2,
+      "coverage_pct": 100.0,
       "total_input": 17,
-      "total_mapped": 15,
-      "total_unmapped": 2,
-      "total_controls": 15,
+      "total_mapped": 17,
+      "total_unmapped": 0,
+      "total_controls": 13,
       "low_confidence": []
     },
     "verification-electronic": {
@@ -856,7 +858,7 @@
       ],
       "mapped_codes": [
         "4.10.1",
-        "4.10.2(1)",
+        "4.10.2",
         "4.10.2(1)(a)",
         "4.10.2(1)(b)",
         "4.10.2(1)(c)",
@@ -869,14 +871,14 @@
         "4.10.2(4)"
       ],
       "unmapped_codes": [
-        "4.10.2"
+        "4.10.2(1)"
       ],
       "extra_codes": [],
       "coverage_pct": 92.3,
       "total_input": 13,
       "total_mapped": 12,
       "total_unmapped": 1,
-      "total_controls": 11,
+      "total_controls": 12,
       "low_confidence": []
     },
     "agent-management": {
@@ -914,24 +916,22 @@
         "4.11.9"
       ],
       "mapped_codes": [
-        "4.11.10",
+        "4.11.10(1)",
+        "4.11.10(2)",
         "4.11.12(1)",
         "4.11.12(2)",
         "4.11.12(3)",
         "4.11.12(4)",
         "4.11.12(5)(a)",
         "4.11.12(5)(b)",
-        "4.11.13",
         "4.11.13(1)",
         "4.11.13(2)",
         "4.11.13(3)",
         "4.11.13(4)",
-        "4.11.2",
         "4.11.2(1)",
         "4.11.2(2)",
         "4.11.3",
         "4.11.4",
-        "4.11.6",
         "4.11.6(1)",
         "4.11.6(2)",
         "4.11.7",
@@ -940,19 +940,21 @@
       ],
       "unmapped_codes": [
         "4.11.1",
-        "4.11.10(1)",
-        "4.11.10(2)",
+        "4.11.10",
         "4.11.11",
         "4.11.12",
         "4.11.12(5)",
-        "4.11.5"
+        "4.11.13",
+        "4.11.2",
+        "4.11.5",
+        "4.11.6"
       ],
       "extra_codes": [],
-      "coverage_pct": 76.7,
+      "coverage_pct": 70.0,
       "total_input": 30,
-      "total_mapped": 23,
-      "total_unmapped": 7,
-      "total_controls": 17,
+      "total_mapped": 21,
+      "total_unmapped": 9,
+      "total_controls": 20,
       "low_confidence": []
     },
     "beneficial-ownership": {
@@ -1016,7 +1018,6 @@
         "4.12.4(1)",
         "4.12.4(2)",
         "4.12.4(3)",
-        "4.12.5",
         "4.12.6",
         "4.12.7",
         "4.12.7(1)",
@@ -1039,14 +1040,15 @@
         "4.12.9(3)(c)"
       ],
       "unmapped_codes": [
-        "4.12.2"
+        "4.12.2",
+        "4.12.5"
       ],
       "extra_codes": [],
-      "coverage_pct": 97.4,
+      "coverage_pct": 94.9,
       "total_input": 39,
-      "total_mapped": 38,
-      "total_unmapped": 1,
-      "total_controls": 14,
+      "total_mapped": 37,
+      "total_unmapped": 2,
+      "total_controls": 17,
       "low_confidence": []
     },
     "pep-screening": {
@@ -1066,24 +1068,25 @@
       ],
       "mapped_codes": [
         "4.13.1",
-        "4.13.2",
         "4.13.2(1)",
-        "4.13.2(2)",
-        "4.13.2(3)",
-        "4.13.3",
         "4.13.3(1)",
         "4.13.3(2)",
         "4.13.3(3)",
         "4.13.3(4)",
         "4.13.4"
       ],
-      "unmapped_codes": [],
+      "unmapped_codes": [
+        "4.13.2",
+        "4.13.2(2)",
+        "4.13.2(3)",
+        "4.13.3"
+      ],
       "extra_codes": [],
-      "coverage_pct": 100.0,
+      "coverage_pct": 63.6,
       "total_input": 11,
-      "total_mapped": 11,
-      "total_unmapped": 0,
-      "total_controls": 11,
+      "total_mapped": 7,
+      "total_unmapped": 4,
+      "total_controls": 7,
       "low_confidence": []
     },
     "record-keeping": {
@@ -1093,20 +1096,18 @@
         "4.14.1(1)",
         "4.14.1(2)"
       ],
-      "mapped_codes": [
+      "mapped_codes": [],
+      "unmapped_codes": [
         "4.14.1",
         "4.14.1(1)",
         "4.14.1(2)"
       ],
-      "unmapped_codes": [],
-      "extra_codes": [
-        "4.15"
-      ],
-      "coverage_pct": 100.0,
+      "extra_codes": [],
+      "coverage_pct": 0.0,
       "total_input": 3,
-      "total_mapped": 3,
-      "total_unmapped": 0,
-      "total_controls": 3,
+      "total_mapped": 0,
+      "total_unmapped": 3,
+      "total_controls": 0,
       "low_confidence": []
     },
     "alternative-id": {
@@ -1128,21 +1129,20 @@
         "4.15.3",
         "4.15.4",
         "4.15.5",
-        "4.15.6"
-      ],
-      "unmapped_codes": [
+        "4.15.6",
         "4.15.6(1)",
         "4.15.6(2)",
         "4.15.6(3)"
       ],
+      "unmapped_codes": [],
       "extra_codes": [
         "4.15.1A"
       ],
-      "coverage_pct": 66.7,
+      "coverage_pct": 100.0,
       "total_input": 9,
-      "total_mapped": 6,
-      "total_unmapped": 3,
-      "total_controls": 10,
+      "total_mapped": 9,
+      "total_unmapped": 0,
+      "total_controls": 7,
       "low_confidence": []
     }
   }

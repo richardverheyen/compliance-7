@@ -4,15 +4,14 @@
 import json
 import pytest
 from architect import (
-    generate_section_gating_rules,
-    validate_ids,
-    get_top_level_section,
+    validate_output,
     gather_process_nodes,
     build_process_user_message,
     extract_input_rule_codes,
     extract_output_rule_codes,
     compute_coverage_report,
     ID_REGEX,
+    SLUG_REGEX,
     PROCESS_FORMS,
     REVIEW_TOOL,
 )
@@ -55,24 +54,6 @@ def sample_groups():
         {"id": "4_1_3", "depth": 2, "first_node_index": 5, "x_indent": 90.0},
         {"id": "4_2", "depth": 1, "first_node_index": 8, "x_indent": 90.0},
     ]
-
-
-@pytest.fixture
-def intro():
-    """Minimal introduction.json fixture."""
-    return {
-        "scoping": {
-            "4_1_4_1": {"sections": ["4_2"], "processes": ["PROC-AML-002"]},
-            "4_1_4_2": {"sections": ["4_3"], "processes": ["PROC-AML-002"]},
-            "4_1_4_3": {"sections": ["4_4"], "processes": ["PROC-AML-002"]},
-            "4_1_5_1": {"sections": ["4_12"], "processes": ["PROC-AML-003"]},
-            "4_1_8": {"sections": ["4_11"], "processes": ["PROC-AML-001"]},
-        },
-        "alwaysActive": {
-            "sections": ["4_1", "4_9", "4_10", "4_14", "4_15"],
-            "processes": [],
-        },
-    }
 
 
 # ---------------------------------------------------------------------------
@@ -128,61 +109,49 @@ class TestEnrichGroupsWithNodes:
 
 
 # ---------------------------------------------------------------------------
-# Section gating rules tests
-# ---------------------------------------------------------------------------
-
-class TestSectionGatingRules:
-    def test_scoped_sections_get_rules(self, intro):
-        """Every section in scoping should get a SHOW rule."""
-        rules = generate_section_gating_rules(intro)
-        assert len(rules["4_2"]) == 1
-        assert rules["4_2"][0]["scope"] == "4_1_4_1"
-        assert rules["4_2"][0]["effect"] == "SHOW"
-
-    def test_always_active_sections_get_no_rules(self, intro):
-        """Always-active sections should have empty rule lists."""
-        rules = generate_section_gating_rules(intro)
-        assert rules["4_1"] == []
-        assert rules["4_9"] == []
-        assert rules["4_10"] == []
-
-    def test_all_scoped_sections_covered(self, intro):
-        """Every section referenced in scoping should appear in rules."""
-        rules = generate_section_gating_rules(intro)
-        for mapping in intro["scoping"].values():
-            for section in mapping["sections"]:
-                assert section in rules
-
-    def test_derived_sections(self, intro):
-        """Derived sections (4_12, 4_13) should get rules from their scoping entries."""
-        rules = generate_section_gating_rules(intro)
-        assert "4_12" in rules
-        assert rules["4_12"][0]["scope"] == "4_1_5_1"
-
-
-# ---------------------------------------------------------------------------
 # Validation tests
 # ---------------------------------------------------------------------------
 
 class TestValidation:
-    def test_valid_ids(self):
+    def test_valid_output(self):
         data = {
-            "controls": [{"id": "4_2_3_1"}],
-            "groups": [{"id": "4_2_3"}],
-            "rules": [{"target": "4_2_3_1_a"}],
+            "controls": [{"id": "4_2_3_1", "group": "collection-kyc"}],
+            "groups": [{"id": "collection-kyc", "variant": "main"}],
+            "rules": [{"target": "4_2_3_1_a", "scope": "sub-domestic", "effect": "SHOW", "schema": {"const": "Yes"}}],
         }
-        assert validate_ids(data) == []
+        warnings = validate_output(data)
+        # Should have no errors about IDs — only possible orphan warning if controls don't match
+        id_errors = [w for w in warnings if "Invalid" in w]
+        assert id_errors == []
 
     def test_invalid_control_id(self):
-        data = {"controls": [{"id": "bad_id"}], "groups": [], "rules": []}
-        warnings = validate_ids(data)
-        assert len(warnings) == 1
-        assert "bad_id" in warnings[0]
+        data = {"controls": [{"id": "bad_id", "group": "somegroup"}], "groups": [{"id": "somegroup", "variant": "main"}], "rules": []}
+        warnings = validate_output(data)
+        assert any("bad_id" in w for w in warnings)
 
     def test_invalid_group_id(self):
-        data = {"controls": [], "groups": [{"id": "4.2.3"}], "rules": []}
-        warnings = validate_ids(data)
-        assert len(warnings) == 1
+        data = {"controls": [], "groups": [{"id": "4.2.3", "variant": "main"}], "rules": []}
+        warnings = validate_output(data)
+        assert any("Invalid group" in w for w in warnings)
+
+    def test_control_missing_group(self):
+        data = {"controls": [{"id": "4_2_3"}], "groups": [], "rules": []}
+        warnings = validate_output(data)
+        assert any("missing 'group'" in w for w in warnings)
+
+    def test_control_unknown_group_ref(self):
+        data = {"controls": [{"id": "4_2_3", "group": "nonexistent"}], "groups": [], "rules": []}
+        warnings = validate_output(data)
+        assert any("unknown group slug" in w for w in warnings)
+
+    def test_orphan_group_warning(self):
+        data = {
+            "controls": [],
+            "groups": [{"id": "collection-kyc", "variant": "main"}],
+            "rules": [],
+        }
+        warnings = validate_output(data)
+        assert any("Orphan group" in w for w in warnings)
 
     def test_id_regex_valid(self):
         valid = ["4_1", "4_2_3", "4_2_3_1", "4_2_3_1_a", "4_15_6"]
@@ -194,17 +163,15 @@ class TestValidation:
         for v in invalid:
             assert not ID_REGEX.match(v), f"{v} should be invalid"
 
+    def test_slug_regex_valid(self):
+        valid = ["collection-kyc", "verification", "safe-harbour-listed", "a", "abc123"]
+        for v in valid:
+            assert SLUG_REGEX.match(v), f"{v} should be a valid slug"
 
-# ---------------------------------------------------------------------------
-# Utility tests
-# ---------------------------------------------------------------------------
-
-class TestUtils:
-    def test_get_top_level_section(self):
-        assert get_top_level_section("4_2") == "4_2"
-        assert get_top_level_section("4_2_3") == "4_2"
-        assert get_top_level_section("4_2_3_1_a") == "4_2"
-        assert get_top_level_section("4_12_7_2") == "4_12"
+    def test_slug_regex_invalid(self):
+        invalid = ["4_2_3", "CamelCase", "-starts-with-dash", "has spaces", "4_3", ""]
+        for v in invalid:
+            assert not SLUG_REGEX.match(v), f"{v} should be an invalid slug"
 
 
 # ---------------------------------------------------------------------------
@@ -226,6 +193,7 @@ def validate_section(data: dict) -> list[str]:
         return errors
 
     # Check control fields
+    group_ids = {g["id"] for g in data["groups"] if "id" in g}
     for c in data["controls"]:
         if "id" not in c:
             errors.append(f"Control missing 'id': {c}")
@@ -237,6 +205,8 @@ def validate_section(data: dict) -> list[str]:
             errors.append(f"Control missing 'correct-option': {c.get('id', '?')}")
         elif c["correct-option"] not in ("Yes", "No", "N/A"):
             errors.append(f"Invalid correct-option '{c['correct-option']}' in {c.get('id', '?')}")
+        if "group" not in c:
+            errors.append(f"Control missing 'group': {c.get('id', '?')}")
 
     # Check group fields
     for g in data["groups"]:
@@ -244,6 +214,10 @@ def validate_section(data: dict) -> list[str]:
             errors.append(f"Group missing 'id': {g}")
         if "title" not in g:
             errors.append(f"Group missing 'title': {g.get('id', '?')}")
+        if "variant" not in g:
+            errors.append(f"Group missing 'variant': {g.get('id', '?')}")
+        elif g["variant"] not in ("main", "subprocess"):
+            errors.append(f"Invalid variant '{g['variant']}' in group {g.get('id', '?')}")
 
     # Check rule fields
     for r in data["rules"]:
@@ -271,9 +245,9 @@ def validate_section(data: dict) -> list[str]:
 class TestSchemaValidation:
     def test_valid_section(self):
         data = {
-            "controls": [{"id": "4_2_3_1", "label": "Q?", "detail-required": False, "correct-option": "Yes"}],
-            "groups": [{"id": "4_2_3", "title": "Collection"}],
-            "rules": [{"target": "4_2", "scope": "4_1_4_1", "effect": "SHOW", "schema": {"const": "Yes"}}],
+            "controls": [{"id": "4_2_3_1", "label": "Q?", "detail-required": False, "correct-option": "Yes", "group": "collection"}],
+            "groups": [{"id": "collection", "title": "Collection", "variant": "main"}],
+            "rules": [{"target": "4_2_3_1", "scope": "4_1_4_1", "effect": "SHOW", "schema": {"const": "Yes"}}],
         }
         assert validate_section(data) == []
 
@@ -284,7 +258,7 @@ class TestSchemaValidation:
             "rules": [],
         }
         errors = validate_section(data)
-        assert len(errors) == 3  # missing label, detail-required, correct-option
+        assert len(errors) == 4  # missing label, detail-required, correct-option, group
 
     def test_invalid_correct_option(self):
         data = {
@@ -311,24 +285,9 @@ class TestRealData:
         with open(path) as f:
             return json.load(f)
 
-    @pytest.fixture
-    def real_intro(self):
-        path = "data/introduction.json"
-        with open(path) as f:
-            return json.load(f)
-
     def test_all_groups_have_text_nodes_key(self, real_groups_enriched):
         for g in real_groups_enriched:
             assert "text_nodes" in g, f"Group {g['id']} missing text_nodes"
-
-    def test_gating_covers_all_scoped_sections(self, real_intro):
-        rules = generate_section_gating_rules(real_intro)
-        scoping = real_intro["scoping"]
-        for control_id, mapping in scoping.items():
-            for section in mapping["sections"]:
-                assert section in rules
-                matching = [r for r in rules[section] if r["scope"] == control_id]
-                assert len(matching) == 1, f"Expected 1 rule for {section} from {control_id}"
 
 
 import os
@@ -340,11 +299,12 @@ import os
 
 class TestProcessForms:
     def test_all_forms_have_required_keys(self):
-        """Every process form must have title, source_groups, and gated_by."""
+        """Every process form must have all required fields."""
+        required_keys = ("title", "source_groups", "gated_by", "sub_types",
+                         "form_links", "subprocess_groups", "architect_notes")
         for pid, form in PROCESS_FORMS.items():
-            assert "title" in form, f"{pid} missing title"
-            assert "source_groups" in form, f"{pid} missing source_groups"
-            assert "gated_by" in form, f"{pid} missing gated_by"
+            for key in required_keys:
+                assert key in form, f"{pid} missing '{key}'"
 
     def test_source_groups_are_lists(self):
         for pid, form in PROCESS_FORMS.items():
@@ -374,6 +334,66 @@ class TestProcessForms:
                    "record-keeping", "alternative-id"]
         for pid in ungated:
             assert PROCESS_FORMS[pid]["gated_by"] is None, f"{pid} should not be gated"
+
+    def test_sub_types_are_lists(self):
+        """sub_types must be a list; each entry must have id (slug) and label."""
+        for pid, form in PROCESS_FORMS.items():
+            assert isinstance(form["sub_types"], list), f"{pid} sub_types not a list"
+            for st in form["sub_types"]:
+                assert "id" in st, f"{pid} sub_type missing 'id'"
+                assert "label" in st, f"{pid} sub_type missing 'label'"
+                assert SLUG_REGEX.match(st["id"]), \
+                    f"{pid} sub_type id '{st['id']}' is not a valid slug"
+
+    def test_form_links_structure(self):
+        """form_links must be a list; each entry must have target, label, gated_by (valid ID)."""
+        for pid, form in PROCESS_FORMS.items():
+            assert isinstance(form["form_links"], list), f"{pid} form_links not a list"
+            for fl in form["form_links"]:
+                assert "target" in fl, f"{pid} form_link missing 'target'"
+                assert "label" in fl, f"{pid} form_link missing 'label'"
+                assert "gated_by" in fl, f"{pid} form_link missing 'gated_by'"
+                assert ID_REGEX.match(fl["gated_by"]), \
+                    f"{pid} form_link gated_by '{fl['gated_by']}' is not a valid ID"
+                assert fl["target"] in PROCESS_FORMS, \
+                    f"{pid} form_link target '{fl['target']}' is not a known form"
+
+    def test_subprocess_groups_are_slug_lists(self):
+        """subprocess_groups must be a list of valid slugs."""
+        for pid, form in PROCESS_FORMS.items():
+            assert isinstance(form["subprocess_groups"], list), f"{pid} subprocess_groups not a list"
+            for sg in form["subprocess_groups"]:
+                assert SLUG_REGEX.match(sg), \
+                    f"{pid} subprocess_group '{sg}' is not a valid slug"
+
+    def test_architect_notes_are_string_lists(self):
+        """architect_notes must be a list of strings."""
+        for pid, form in PROCESS_FORMS.items():
+            assert isinstance(form["architect_notes"], list), f"{pid} architect_notes not a list"
+            for note in form["architect_notes"]:
+                assert isinstance(note, str), f"{pid} architect_note is not a string: {note!r}"
+
+    def test_cdd_forms_have_no_scope_gate_notes(self):
+        """All CDD forms should instruct architect not to generate scope gate questions."""
+        for pid, form in PROCESS_FORMS.items():
+            if pid.startswith("cdd-"):
+                notes_text = " ".join(form["architect_notes"])
+                assert "gated externally" in notes_text or "Do NOT generate a top-level scope gate" in notes_text, \
+                    f"{pid} architect_notes should instruct against scope gate questions"
+
+    def test_cdd_individuals_has_form_links(self):
+        """cdd-individuals should link to verification forms for safe harbour."""
+        form = PROCESS_FORMS["cdd-individuals"]
+        assert len(form["form_links"]) == 2
+        targets = {fl["target"] for fl in form["form_links"]}
+        assert "verification-documents" in targets
+        assert "verification-electronic" in targets
+
+    def test_cdd_companies_has_subprocess_groups(self):
+        """cdd-companies should define subprocess group slugs for safe harbour."""
+        form = PROCESS_FORMS["cdd-companies"]
+        assert len(form["subprocess_groups"]) > 0
+        assert "safe-harbour-listed" in form["subprocess_groups"]
 
 
 @pytest.mark.skipif(not HAS_MAIN, reason="main.py import failed (PyMuPDF dependency)")
@@ -415,8 +435,9 @@ class TestProcessOutput:
                 "detail-required": True,
                 "correct-option": "Yes",
                 "source-rules": ["4.2.3", "4.2.4"],
+                "group": "collection-kyc",
             }],
-            "groups": [{"id": "4_2", "title": "Collection of KYC Information"}],
+            "groups": [{"id": "collection-kyc", "title": "Collection of KYC Information", "variant": "main"}],
             "rules": [],
         }
         errors = validate_section(data)
@@ -435,7 +456,7 @@ class TestProcessOutput:
         assert all(isinstance(r, str) for r in ctrl["source-rules"])
 
     def test_build_process_user_message(self):
-        """build_process_user_message should include form title and text nodes."""
+        """build_process_user_message should include form title, text nodes, and new schema hints."""
         form_def = PROCESS_FORMS["cdd-individuals"]
         text_nodes = [
             {"node_index": 0, "text": "Test node", "rule_code": "4.2.1", "is_bold": False, "is_italic": False},
@@ -444,7 +465,13 @@ class TestProcessOutput:
         assert "Customer Due Diligence" in msg
         assert "Individuals" in msg
         assert "[4.2.1] Test node" in msg
-        assert "source-rules" in msg
+        # New schema: message must remind LLM about slug groups and group field on controls
+        assert "group" in msg
+        assert "slug" in msg
+        # Gating context should be injected
+        assert "4_1_4_1" in msg
+        # Sub-type IDs should appear
+        assert "sub-individual" in msg
 
 
 # ---------------------------------------------------------------------------
@@ -558,8 +585,9 @@ class TestCoverageAudit:
                 "detail-required": False,
                 "correct-option": "Yes",
                 "mapping-confidence": 0.85,
+                "group": "collection-kyc",
             }],
-            "groups": [],
+            "groups": [{"id": "collection-kyc", "title": "Collection", "variant": "main"}],
             "rules": [],
         }
         errors = validate_section(data)

@@ -1,67 +1,126 @@
 {
   "controls": [
     {
-      "id": "4_4_1",
-      "label": "Does your reporting entity have any customers who act in the capacity of trustee of a trust?",
-      "detail-required": false,
-      "correct-option": "N/A",
+      "id": "4_4_2",
+      "group": "general-cdd-obligation",
+      "label": "Do you have risk-based systems and controls to ensure the trust exists and that trustee and beneficiary names (or class descriptions) have been provided?",
+      "detail-required": true,
+      "detail-label": "Describe your risk-based systems and controls for verifying trust existence and obtaining trustee/beneficiary information",
+      "correct-option": "Yes",
       "process-id": "PROC-AML-002",
       "source-rules": [
-        "4.4.1"
-      ],
-      "mapping-confidence": 1.0
-    },
-    {
-      "id": "4_4_2",
-      "label": "Does your AML/CTF program include risk-based systems and controls to verify that the trust exists?",
-      "detail-required": true,
-      "detail-label": "Describe the risk-based systems and controls used to verify trust existence",
-      "correct-option": "Yes",
-      "process-id": "PROC-AML-002c",
-      "source-rules": [
         "4.4.2",
-        "4.4.2(1)"
-      ],
-      "mapping-confidence": 0.9
-    },
-    {
-      "id": "4_4_2_2",
-      "label": "Does your program include systems and controls to verify that the name of each trustee and beneficiary (or class description) has been provided?",
-      "detail-required": true,
-      "detail-label": "Describe how you verify trustee and beneficiary information has been provided",
-      "correct-option": "Yes",
-      "process-id": "PROC-AML-002c",
-      "source-rules": [
-        "4.4.2",
+        "4.4.2(1)",
         "4.4.2(2)"
       ],
       "mapping-confidence": 0.9
     },
     {
-      "id": "4_4_3",
-      "label": "Does your program include a procedure to collect minimum KYC information about trust customers (trust name, trustee business name, trust type, country of establishment, settlor name with exceptions, and trustee details)?",
-      "detail-required": true,
-      "detail-label": "Describe your procedure for collecting minimum KYC information for trusts",
+      "id": "4_4_3_1",
+      "group": "trust-existence-collection",
+      "label": "Do you collect the full name of the trust (if any)?",
+      "detail-required": false,
       "correct-option": "Yes",
       "process-id": "PROC-AML-002a",
       "source-rules": [
-        "4.4.3",
-        "4.4.3(1)",
-        "4.4.3(2)",
-        "4.4.3(3)",
-        "4.4.3(4)",
+        "4.4.3(1)"
+      ],
+      "mapping-confidence": 1.0
+    },
+    {
+      "id": "4_4_3_2",
+      "group": "trust-existence-collection",
+      "label": "Do you collect the full business name (if any) of the trustee in respect of the trust?",
+      "detail-required": false,
+      "correct-option": "Yes",
+      "process-id": "PROC-AML-002a",
+      "source-rules": [
+        "4.4.3(2)"
+      ],
+      "mapping-confidence": 1.0
+    },
+    {
+      "id": "4_4_3_3",
+      "group": "trust-existence-collection",
+      "label": "Do you collect the type of the trust?",
+      "detail-required": false,
+      "correct-option": "Yes",
+      "process-id": "PROC-AML-002a",
+      "source-rules": [
+        "4.4.3(3)"
+      ],
+      "mapping-confidence": 1.0
+    },
+    {
+      "id": "4_4_3_4",
+      "group": "trust-existence-collection",
+      "label": "Do you collect the country in which the trust was established?",
+      "detail-required": false,
+      "correct-option": "Yes",
+      "process-id": "PROC-AML-002a",
+      "source-rules": [
+        "4.4.3(4)"
+      ],
+      "mapping-confidence": 1.0
+    },
+    {
+      "id": "4_4_3_5",
+      "group": "trust-existence-collection",
+      "label": "Do you collect the full name of the settlor of the trust (subject to exemptions for contributions <$10,000, deceased settlors, simplified verification, or custodian customers)?",
+      "detail-required": false,
+      "correct-option": "Yes",
+      "process-id": "PROC-AML-002a",
+      "source-rules": [
         "4.4.3(5)",
-        "4.4.3(6)",
-        "4.4.3(7)",
+        "4.4.3(5)(a)",
+        "4.4.3(5)(b)",
+        "4.4.3(5)(c)",
+        "4.4.3(5)(d)"
+      ],
+      "mapping-confidence": 0.9
+    },
+    {
+      "id": "4_4_3_6",
+      "group": "trust-existence-collection",
+      "label": "When the trustee is an individual, do you collect the information required under your applicable CDD procedure for individuals (in respect of at least one individual trustee)?",
+      "detail-required": false,
+      "correct-option": "Yes",
+      "process-id": "PROC-AML-002a",
+      "source-rules": [
+        "4.4.3(6)"
+      ],
+      "mapping-confidence": 1.0
+    },
+    {
+      "id": "4_4_3_7",
+      "group": "trust-existence-collection",
+      "label": "When the trustee is a company, do you collect the information required under your applicable CDD procedure for companies (in respect of at least one company trustee)?",
+      "detail-required": false,
+      "correct-option": "Yes",
+      "process-id": "PROC-AML-002a",
+      "source-rules": [
+        "4.4.3(7)"
+      ],
+      "mapping-confidence": 1.0
+    },
+    {
+      "id": "4_4_3_8",
+      "group": "trust-existence-collection",
+      "label": "When the trustees comprise both individuals and companies, do you collect information required under the applicable CDD procedure for either an individual or a company trustee?",
+      "detail-required": false,
+      "correct-option": "Yes",
+      "process-id": "PROC-AML-002a",
+      "source-rules": [
         "4.4.3(8)"
       ],
-      "mapping-confidence": 0.8
+      "mapping-confidence": 1.0
     },
     {
       "id": "4_4_4",
-      "label": "Does your program include risk-based systems and controls to determine whether additional KYC information (beyond minimum requirements) relating to the trust's existence should be collected?",
+      "group": "trust-existence-collection",
+      "label": "Do you have risk-based systems and controls to determine whether any additional KYC information relating to the trust's existence will be collected?",
       "detail-required": true,
-      "detail-label": "Describe your risk-based approach to determining additional collection requirements",
+      "detail-label": "Describe your risk-based approach to collecting additional trust existence KYC information",
       "correct-option": "Yes",
       "process-id": "PROC-AML-002c",
       "source-rules": [
@@ -70,27 +129,75 @@
       "mapping-confidence": 1.0
     },
     {
-      "id": "4_4_5",
-      "label": "Does your program include a procedure to verify minimum KYC information (trust name, trustee details, settlor name with exceptions)?",
-      "detail-required": true,
-      "detail-label": "Describe your procedure for verifying minimum trust information",
+      "id": "4_4_5_1",
+      "group": "trust-existence-verification",
+      "label": "Do you verify the full name of the trust (if any)?",
+      "detail-required": false,
       "correct-option": "Yes",
       "process-id": "PROC-AML-002b",
       "source-rules": [
-        "4.4.5",
-        "4.4.5(1)",
-        "4.4.5(2)",
-        "4.4.5(3)",
-        "4.4.5(4)",
-        "4.4.5(5)"
+        "4.4.5(1)"
       ],
-      "mapping-confidence": 0.8
+      "mapping-confidence": 1.0
+    },
+    {
+      "id": "4_4_5_2",
+      "group": "trust-existence-verification",
+      "label": "When the trustee is an individual, do you verify information about at least one individual trustee in accordance with your CDD procedure for individuals?",
+      "detail-required": false,
+      "correct-option": "Yes",
+      "process-id": "PROC-AML-002b",
+      "source-rules": [
+        "4.4.5(2)"
+      ],
+      "mapping-confidence": 1.0
+    },
+    {
+      "id": "4_4_5_3",
+      "group": "trust-existence-verification",
+      "label": "When the trustee is a company, do you verify information about at least one company trustee in accordance with your CDD procedure for companies?",
+      "detail-required": false,
+      "correct-option": "Yes",
+      "process-id": "PROC-AML-002b",
+      "source-rules": [
+        "4.4.5(3)"
+      ],
+      "mapping-confidence": 1.0
+    },
+    {
+      "id": "4_4_5_4",
+      "group": "trust-existence-verification",
+      "label": "When the trustees comprise both individuals and companies, do you verify information about either an individual or a company trustee in accordance with the applicable procedures?",
+      "detail-required": false,
+      "correct-option": "Yes",
+      "process-id": "PROC-AML-002b",
+      "source-rules": [
+        "4.4.5(4)"
+      ],
+      "mapping-confidence": 1.0
+    },
+    {
+      "id": "4_4_5_5",
+      "group": "trust-existence-verification",
+      "label": "Do you verify the full name of the settlor of the trust (subject to exemptions for contributions <$10,000, deceased settlors, simplified verification, or custodian customers)?",
+      "detail-required": false,
+      "correct-option": "Yes",
+      "process-id": "PROC-AML-002b",
+      "source-rules": [
+        "4.4.5(5)",
+        "4.4.5(5)(a)",
+        "4.4.5(5)(b)",
+        "4.4.5(5)(c)",
+        "4.4.5(5)(d)"
+      ],
+      "mapping-confidence": 0.9
     },
     {
       "id": "4_4_6",
-      "label": "Does your program include risk-based systems and controls to determine whether and to what extent additional KYC information relating to trust existence should be verified?",
+      "group": "trust-existence-verification",
+      "label": "Do you have risk-based systems and controls to determine whether and to what extent any other KYC information relating to the trust's existence should be verified?",
       "detail-required": true,
-      "detail-label": "Describe your risk-based approach to determining additional verification requirements",
+      "detail-label": "Describe your risk-based approach to verifying additional trust existence KYC information",
       "correct-option": "Yes",
       "process-id": "PROC-AML-002c",
       "source-rules": [
@@ -100,9 +207,10 @@
     },
     {
       "id": "4_4_7",
-      "label": "When determining additional collection and/or verification for trusts, do you have regard to ML/TF risk relevant to the designated service?",
+      "group": "trust-existence-verification",
+      "label": "When determining additional collection and verification of trust information, do you have regard to ML/TF risk relevant to the designated service?",
       "detail-required": true,
-      "detail-label": "Describe how ML/TF risk informs your additional collection/verification decisions",
+      "detail-label": "Describe how you assess ML/TF risk when deciding on additional collection/verification",
       "correct-option": "Yes",
       "process-id": "PROC-AML-002c",
       "source-rules": [
@@ -112,39 +220,55 @@
     },
     {
       "id": "4_4_8",
-      "label": "Does your program include the simplified trustee verification procedure for eligible regulated trusts (ASIC-registered managed investment schemes, wholesale-only schemes, Commonwealth-regulated trusts, or government superannuation funds)?",
+      "group": "simplified-trustee-verification",
+      "label": "Do you use the simplified trustee verification procedure for eligible trusts (ASIC-registered MIS, unregistered wholesale MIS, government super funds, or Commonwealth-regulated trusts)?",
       "detail-required": true,
-      "detail-label": "Describe your simplified trustee verification procedure for eligible trusts",
+      "detail-label": "Describe how you verify the trust's eligibility and apply the simplified procedure",
       "correct-option": "N/A",
       "process-id": "PROC-AML-002b",
       "source-rules": [
         "4.4.8",
         "4.4.8(1)",
         "4.4.8(2)",
+        "4.4.8(2)(a)",
+        "4.4.8(2)(b)",
         "4.4.8(3)",
         "4.4.8(4)"
       ],
       "mapping-confidence": 0.9
     },
     {
-      "id": "4_4_9",
-      "label": "Does your program include a procedure to collect the full name and address of each trustee and either the full name of each beneficiary or details of beneficiary class?",
-      "detail-required": true,
-      "detail-label": "Describe your procedure for collecting trustee and beneficiary information",
+      "id": "4_4_9_1",
+      "group": "trustees-beneficiaries-collection",
+      "label": "Do you collect the full name and address of each trustee in respect of the trust?",
+      "detail-required": false,
       "correct-option": "Yes",
       "process-id": "PROC-AML-002a",
       "source-rules": [
-        "4.4.9",
-        "4.4.9(1)",
-        "4.4.9(2)"
+        "4.4.9(1)"
       ],
-      "mapping-confidence": 0.9
+      "mapping-confidence": 1.0
+    },
+    {
+      "id": "4_4_9_2",
+      "group": "trustees-beneficiaries-collection",
+      "label": "Do you collect either the full name of each beneficiary or (if beneficiaries are defined by class) details of the class?",
+      "detail-required": false,
+      "correct-option": "Yes",
+      "process-id": "PROC-AML-002a",
+      "source-rules": [
+        "4.4.9(2)",
+        "4.4.9(2)(a)",
+        "4.4.9(2)(b)"
+      ],
+      "mapping-confidence": 1.0
     },
     {
       "id": "4_4_10",
-      "label": "Does your program include risk-based systems and controls to determine whether additional KYC information relating to trustees or beneficiaries should be collected?",
+      "group": "trustees-beneficiaries-collection",
+      "label": "Do you have risk-based systems and controls to determine whether any additional KYC information relating to trustees or beneficiaries will be collected?",
       "detail-required": true,
-      "detail-label": "Describe your risk-based approach to determining additional trustee/beneficiary collection",
+      "detail-label": "Describe your risk-based approach to collecting additional trustee/beneficiary KYC information",
       "correct-option": "Yes",
       "process-id": "PROC-AML-002c",
       "source-rules": [
@@ -154,11 +278,12 @@
     },
     {
       "id": "4_4_11",
-      "label": "Does your program include risk-based systems and controls to determine whether and in what manner to verify trustee/beneficiary information?",
+      "group": "trustees-beneficiaries-verification",
+      "label": "Do you have risk-based systems and controls to determine whether and how to verify trustee and beneficiary information from approved sources?",
       "detail-required": true,
-      "detail-label": "Describe your risk-based approach to determining trustee/beneficiary verification",
+      "detail-label": "Describe your risk-based approach to verifying trustee/beneficiary information",
       "correct-option": "Yes",
-      "process-id": "PROC-AML-002c",
+      "process-id": "PROC-AML-002b",
       "source-rules": [
         "4.4.11"
       ],
@@ -166,9 +291,10 @@
     },
     {
       "id": "4_4_12",
-      "label": "When determining what trustee/beneficiary KYC information to collect and/or verify, do you have regard to ML/TF risk relevant to the designated service?",
+      "group": "trustees-beneficiaries-verification",
+      "label": "When determining additional collection and verification of trustee/beneficiary information, do you have regard to ML/TF risk relevant to the designated service?",
       "detail-required": true,
-      "detail-label": "Describe how ML/TF risk informs trustee/beneficiary collection and verification decisions",
+      "detail-label": "Describe how you assess ML/TF risk when deciding on additional trustee/beneficiary collection/verification",
       "correct-option": "Yes",
       "process-id": "PROC-AML-002c",
       "source-rules": [
@@ -177,35 +303,11 @@
       "mapping-confidence": 1.0
     },
     {
-      "id": "4_4_13",
-      "label": "For ASIC-registered managed investment schemes, wholesale-only schemes, or government superannuation funds, does your program omit the trustee/beneficiary collection and verification requirements?",
-      "detail-required": false,
-      "correct-option": "Yes",
-      "process-id": "PROC-AML-002",
-      "source-rules": [
-        "4.4.13",
-        "4.4.13(1)",
-        "4.4.13(2)",
-        "4.4.13(3)"
-      ],
-      "mapping-confidence": 0.9
-    },
-    {
-      "id": "4_4_14",
-      "label": "For trusts registered with and subject to Commonwealth statutory regulator oversight, does your program omit the trustee/beneficiary collection requirement (but retain verification requirements)?",
-      "detail-required": false,
-      "correct-option": "Yes",
-      "process-id": "PROC-AML-002",
-      "source-rules": [
-        "4.4.14"
-      ],
-      "mapping-confidence": 0.9
-    },
-    {
       "id": "4_4_15",
-      "label": "Does your program require that verification of trust information be based on trust deeds, reliable and independent documents, reliable and independent electronic data, or a combination thereof?",
+      "group": "verification-methods",
+      "label": "Do you verify trust information using trust deeds (original/certified copy/extract), reliable independent documents, reliable independent electronic data, or a combination thereof?",
       "detail-required": true,
-      "detail-label": "Describe the verification methods and sources used for trust information",
+      "detail-label": "Describe the verification methods and sources you use",
       "correct-option": "Yes",
       "process-id": "PROC-AML-002b",
       "source-rules": [
@@ -215,13 +317,14 @@
         "4.4.15(3)",
         "4.4.15(4)"
       ],
-      "mapping-confidence": 0.9
+      "mapping-confidence": 1.0
     },
     {
       "id": "4_4_16",
-      "label": "Does your program allow use of disclosure certificates for verification where information is not otherwise reasonably available from standard sources?",
+      "group": "verification-methods",
+      "label": "Do you accept disclosure certificates to verify trust information when used for risk-based additional verification (para 4.4.6 or 4.4.11) and the information is not otherwise reasonably available?",
       "detail-required": true,
-      "detail-label": "Describe when and how disclosure certificates are used for verification",
+      "detail-label": "Describe your procedure for accepting and validating disclosure certificates",
       "correct-option": "N/A",
       "process-id": "PROC-AML-002b",
       "source-rules": [
@@ -229,15 +332,16 @@
         "4.4.16(1)",
         "4.4.16(2)"
       ],
-      "mapping-confidence": 0.8
+      "mapping-confidence": 0.9
     },
     {
       "id": "4_4_17",
-      "label": "Does your program include risk-based systems and controls to respond to discrepancies arising during trust information verification so you can be reasonably satisfied about trust existence and trustee/beneficiary details?",
+      "group": "discrepancy-handling",
+      "label": "Do you have risk-based systems and controls to respond to discrepancies arising during verification so you can remain reasonably satisfied about trust existence and trustee/beneficiary information?",
       "detail-required": true,
-      "detail-label": "Describe your systems and controls for responding to verification discrepancies",
+      "detail-label": "Describe your systems for handling verification discrepancies",
       "correct-option": "Yes",
-      "process-id": "PROC-AML-002c",
+      "process-id": "PROC-AML-002b",
       "source-rules": [
         "4.4.17"
       ],
@@ -245,78 +349,80 @@
     },
     {
       "id": "4_4_18",
-      "label": "For customers who are custodians or nominees of custodians, does your program omit the beneficiary collection requirement and related ongoing due diligence requirements for underlying customers?",
+      "group": "custodians-nominees",
+      "label": "Do you apply reduced CDD requirements for customers who are custodians or nominees of custodians (exemptions from beneficiary collection, beneficial owner CDD, and certain OCDD requirements)?",
       "detail-required": true,
-      "detail-label": "Describe the modified requirements for custodian and nominee customers",
-      "correct-option": "Yes",
+      "detail-label": "Describe how you identify eligible custodians/nominees and apply the reduced requirements",
+      "correct-option": "N/A",
       "process-id": "PROC-AML-002",
       "source-rules": [
         "4.4.18",
         "4.4.18(1)",
         "4.4.18(2)",
-        "4.4.18(3)"
+        "4.4.18(3)",
+        "4.4.18(3)(a)",
+        "4.4.18(3)(b)",
+        "4.4.18(3)(c)"
       ],
-      "mapping-confidence": 0.8
-    },
-    {
-      "id": "4_4_19",
-      "label": "Does your program include definitions and criteria for custodians and nominees of custodians (including AFSL requirements, geographical link, Reporting Entities Roll registration, and underlying customer CDD certification)?",
-      "detail-required": true,
-      "detail-label": "Describe how your program defines and identifies custodians and nominees",
-      "correct-option": "Yes",
-      "process-id": "PROC-AML-002",
-      "source-rules": [
-        "4.4.19",
-        "4.4.19(1)",
-        "4.4.19(2)",
-        "4.4.19(3)",
-        "4.4.19(4)",
-        "4.4.19(5)",
-        "4.4.19(6)"
-      ],
-      "mapping-confidence": 0.7
+      "mapping-confidence": 0.9
     }
   ],
   "groups": [
     {
-      "id": "4_4",
-      "title": "Customer Due Diligence \u2014 Trusts",
-      "description": "This section covers the complete customer identification and due diligence process for customers acting as trustees of trusts, including collection, verification, and risk-based assessment of trust information."
+      "id": "general-cdd-obligation",
+      "title": "General CDD Obligation",
+      "description": "Top-level risk-based obligations for customers acting as trustees of trusts.",
+      "variant": "main"
     },
     {
-      "id": "4_4_2",
-      "title": "1. Scope and General Obligations",
-      "description": "Initial determination of whether the trust customer is within scope and establishment of general obligations to verify trust existence and key parties."
+      "id": "trust-existence-collection",
+      "title": "Collection of Trust Information",
+      "description": "Minimum and additional KYC information to be collected about the trust, its type, trustees, and settlor.",
+      "variant": "main"
     },
     {
-      "id": "4_4_3",
-      "title": "2. Collection of Trust KYC Information",
-      "description": "Procedures for collecting minimum and additional KYC information about the trust, including trust details, trustee information, settlor details, and beneficiary information."
+      "id": "trust-existence-verification",
+      "title": "Verification of Trust Existence",
+      "description": "Procedures to verify the trust name, trustee identity, and settlor details.",
+      "variant": "main"
     },
     {
-      "id": "4_4_5",
-      "title": "3. Verification of Trust Information",
-      "description": "Procedures for verifying collected trust information, including minimum verification requirements, simplified procedures for eligible trusts, and acceptable verification methods."
+      "id": "simplified-trustee-verification",
+      "title": "Simplified Trustee Verification Procedure",
+      "description": "Alternative verification procedure available for ASIC-registered MIS, government superannuation funds, and certain regulated trusts.",
+      "variant": "subprocess",
+      "subprocess-label": "Simplified Verification"
     },
     {
-      "id": "4_4_4",
-      "title": "4. Risk-Based Assessment and Additional Due Diligence",
-      "description": "Risk-based systems and controls for determining additional collection and verification requirements based on ML/TF risk relevant to the designated service."
+      "id": "trustees-beneficiaries-collection",
+      "title": "Collection of Trustee & Beneficiary Information",
+      "description": "Detailed collection of all trustees' names and addresses, and beneficiary identification.",
+      "variant": "main"
     },
     {
-      "id": "4_4_15",
-      "title": "5. Verification Methods and Sources",
-      "description": "Acceptable methods and sources for verifying trust information, including trust deeds, independent documents, electronic data, and disclosure certificates."
+      "id": "trustees-beneficiaries-verification",
+      "title": "Verification of Trustee & Beneficiary Information",
+      "description": "Risk-based verification of trustee and beneficiary details from reliable sources.",
+      "variant": "main"
     },
     {
-      "id": "4_4_17",
-      "title": "6. Discrepancy Handling and Resolution",
-      "description": "Systems and controls for responding to and resolving discrepancies that arise during the verification process."
+      "id": "verification-methods",
+      "title": "Verification Methods & Sources",
+      "description": "Acceptable methods and sources for verifying trust information, including trust deeds and disclosure certificates.",
+      "variant": "main"
     },
     {
-      "id": "4_4_13",
-      "title": "7. Exemptions and Modified Requirements",
-      "description": "Simplified or exempted requirements for specific trust types including regulated trusts, managed investment schemes, government superannuation funds, custodians, and nominees."
+      "id": "discrepancy-handling",
+      "title": "Discrepancy Handling",
+      "description": "Systems to respond to discrepancies during verification of trust information.",
+      "variant": "main"
+    },
+    {
+      "id": "custodians-nominees",
+      "title": "Custodians & Nominees of Custodians",
+      "description": "Reduced CDD requirements for customers who are custodians or nominees providing custodial/depository services.",
+      "variant": "subprocess",
+      "subprocess-label": "Custodian Path"
     }
   ],
   "rules": [
@@ -329,164 +435,51 @@
       }
     },
     {
-      "target": "4_4_2",
-      "scope": "4_4_1",
-      "effect": "SHOW",
+      "target": "trustees-beneficiaries-collection",
+      "scope": "sub-asic-mis",
+      "effect": "HIDE",
       "schema": {
         "const": "Yes"
       }
     },
     {
-      "target": "4_4_3",
-      "scope": "4_4_1",
-      "effect": "SHOW",
+      "target": "trustees-beneficiaries-collection",
+      "scope": "sub-govt-super",
+      "effect": "HIDE",
       "schema": {
         "const": "Yes"
       }
     },
     {
-      "target": "4_4_5",
-      "scope": "4_4_1",
-      "effect": "SHOW",
+      "target": "trustees-beneficiaries-verification",
+      "scope": "sub-asic-mis",
+      "effect": "HIDE",
       "schema": {
         "const": "Yes"
       }
     },
     {
-      "target": "4_4_4",
-      "scope": "4_4_1",
-      "effect": "SHOW",
-      "schema": {
-        "const": "Yes"
-      }
-    },
-    {
-      "target": "4_4_15",
-      "scope": "4_4_1",
-      "effect": "SHOW",
-      "schema": {
-        "const": "Yes"
-      }
-    },
-    {
-      "target": "4_4_17",
-      "scope": "4_4_1",
-      "effect": "SHOW",
-      "schema": {
-        "const": "Yes"
-      }
-    },
-    {
-      "target": "4_4_13",
-      "scope": "4_4_1",
-      "effect": "SHOW",
-      "schema": {
-        "const": "Yes"
-      }
-    },
-    {
-      "target": "4_4_2_2",
-      "scope": "4_4_1",
-      "effect": "SHOW",
-      "schema": {
-        "const": "Yes"
-      }
-    },
-    {
-      "target": "4_4_4",
-      "scope": "4_4_1",
-      "effect": "SHOW",
-      "schema": {
-        "const": "Yes"
-      }
-    },
-    {
-      "target": "4_4_6",
-      "scope": "4_4_1",
-      "effect": "SHOW",
-      "schema": {
-        "const": "Yes"
-      }
-    },
-    {
-      "target": "4_4_7",
-      "scope": "4_4_1",
-      "effect": "SHOW",
-      "schema": {
-        "const": "Yes"
-      }
-    },
-    {
-      "target": "4_4_8",
-      "scope": "4_4_1",
-      "effect": "SHOW",
-      "schema": {
-        "const": "Yes"
-      }
-    },
-    {
-      "target": "4_4_9",
-      "scope": "4_4_1",
-      "effect": "SHOW",
-      "schema": {
-        "const": "Yes"
-      }
-    },
-    {
-      "target": "4_4_10",
-      "scope": "4_4_1",
-      "effect": "SHOW",
-      "schema": {
-        "const": "Yes"
-      }
-    },
-    {
-      "target": "4_4_11",
-      "scope": "4_4_1",
-      "effect": "SHOW",
-      "schema": {
-        "const": "Yes"
-      }
-    },
-    {
-      "target": "4_4_12",
-      "scope": "4_4_1",
-      "effect": "SHOW",
-      "schema": {
-        "const": "Yes"
-      }
-    },
-    {
-      "target": "4_4_14",
-      "scope": "4_4_1",
-      "effect": "SHOW",
-      "schema": {
-        "const": "Yes"
-      }
-    },
-    {
-      "target": "4_4_16",
-      "scope": "4_4_1",
-      "effect": "SHOW",
-      "schema": {
-        "const": "Yes"
-      }
-    },
-    {
-      "target": "4_4_18",
-      "scope": "4_4_1",
-      "effect": "SHOW",
-      "schema": {
-        "const": "Yes"
-      }
-    },
-    {
-      "target": "4_4_19",
-      "scope": "4_4_1",
-      "effect": "SHOW",
+      "target": "trustees-beneficiaries-verification",
+      "scope": "sub-govt-super",
+      "effect": "HIDE",
       "schema": {
         "const": "Yes"
       }
     }
-  ]
+  ],
+  "sub_scoping": [
+    {
+      "id": "sub-private-trust",
+      "label": "Private Trusts"
+    },
+    {
+      "id": "sub-asic-mis",
+      "label": "ASIC-registered Managed Investment Schemes"
+    },
+    {
+      "id": "sub-govt-super",
+      "label": "Government Superannuation Funds"
+    }
+  ],
+  "form_links": []
 }

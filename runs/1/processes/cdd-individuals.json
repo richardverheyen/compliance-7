@@ -1,21 +1,11 @@
 {
   "controls": [
     {
-      "id": "4_2_1",
-      "label": "Do you have any customers who are individuals (including sole traders)?",
-      "detail-required": false,
-      "correct-option": "N/A",
-      "process-id": "PROC-AML-002",
-      "source-rules": [
-        "4.2.1"
-      ],
-      "mapping-confidence": 1.0
-    },
-    {
       "id": "4_2_2",
-      "label": "Does your AML/CTF program include appropriate risk-based systems and controls designed to enable you to be reasonably satisfied that individual customers are who they claim to be?",
+      "group": "general-cdd-obligation",
+      "label": "Do you have appropriate risk-based systems and controls designed to enable you to be reasonably satisfied that individual customers are who they claim to be?",
       "detail-required": true,
-      "detail-label": "Describe your risk-based systems and controls for customer identity satisfaction",
+      "detail-label": "Describe your risk-based systems and controls for establishing reasonable satisfaction of customer identity",
       "correct-option": "Yes",
       "process-id": "PROC-AML-002",
       "source-rules": [
@@ -25,9 +15,9 @@
     },
     {
       "id": "4_2_3",
-      "label": "Does your AML/CTF program include a procedure to collect minimum KYC information for individuals (full name, date of birth, and residential address)?",
-      "detail-required": true,
-      "detail-label": "Describe your procedure for collecting minimum KYC information from individuals who are not sole traders",
+      "group": "collection-kyc",
+      "label": "Do you collect the minimum KYC information for individuals (full name, date of birth, residential address)?",
+      "detail-required": false,
       "correct-option": "Yes",
       "process-id": "PROC-AML-002a",
       "source-rules": [
@@ -36,13 +26,13 @@
         "4.2.3(2)",
         "4.2.3(3)"
       ],
-      "mapping-confidence": 0.7
+      "mapping-confidence": 1.0
     },
     {
       "id": "4_2_4",
-      "label": "Does your AML/CTF program include a procedure to collect minimum KYC information for sole traders (full name, date of birth, business name, business/residential address, and ABN)?",
-      "detail-required": true,
-      "detail-label": "Describe your procedure for collecting minimum KYC information from sole traders",
+      "group": "collection-kyc",
+      "label": "Do you collect the minimum KYC information for sole traders (full name, date of birth, business name, principal place of business or residential address, ABN)?",
+      "detail-required": false,
       "correct-option": "Yes",
       "process-id": "PROC-AML-002a",
       "source-rules": [
@@ -53,13 +43,14 @@
         "4.2.4(4)",
         "4.2.4(5)"
       ],
-      "mapping-confidence": 0.7
+      "mapping-confidence": 1.0
     },
     {
       "id": "4_2_5",
-      "label": "Does your AML/CTF program include appropriate risk-based systems and controls to determine whether additional KYC information beyond the minimum should be collected?",
+      "group": "additional-kyc-assessment",
+      "label": "Do you have appropriate risk-based systems and controls to determine whether to collect additional KYC information beyond the minimum requirements?",
       "detail-required": true,
-      "detail-label": "Describe your risk-based approach to determining when to collect additional KYC information",
+      "detail-label": "Describe your risk-based process for determining when to collect additional KYC information",
       "correct-option": "Yes",
       "process-id": "PROC-AML-002c",
       "source-rules": [
@@ -69,9 +60,9 @@
     },
     {
       "id": "4_2_6",
-      "label": "Does your AML/CTF program include a procedure to verify the customer's full name and either date of birth or residential address (or both)?",
-      "detail-required": true,
-      "detail-label": "Describe your procedure for verifying minimum KYC information",
+      "group": "verification",
+      "label": "Do you verify the customer's full name and either their date of birth or residential address?",
+      "detail-required": false,
       "correct-option": "Yes",
       "process-id": "PROC-AML-002b",
       "source-rules": [
@@ -81,13 +72,14 @@
         "4.2.6(2)(a)",
         "4.2.6(2)(b)"
       ],
-      "mapping-confidence": 0.7
+      "mapping-confidence": 1.0
     },
     {
       "id": "4_2_7",
-      "label": "Does your AML/CTF program require that verification be based on reliable and independent documentation, reliable and independent electronic data, or a combination of both?",
+      "group": "verification",
+      "label": "Is your verification of customer information based on reliable and independent documentation, reliable and independent electronic data, or a combination of both?",
       "detail-required": true,
-      "detail-label": "Describe what sources your program accepts as reliable and independent for verification purposes",
+      "detail-label": "Describe the sources you use for verification (documentation, electronic data, or both)",
       "correct-option": "Yes",
       "process-id": "PROC-AML-002b",
       "source-rules": [
@@ -96,13 +88,14 @@
         "4.2.7(2)",
         "4.2.7(3)"
       ],
-      "mapping-confidence": 0.7
+      "mapping-confidence": 1.0
     },
     {
       "id": "4_2_8",
-      "label": "Does your AML/CTF program include appropriate risk-based systems and controls to determine whether additional KYC information beyond the minimum should be verified?",
+      "group": "additional-kyc-assessment",
+      "label": "Do you have appropriate risk-based systems and controls to determine whether to verify additional KYC information beyond the minimum requirements?",
       "detail-required": true,
-      "detail-label": "Describe your risk-based approach to determining when to verify additional KYC information",
+      "detail-label": "Describe your risk-based process for determining when to verify additional KYC information",
       "correct-option": "Yes",
       "process-id": "PROC-AML-002c",
       "source-rules": [
@@ -112,163 +105,48 @@
     },
     {
       "id": "4_2_9",
-      "label": "Does your AML/CTF program include appropriate risk-based systems and controls to respond to discrepancies that arise during verification so you can determine whether you are reasonably satisfied of the customer's identity?",
+      "group": "discrepancy-handling",
+      "label": "Do you have appropriate risk-based systems and controls to respond to discrepancies that arise during verification, enabling you to determine whether you are reasonably satisfied the customer is who they claim to be?",
       "detail-required": true,
-      "detail-label": "Describe your procedure for handling verification discrepancies",
+      "detail-label": "Describe your process for handling verification discrepancies",
       "correct-option": "Yes",
       "process-id": "PROC-AML-002b",
       "source-rules": [
         "4.2.9"
       ],
       "mapping-confidence": 1.0
-    },
-    {
-      "id": "4_2_10",
-      "label": "For medium or lower ML/TF risk customers, do you use the documentation-based safe harbour verification procedure?",
-      "detail-required": false,
-      "correct-option": "N/A",
-      "process-id": "PROC-AML-002b",
-      "source-rules": [
-        "4.2.10"
-      ],
-      "mapping-confidence": 1.0
-    },
-    {
-      "id": "4_2_11_1",
-      "label": "Does your safe harbour procedure require collection of the minimum KYC information specified in 4.2.3 or 4.2.4?",
-      "detail-required": false,
-      "correct-option": "Yes",
-      "process-id": "PROC-AML-002a",
-      "source-rules": [
-        "4.2.11",
-        "4.9.3(1)"
-      ],
-      "mapping-confidence": 1.0
-    },
-    {
-      "id": "4_2_11_2",
-      "label": "Does your safe harbour procedure require verification of the customer's name and either residential address or date of birth (or both) from either: (a) an original or certified copy of a primary photographic ID document, OR (b) both a primary non-photographic ID document and a secondary ID document?",
-      "detail-required": true,
-      "detail-label": "Describe what identification documents your safe harbour procedure accepts",
-      "correct-option": "Yes",
-      "process-id": "PROC-AML-002b",
-      "source-rules": [
-        "4.2.11",
-        "4.9.3(2)",
-        "4.9.3(2)(a)",
-        "4.9.3(2)(b)",
-        "4.9.3(2)(i)",
-        "4.9.3(2)(i)(ii)"
-      ],
-      "mapping-confidence": 0.7
-    },
-    {
-      "id": "4_2_11_3",
-      "label": "Does your safe harbour procedure require verification that any document produced has not expired (except Commonwealth passports expired within the preceding two years)?",
-      "detail-required": false,
-      "correct-option": "Yes",
-      "process-id": "PROC-AML-002b",
-      "source-rules": [
-        "4.2.11",
-        "4.9.3(3)"
-      ],
-      "mapping-confidence": 1.0
-    },
-    {
-      "id": "4_2_12",
-      "label": "For medium or lower ML/TF risk customers, do you use the electronic-based safe harbour verification procedure?",
-      "detail-required": false,
-      "correct-option": "N/A",
-      "process-id": "PROC-AML-002b",
-      "source-rules": [
-        "4.2.12"
-      ],
-      "mapping-confidence": 1.0
-    },
-    {
-      "id": "4_2_13_1",
-      "label": "Does your electronic safe harbour procedure require collection of the minimum KYC information specified in 4.2.3 or 4.2.4?",
-      "detail-required": false,
-      "correct-option": "Yes",
-      "process-id": "PROC-AML-002a",
-      "source-rules": [
-        "4.2.13",
-        "4.2.13(1)"
-      ],
-      "mapping-confidence": 1.0
-    },
-    {
-      "id": "4_2_13_2",
-      "label": "Does your electronic safe harbour procedure require verification of the customer's name and either residential address, date of birth, or both, OR verification that the customer has a transaction history for at least 3 years?",
-      "detail-required": true,
-      "detail-label": "Describe your electronic verification approach (name + address/DOB, or transaction history)",
-      "correct-option": "Yes",
-      "process-id": "PROC-AML-002b",
-      "source-rules": [
-        "4.2.13",
-        "4.2.13(2)",
-        "4.2.13(2)(a)",
-        "4.2.13(2)(b)",
-        "4.2.13(2)(i)",
-        "4.2.13(2)(i)(ii)",
-        "4.2.13(2)(i)(iii)",
-        "4.2.13(2)(c)"
-      ],
-      "mapping-confidence": 0.7
-    },
-    {
-      "id": "4_2_14",
-      "label": "For electronic safe harbour verification, does your procedure require using reliable and independent electronic data from at least two separate data sources?",
-      "detail-required": true,
-      "detail-label": "List the electronic data sources your procedure uses for verification",
-      "correct-option": "Yes",
-      "process-id": "PROC-AML-002b",
-      "source-rules": [
-        "4.2.14"
-      ],
-      "mapping-confidence": 1.0
     }
   ],
   "groups": [
     {
-      "id": "4_2",
-      "title": "Customer Due Diligence \u2014 Individuals",
-      "description": "This form covers all customer identification procedures for individual customers, including sole traders. Complete all relevant sections based on your customer base and risk assessment."
-    },
-    {
-      "id": "4_2_1",
+      "id": "general-cdd-obligation",
       "title": "General CDD Obligation",
-      "description": "Determine whether your AML/CTF program must include procedures for individual customers."
+      "description": "Top-level risk-based obligation to verify customer identity.",
+      "variant": "main"
     },
     {
-      "id": "4_2_2",
+      "id": "collection-kyc",
       "title": "Collection of KYC Information",
-      "description": "Procedures for collecting minimum and additional know-your-customer information from individuals."
+      "description": "Minimum and additional information that must be collected about individual customers.",
+      "variant": "main"
     },
     {
-      "id": "4_2_3",
+      "id": "verification",
       "title": "Verification of Information",
-      "description": "Procedures for verifying the identity information collected from individual customers."
+      "description": "How to verify KYC information collected about the customer.",
+      "variant": "main"
     },
     {
-      "id": "4_2_4",
+      "id": "additional-kyc-assessment",
       "title": "Additional KYC Assessment",
-      "description": "Risk-based determination of what additional information should be collected or verified beyond minimum requirements."
+      "description": "Risk-based decisions on collecting and verifying additional customer information beyond minimum requirements.",
+      "variant": "main"
     },
     {
-      "id": "4_2_5",
+      "id": "discrepancy-handling",
       "title": "Discrepancy Handling",
-      "description": "Procedures for responding to discrepancies discovered during the verification process."
-    },
-    {
-      "id": "4_2_6",
-      "title": "Safe Harbour Procedures \u2014 Documentation-Based Verification",
-      "description": "Optional simplified procedure using identity documents for medium or lower ML/TF risk customers."
-    },
-    {
-      "id": "4_2_7",
-      "title": "Safe Harbour Procedures \u2014 Electronic Verification",
-      "description": "Optional simplified procedure using electronic data sources for medium or lower ML/TF risk customers."
+      "description": "Responding to verification issues and inconsistencies in customer information.",
+      "variant": "main"
     }
   ],
   "rules": [
@@ -281,40 +159,8 @@
       }
     },
     {
-      "target": "4_2_2",
-      "scope": "4_2_1",
-      "effect": "SHOW",
-      "schema": {
-        "const": "Yes"
-      }
-    },
-    {
-      "target": "4_2_2",
-      "scope": "4_2_1",
-      "effect": "SHOW",
-      "schema": {
-        "const": "N/A"
-      }
-    },
-    {
       "target": "4_2_3",
-      "scope": "4_2_1",
-      "effect": "SHOW",
-      "schema": {
-        "const": "Yes"
-      }
-    },
-    {
-      "target": "4_2_3",
-      "scope": "4_2_1",
-      "effect": "SHOW",
-      "schema": {
-        "const": "N/A"
-      }
-    },
-    {
-      "target": "4_2_4",
-      "scope": "4_2_1",
+      "scope": "sub-individual",
       "effect": "SHOW",
       "schema": {
         "const": "Yes"
@@ -322,187 +168,33 @@
     },
     {
       "target": "4_2_4",
-      "scope": "4_2_1",
-      "effect": "SHOW",
-      "schema": {
-        "const": "N/A"
-      }
-    },
-    {
-      "target": "4_2_5",
-      "scope": "4_2_1",
+      "scope": "sub-sole-trader",
       "effect": "SHOW",
       "schema": {
         "const": "Yes"
       }
+    }
+  ],
+  "sub_scoping": [
+    {
+      "id": "sub-individual",
+      "label": "Individuals"
     },
     {
-      "target": "4_2_5",
-      "scope": "4_2_1",
-      "effect": "SHOW",
-      "schema": {
-        "const": "N/A"
-      }
+      "id": "sub-sole-trader",
+      "label": "Sole Traders"
+    }
+  ],
+  "form_links": [
+    {
+      "target": "verification-documents",
+      "label": "Documentary Safe Harbour",
+      "gated_by": "4_2_10"
     },
     {
-      "target": "4_2_6",
-      "scope": "4_2_1",
-      "effect": "SHOW",
-      "schema": {
-        "const": "Yes"
-      }
-    },
-    {
-      "target": "4_2_6",
-      "scope": "4_2_1",
-      "effect": "SHOW",
-      "schema": {
-        "const": "N/A"
-      }
-    },
-    {
-      "target": "4_2_7",
-      "scope": "4_2_1",
-      "effect": "SHOW",
-      "schema": {
-        "const": "Yes"
-      }
-    },
-    {
-      "target": "4_2_7",
-      "scope": "4_2_1",
-      "effect": "SHOW",
-      "schema": {
-        "const": "N/A"
-      }
-    },
-    {
-      "target": "4_2_8",
-      "scope": "4_2_1",
-      "effect": "SHOW",
-      "schema": {
-        "const": "Yes"
-      }
-    },
-    {
-      "target": "4_2_8",
-      "scope": "4_2_1",
-      "effect": "SHOW",
-      "schema": {
-        "const": "N/A"
-      }
-    },
-    {
-      "target": "4_2_9",
-      "scope": "4_2_1",
-      "effect": "SHOW",
-      "schema": {
-        "const": "Yes"
-      }
-    },
-    {
-      "target": "4_2_9",
-      "scope": "4_2_1",
-      "effect": "SHOW",
-      "schema": {
-        "const": "N/A"
-      }
-    },
-    {
-      "target": "4_2_10",
-      "scope": "4_2_1",
-      "effect": "SHOW",
-      "schema": {
-        "const": "Yes"
-      }
-    },
-    {
-      "target": "4_2_10",
-      "scope": "4_2_1",
-      "effect": "SHOW",
-      "schema": {
-        "const": "N/A"
-      }
-    },
-    {
-      "target": "4_2_6",
-      "scope": "4_2_1",
-      "effect": "SHOW",
-      "schema": {
-        "const": "Yes"
-      }
-    },
-    {
-      "target": "4_2_6",
-      "scope": "4_2_1",
-      "effect": "SHOW",
-      "schema": {
-        "const": "N/A"
-      }
-    },
-    {
-      "target": "4_2_11_1",
-      "scope": "4_2_10",
-      "effect": "SHOW",
-      "schema": {
-        "const": "Yes"
-      }
-    },
-    {
-      "target": "4_2_11_2",
-      "scope": "4_2_10",
-      "effect": "SHOW",
-      "schema": {
-        "const": "Yes"
-      }
-    },
-    {
-      "target": "4_2_11_3",
-      "scope": "4_2_10",
-      "effect": "SHOW",
-      "schema": {
-        "const": "Yes"
-      }
-    },
-    {
-      "target": "4_2_12",
-      "scope": "4_2_1",
-      "effect": "SHOW",
-      "schema": {
-        "const": "Yes"
-      }
-    },
-    {
-      "target": "4_2_12",
-      "scope": "4_2_1",
-      "effect": "SHOW",
-      "schema": {
-        "const": "N/A"
-      }
-    },
-    {
-      "target": "4_2_13_1",
-      "scope": "4_2_12",
-      "effect": "SHOW",
-      "schema": {
-        "const": "Yes"
-      }
-    },
-    {
-      "target": "4_2_13_2",
-      "scope": "4_2_12",
-      "effect": "SHOW",
-      "schema": {
-        "const": "Yes"
-      }
-    },
-    {
-      "target": "4_2_14",
-      "scope": "4_2_12",
-      "effect": "SHOW",
-      "schema": {
-        "const": "Yes"
-      }
+      "target": "verification-electronic",
+      "label": "Electronic Safe Harbour",
+      "gated_by": "4_2_12"
     }
   ]
 }

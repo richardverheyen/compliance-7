@@ -1,123 +1,197 @@
 {
   "controls": [
     {
-      "id": "4_6_1",
-      "label": "Does your AML/CTF program include requirements for customers who are incorporated or unincorporated associations?",
-      "detail-required": false,
-      "correct-option": "Yes",
-      "process-id": "PROC-AML-002",
-      "source-rules": [
-        "4.6.1"
-      ],
-      "mapping-confidence": 1.0
-    },
-    {
       "id": "4_6_2",
-      "label": "Does your program include risk-based systems and controls to be reasonably satisfied that an association exists and that the names of members of its governing committee have been provided?",
+      "group": "general-cdd-obligation",
+      "label": "Have you implemented risk-based systems and controls to verify that the association exists and that names of governing committee members have been provided?",
       "detail-required": true,
-      "detail-label": "Describe your risk-based systems and controls for verifying association existence and governing committee composition.",
+      "detail-label": "Describe your risk-based systems and controls",
       "correct-option": "Yes",
       "process-id": "PROC-AML-002c",
       "source-rules": [
-        "4.6.2",
-        "4.6.2(1)",
-        "4.6.2(2)"
+        "4.6.2"
       ],
       "mapping-confidence": 0.9
     },
     {
       "id": "4_6_3_1",
-      "label": "Does your program include a procedure to collect minimum KYC information for incorporated associations (full name, principal place of administration or registered office address, unique identifying number, and names of chairman, secretary, and treasurer)?",
-      "detail-required": true,
-      "detail-label": "Describe your procedure for collecting this KYC information from incorporated associations.",
+      "group": "collection-kyc-incorporated",
+      "label": "Do you collect the full name of incorporated associations?",
+      "detail-required": false,
       "correct-option": "Yes",
       "process-id": "PROC-AML-002a",
       "source-rules": [
-        "4.6.3",
-        "4.6.3(1)",
-        "4.6.3(1)(a)",
-        "4.6.3(1)(b)",
-        "4.6.3(1)(c)",
+        "4.6.3(1)(a)"
+      ],
+      "mapping-confidence": 1.0
+    },
+    {
+      "id": "4_6_3_1_b",
+      "group": "collection-kyc-incorporated",
+      "label": "Do you collect the association's principal place of administration or registered office address, or the residential address of the public officer, president, secretary or treasurer?",
+      "detail-required": false,
+      "correct-option": "Yes",
+      "process-id": "PROC-AML-002a",
+      "source-rules": [
+        "4.6.3(1)(b)"
+      ],
+      "mapping-confidence": 0.95
+    },
+    {
+      "id": "4_6_3_1_c",
+      "group": "collection-kyc-incorporated",
+      "label": "Do you collect any unique identifying number issued upon incorporation of the association?",
+      "detail-required": false,
+      "correct-option": "Yes",
+      "process-id": "PROC-AML-002a",
+      "source-rules": [
+        "4.6.3(1)(c)"
+      ],
+      "mapping-confidence": 1.0
+    },
+    {
+      "id": "4_6_3_1_d",
+      "group": "collection-kyc-incorporated",
+      "label": "Do you collect the full names of the chairman, secretary and treasurer (or equivalent officers) of the incorporated association?",
+      "detail-required": false,
+      "correct-option": "Yes",
+      "process-id": "PROC-AML-002a",
+      "source-rules": [
         "4.6.3(1)(d)"
       ],
       "mapping-confidence": 1.0
     },
     {
       "id": "4_6_3_2",
-      "label": "Does your program include a procedure to collect minimum KYC information for unincorporated association members (association name, principal place of administration address, governing officer names, and individual member identification information)?",
-      "detail-required": true,
-      "detail-label": "Describe your procedure for collecting this KYC information from members of unincorporated associations.",
+      "group": "collection-kyc-unincorporated",
+      "label": "Do you collect the full name of unincorporated associations where the customer is a member?",
+      "detail-required": false,
       "correct-option": "Yes",
       "process-id": "PROC-AML-002a",
       "source-rules": [
-        "4.6.3",
-        "4.6.3(2)",
-        "4.6.3(2)(a)",
-        "4.6.3(2)(b)",
-        "4.6.3(2)(c)",
-        "4.6.3(2)(d)"
+        "4.6.3(2)(a)"
       ],
       "mapping-confidence": 1.0
     },
     {
+      "id": "4_6_3_2_b",
+      "group": "collection-kyc-unincorporated",
+      "label": "Do you collect the principal place of administration address of unincorporated associations (if any)?",
+      "detail-required": false,
+      "correct-option": "Yes",
+      "process-id": "PROC-AML-002a",
+      "source-rules": [
+        "4.6.3(2)(b)"
+      ],
+      "mapping-confidence": 1.0
+    },
+    {
+      "id": "4_6_3_2_c",
+      "group": "collection-kyc-unincorporated",
+      "label": "Do you collect the full names of the chairman, secretary and treasurer (or equivalent officers) of the unincorporated association?",
+      "detail-required": false,
+      "correct-option": "Yes",
+      "process-id": "PROC-AML-002a",
+      "source-rules": [
+        "4.6.3(2)(c)"
+      ],
+      "mapping-confidence": 1.0
+    },
+    {
+      "id": "4_6_3_2_d",
+      "group": "collection-kyc-unincorporated",
+      "label": "Do you collect information required for the member (individual) in accordance with your customer identification procedure for individuals?",
+      "detail-required": false,
+      "correct-option": "Yes",
+      "process-id": "PROC-AML-002a",
+      "source-rules": [
+        "4.6.3(2)(d)"
+      ],
+      "mapping-confidence": 0.9
+    },
+    {
       "id": "4_6_4",
-      "label": "Does your program include risk-based systems and controls to determine whether additional KYC information beyond the minimum requirements should be collected for associations?",
+      "group": "additional-kyc-assessment",
+      "label": "Have you implemented risk-based systems and controls to determine whether additional KYC information beyond the minimum should be collected about associations?",
       "detail-required": true,
-      "detail-label": "Describe your risk-based approach to determining when additional KYC information is needed for associations.",
+      "detail-label": "Describe your risk-based approach to additional KYC information",
       "correct-option": "Yes",
       "process-id": "PROC-AML-002c",
       "source-rules": [
         "4.6.4"
       ],
-      "mapping-confidence": 1.0
+      "mapping-confidence": 0.9
     },
     {
       "id": "4_6_5_1",
-      "label": "Does your program include a procedure to verify the full name and unique identifying number of incorporated associations from ASIC, relevant regulatory authorities, association documents, or reliable independent sources?",
+      "group": "verification-incorporated",
+      "label": "Do you verify the full name of incorporated associations using ASIC information, incorporation authority data, association rules or constitution, or reliable independent documents/electronic data?",
       "detail-required": true,
-      "detail-label": "Describe your procedure for verifying incorporated association information from these sources.",
+      "detail-label": "Describe your verification sources and methods",
       "correct-option": "Yes",
       "process-id": "PROC-AML-002b",
       "source-rules": [
-        "4.6.5",
-        "4.6.5(1)",
-        "4.6.5(1)(a)",
-        "4.6.5(1)(b)"
+        "4.6.5(1)(a)"
       ],
-      "mapping-confidence": 1.0
+      "mapping-confidence": 0.95
     },
     {
-      "id": "4_6_5_2",
-      "label": "Does your program include a procedure to verify the association name and member identity for unincorporated association customers from association documents or reliable independent sources and in accordance with the individual customer identification procedure?",
+      "id": "4_6_5_1_b",
+      "group": "verification-incorporated",
+      "label": "Do you verify the unique identifying number of incorporated associations using the above sources?",
       "detail-required": true,
-      "detail-label": "Describe your procedure for verifying unincorporated association information and member identity.",
+      "detail-label": "Describe your verification methods for the unique identifier",
       "correct-option": "Yes",
       "process-id": "PROC-AML-002b",
       "source-rules": [
-        "4.6.5",
-        "4.6.5(2)",
-        "4.6.5(2)(a)",
+        "4.6.5(1)(b)"
+      ],
+      "mapping-confidence": 0.95
+    },
+    {
+      "id": "4_6_5_2_a",
+      "group": "verification-unincorporated",
+      "label": "Do you verify the full name of unincorporated associations using the association's rules or constitution, certified copies, or reliable independent documents/electronic data?",
+      "detail-required": true,
+      "detail-label": "Describe your verification sources and methods",
+      "correct-option": "Yes",
+      "process-id": "PROC-AML-002b",
+      "source-rules": [
+        "4.6.5(2)(a)"
+      ],
+      "mapping-confidence": 0.95
+    },
+    {
+      "id": "4_6_5_2_b",
+      "group": "verification-unincorporated",
+      "label": "Do you verify information about the member (individual) in accordance with your customer identification procedure for individuals?",
+      "detail-required": false,
+      "correct-option": "Yes",
+      "process-id": "PROC-AML-002b",
+      "source-rules": [
         "4.6.5(2)(b)"
       ],
-      "mapping-confidence": 1.0
+      "mapping-confidence": 0.9
     },
     {
       "id": "4_6_6",
-      "label": "Does your program include risk-based systems and controls to determine whether additional KYC information collected for associations should be verified?",
+      "group": "additional-kyc-assessment",
+      "label": "Have you implemented risk-based systems and controls to determine whether and to what extent additional collected KYC information should be verified?",
       "detail-required": true,
-      "detail-label": "Describe your risk-based approach to determining which additional KYC information requires verification.",
+      "detail-label": "Describe your risk-based approach to verification of additional information",
       "correct-option": "Yes",
       "process-id": "PROC-AML-002c",
       "source-rules": [
         "4.6.6"
       ],
-      "mapping-confidence": 1.0
+      "mapping-confidence": 0.9
     },
     {
       "id": "4_6_7",
-      "label": "Does your program require that verification of association information be based on constitution/rules, certified copies, meeting minutes, ASIC/regulatory authority data, reliable independent documents, or reliable independent electronic data?",
+      "group": "verification-methods",
+      "label": "Do your verification procedures use one or more of the following: constitution/rules, certified copies, meeting minutes, ASIC/incorporation authority data, reliable independent documents, or reliable independent electronic data?",
       "detail-required": true,
-      "detail-label": "Describe the specific verification sources and methods your program uses for associations.",
+      "detail-label": "Specify which verification sources and methods you use",
       "correct-option": "Yes",
       "process-id": "PROC-AML-002b",
       "source-rules": [
@@ -129,62 +203,85 @@
         "4.6.7(5)",
         "4.6.7(6)"
       ],
-      "mapping-confidence": 1.0
+      "mapping-confidence": 0.9
     },
     {
       "id": "4_6_8",
-      "label": "Does your program permit the use of disclosure certificates to verify association information where the information is not otherwise reasonably available from standard sources?",
+      "group": "verification-methods",
+      "label": "Do you use disclosure certificates for verification when information is not otherwise reasonably available and the certificate is used for purposes of risk-based additional KYC assessment?",
       "detail-required": true,
-      "detail-label": "Describe the conditions and circumstances under which disclosure certificates are accepted as verification.",
-      "correct-option": "Yes",
+      "detail-label": "Describe your use of disclosure certificates and the conditions triggering their use",
+      "correct-option": "No",
       "process-id": "PROC-AML-002b",
       "source-rules": [
         "4.6.8",
         "4.6.8(1)",
         "4.6.8(2)"
       ],
-      "mapping-confidence": 0.9
+      "mapping-confidence": 0.85
     },
     {
       "id": "4_6_9",
-      "label": "Does your program include risk-based systems and controls to respond to discrepancies identified during verification of association information and to determine ongoing satisfaction with association existence and governing committee composition?",
+      "group": "discrepancy-handling",
+      "label": "Have you implemented risk-based systems and controls to respond to discrepancies identified during verification and to determine whether you remain reasonably satisfied about the association's existence and member committee names?",
       "detail-required": true,
-      "detail-label": "Describe your procedures for handling discrepancies in association verification and reassessing your satisfaction.",
+      "detail-label": "Describe your procedures for identifying, investigating and responding to discrepancies",
       "correct-option": "Yes",
       "process-id": "PROC-AML-002c",
       "source-rules": [
-        "4.6.9",
-        "4.6.2(1)",
-        "4.6.2(2)"
+        "4.6.9"
       ],
       "mapping-confidence": 0.9
     }
   ],
   "groups": [
     {
-      "id": "4_6",
-      "title": "Customer Due Diligence \u2014 Associations",
-      "description": "Compliance requirements for associations as customers: collection, verification, and ongoing assessment."
+      "id": "general-cdd-obligation",
+      "title": "General CDD Obligation for Associations",
+      "description": "Risk-based systems and controls to verify that the association exists and that names of governing committee members have been provided.",
+      "variant": "main"
     },
     {
-      "id": "4_6_a",
-      "title": "Scope and Obligation",
-      "description": "Determine whether your program covers associations as customers and establish baseline risk management systems."
+      "id": "collection-kyc-incorporated",
+      "title": "Collection of KYC Information \u2014 Incorporated Associations",
+      "description": "Minimum KYC information to be collected about incorporated associations.",
+      "variant": "main"
     },
     {
-      "id": "4_6_b",
-      "title": "Collection of KYC Information",
-      "description": "Collect minimum required information for incorporated associations and unincorporated association members."
+      "id": "collection-kyc-unincorporated",
+      "title": "Collection of KYC Information \u2014 Unincorporated Associations",
+      "description": "Minimum KYC information to be collected when a customer is a member of an unincorporated association.",
+      "variant": "main"
     },
     {
-      "id": "4_6_c",
-      "title": "Verification of Information",
-      "description": "Verify collected information using prescribed sources and methods; determine additional verification requirements."
+      "id": "additional-kyc-assessment",
+      "title": "Risk-Based Additional KYC Assessment",
+      "description": "Risk-based determination of whether additional KYC information beyond the minimum should be collected and verified.",
+      "variant": "main"
     },
     {
-      "id": "4_6_d",
-      "title": "Handling Discrepancies",
-      "description": "Respond to verification discrepancies and reassess satisfaction with association information."
+      "id": "verification-incorporated",
+      "title": "Verification of Information \u2014 Incorporated Associations",
+      "description": "Verification procedures for incorporated association information using regulatory registries and reliable sources.",
+      "variant": "main"
+    },
+    {
+      "id": "verification-unincorporated",
+      "title": "Verification of Information \u2014 Unincorporated Associations",
+      "description": "Verification procedures for unincorporated association information using constitution, rules, and reliable sources.",
+      "variant": "main"
+    },
+    {
+      "id": "verification-methods",
+      "title": "Verification Methods and Disclosure Certificates",
+      "description": "Approved methods and sources for verification, including use of disclosure certificates where appropriate.",
+      "variant": "main"
+    },
+    {
+      "id": "discrepancy-handling",
+      "title": "Responding to Verification Discrepancies",
+      "description": "Risk-based systems and controls to identify and respond to discrepancies discovered during verification.",
+      "variant": "main"
     }
   ],
   "rules": [
@@ -197,116 +294,54 @@
       }
     },
     {
-      "target": "4_6_a",
-      "scope": "4_6_1",
+      "target": "collection-kyc-incorporated",
+      "scope": "4_6_2",
       "effect": "SHOW",
       "schema": {
         "const": "Yes"
       }
     },
     {
-      "target": "4_6_2",
-      "scope": "4_6_1",
+      "target": "collection-kyc-unincorporated",
+      "scope": "4_6_2",
       "effect": "SHOW",
       "schema": {
         "const": "Yes"
       }
     },
     {
-      "target": "4_6_b",
-      "scope": "4_6_1",
+      "target": "verification-incorporated",
+      "scope": "4_6_2",
       "effect": "SHOW",
       "schema": {
         "const": "Yes"
       }
     },
     {
-      "target": "4_6_3_1",
-      "scope": "4_6_1",
+      "target": "verification-unincorporated",
+      "scope": "4_6_2",
       "effect": "SHOW",
       "schema": {
         "const": "Yes"
       }
     },
     {
-      "target": "4_6_3_2",
-      "scope": "4_6_1",
+      "target": "verification-methods",
+      "scope": "4_6_2",
       "effect": "SHOW",
       "schema": {
         "const": "Yes"
       }
     },
     {
-      "target": "4_6_4",
-      "scope": "4_6_1",
-      "effect": "SHOW",
-      "schema": {
-        "const": "Yes"
-      }
-    },
-    {
-      "target": "4_6_c",
-      "scope": "4_6_1",
-      "effect": "SHOW",
-      "schema": {
-        "const": "Yes"
-      }
-    },
-    {
-      "target": "4_6_5_1",
-      "scope": "4_6_1",
-      "effect": "SHOW",
-      "schema": {
-        "const": "Yes"
-      }
-    },
-    {
-      "target": "4_6_5_2",
-      "scope": "4_6_1",
-      "effect": "SHOW",
-      "schema": {
-        "const": "Yes"
-      }
-    },
-    {
-      "target": "4_6_6",
-      "scope": "4_6_1",
-      "effect": "SHOW",
-      "schema": {
-        "const": "Yes"
-      }
-    },
-    {
-      "target": "4_6_7",
-      "scope": "4_6_1",
-      "effect": "SHOW",
-      "schema": {
-        "const": "Yes"
-      }
-    },
-    {
-      "target": "4_6_8",
-      "scope": "4_6_1",
-      "effect": "SHOW",
-      "schema": {
-        "const": "Yes"
-      }
-    },
-    {
-      "target": "4_6_d",
-      "scope": "4_6_1",
-      "effect": "SHOW",
-      "schema": {
-        "const": "Yes"
-      }
-    },
-    {
-      "target": "4_6_9",
-      "scope": "4_6_1",
+      "target": "discrepancy-handling",
+      "scope": "4_6_2",
       "effect": "SHOW",
       "schema": {
         "const": "Yes"
       }
     }
-  ]
+  ],
+  "sub_scoping": [],
+  "form_links": []
 }
