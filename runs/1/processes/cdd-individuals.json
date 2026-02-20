@@ -26,7 +26,18 @@
         "4.2.3(2)",
         "4.2.3(3)"
       ],
-      "mapping-confidence": 1.0
+      "mapping-confidence": 1.0,
+      "checklist-items": [
+        {
+          "label": "Full name"
+        },
+        {
+          "label": "Date of birth"
+        },
+        {
+          "label": "Residential address"
+        }
+      ]
     },
     {
       "id": "4_2_4",
@@ -43,7 +54,32 @@
         "4.2.4(4)",
         "4.2.4(5)"
       ],
-      "mapping-confidence": 1.0
+      "mapping-confidence": 1.0,
+      "checklist-items": [
+        {
+          "label": "Full name"
+        },
+        {
+          "label": "Date of birth"
+        },
+        {
+          "label": "Business name"
+        },
+        {
+          "type": "or-group",
+          "items": [
+            {
+              "label": "Principal place of business address"
+            },
+            {
+              "label": "Residential address"
+            }
+          ]
+        },
+        {
+          "label": "ABN"
+        }
+      ]
     },
     {
       "id": "4_2_5",
@@ -72,7 +108,23 @@
         "4.2.6(2)(a)",
         "4.2.6(2)(b)"
       ],
-      "mapping-confidence": 1.0
+      "mapping-confidence": 1.0,
+      "checklist-items": [
+        {
+          "label": "Full name"
+        },
+        {
+          "type": "or-group",
+          "items": [
+            {
+              "label": "Date of birth"
+            },
+            {
+              "label": "Residential address"
+            }
+          ]
+        }
+      ]
     },
     {
       "id": "4_2_7",

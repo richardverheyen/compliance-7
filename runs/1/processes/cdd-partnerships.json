@@ -94,7 +94,20 @@
         "4.5.3",
         "4.5.3(5)"
       ],
-      "mapping-confidence": 0.95
+      "mapping-confidence": 0.95,
+      "checklist-items": [
+        {
+          "type": "or-group",
+          "items": [
+            {
+              "label": "Full name and residential address of each partner"
+            },
+            {
+              "label": "Regulated status via professional association directory"
+            }
+          ]
+        }
+      ]
     },
     {
       "id": "4_5_4",

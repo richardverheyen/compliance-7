@@ -33,7 +33,29 @@
         "4.3.3(1)(e)",
         "4.3.3(1)(f)"
       ],
-      "mapping-confidence": 0.95
+      "mapping-confidence": 0.95,
+      "checklist-items": [
+        {
+          "label": "Full name (as registered by ASIC)"
+        },
+        {
+          "label": "Registered office address"
+        },
+        {
+          "label": "Principal place of business address",
+          "note": "if any"
+        },
+        {
+          "label": "ACN"
+        },
+        {
+          "label": "Company type (proprietary or public)"
+        },
+        {
+          "label": "Director names",
+          "note": "if company is proprietary"
+        }
+      ]
     },
     {
       "id": "4_3_3_2",
@@ -54,7 +76,42 @@
         "4.3.3(2)(f)",
         "4.3.3(2)(g)"
       ],
-      "mapping-confidence": 0.95
+      "mapping-confidence": 0.95,
+      "checklist-items": [
+        {
+          "label": "Full name (as registered by ASIC)"
+        },
+        {
+          "label": "Registered office address in Australia"
+        },
+        {
+          "type": "or-group",
+          "items": [
+            {
+              "label": "Principal place of business in Australia"
+            },
+            {
+              "label": "Local agent details"
+            }
+          ]
+        },
+        {
+          "label": "ARBN"
+        },
+        {
+          "label": "Country of formation"
+        },
+        {
+          "label": "Registration status"
+        },
+        {
+          "label": "Company type (private/public/other)"
+        },
+        {
+          "label": "Director names",
+          "note": "if company is private"
+        }
+      ]
     },
     {
       "id": "4_3_3_3",
@@ -76,7 +133,38 @@
         "4.3.3(3)(d)",
         "4.3.3(3)(e)"
       ],
-      "mapping-confidence": 0.95
+      "mapping-confidence": 0.95,
+      "checklist-items": [
+        {
+          "label": "Full name"
+        },
+        {
+          "label": "Country of formation"
+        },
+        {
+          "label": "Registration status with foreign body"
+        },
+        {
+          "label": "Foreign identification number",
+          "note": "if registered with a foreign body"
+        },
+        {
+          "label": "Full address in country of registration",
+          "note": "if registered with a foreign body"
+        },
+        {
+          "label": "Company type (private/public/other)",
+          "note": "if registered with a foreign body"
+        },
+        {
+          "label": "Director names",
+          "note": "if registered and private company"
+        },
+        {
+          "label": "Principal place of business address in country of formation",
+          "note": "if not registered with a foreign body"
+        }
+      ]
     },
     {
       "id": "4_3_4",
@@ -106,7 +194,18 @@
         "4.3.5(1)(b)",
         "4.3.5(1)(c)"
       ],
-      "mapping-confidence": 0.95
+      "mapping-confidence": 0.95,
+      "checklist-items": [
+        {
+          "label": "Full name (as registered by ASIC)"
+        },
+        {
+          "label": "Company type (proprietary or public)"
+        },
+        {
+          "label": "ACN"
+        }
+      ]
     },
     {
       "id": "4_3_5_2",
@@ -123,7 +222,21 @@
         "4.3.5(2)(b)",
         "4.3.5(2)(c)"
       ],
-      "mapping-confidence": 0.95
+      "mapping-confidence": 0.95,
+      "checklist-items": [
+        {
+          "label": "Full name (as registered by ASIC)"
+        },
+        {
+          "label": "Registration status"
+        },
+        {
+          "label": "Company type (private/public)"
+        },
+        {
+          "label": "ARBN"
+        }
+      ]
     },
     {
       "id": "4_3_5_3",
@@ -141,7 +254,20 @@
         "4.3.5(3)(i)",
         "4.3.5(3)(i)(ii)"
       ],
-      "mapping-confidence": 0.95
+      "mapping-confidence": 0.95,
+      "checklist-items": [
+        {
+          "label": "Full name"
+        },
+        {
+          "label": "Foreign identification number",
+          "note": "if registered with a foreign body"
+        },
+        {
+          "label": "Company type (private/public)",
+          "note": "if registered with a foreign body"
+        }
+      ]
     },
     {
       "id": "4_3_6",

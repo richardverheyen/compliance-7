@@ -247,7 +247,15 @@
       "source-rules": [
         "4.4.9(1)"
       ],
-      "mapping-confidence": 1.0
+      "mapping-confidence": 1.0,
+      "checklist-items": [
+        {
+          "label": "Full name of each trustee"
+        },
+        {
+          "label": "Address of each trustee"
+        }
+      ]
     },
     {
       "id": "4_4_9_2",
@@ -261,7 +269,20 @@
         "4.4.9(2)(a)",
         "4.4.9(2)(b)"
       ],
-      "mapping-confidence": 1.0
+      "mapping-confidence": 1.0,
+      "checklist-items": [
+        {
+          "type": "or-group",
+          "items": [
+            {
+              "label": "Full name of each beneficiary"
+            },
+            {
+              "label": "Class of beneficiaries (if beneficiaries defined by class)"
+            }
+          ]
+        }
+      ]
     },
     {
       "id": "4_4_10",

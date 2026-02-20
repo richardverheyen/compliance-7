@@ -94,6 +94,25 @@
   .conf-mid { background: #fefcbf; color: #744210; }
   .conf-low { background: #fed7d7; color: #742a2a; }
 
+  /* Checklist controls */
+  .control.checklist { display: block; }
+  .checklist-items { width: 100%; margin-top: 2px; }
+  .checklist-item { display: flex; align-items: flex-start; gap: 10px; padding: 6px 0; border-bottom: 1px solid #f5f8fb; }
+  .checklist-item:last-of-type { border-bottom: none; }
+  .checklist-item input[type="checkbox"] { width: 15px; height: 15px; flex-shrink: 0; margin-top: 2px; accent-color: var(--accent); cursor: pointer; }
+  .checklist-item-label { font-size: 0.875rem; flex: 1; line-height: 1.45; cursor: pointer; }
+  .checklist-item-note { display: block; font-size: 0.72rem; color: var(--muted); font-style: italic; margin-top: 2px; }
+  .checklist-or-group { margin: 6px 0 4px; padding: 8px 12px 8px; background: #f0fff4; border: 1px solid #c6f6d5; border-radius: 6px; }
+  .checklist-or-row { display: flex; align-items: center; gap: 10px; margin: 4px 0; }
+  .checklist-or-row input[type="checkbox"] { width: 15px; height: 15px; flex-shrink: 0; accent-color: var(--green); cursor: pointer; }
+  .checklist-or-row label { font-size: 0.875rem; flex: 1; cursor: pointer; line-height: 1.4; }
+  .checklist-or-divider { display: flex; align-items: center; gap: 8px; margin: 2px 0; }
+  .checklist-or-divider::before, .checklist-or-divider::after { content: ""; flex: 1; height: 1px; background: #c6f6d5; }
+  .checklist-or-divider span { font-size: 0.62rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.1em; color: #48bb78; }
+  .checklist-other { margin-top: 10px; padding-top: 8px; border-top: 1px dashed var(--border); }
+  .checklist-other-label { font-size: 0.78rem; color: var(--muted); margin-bottom: 4px; display: block; }
+  .checklist-other-input { width: 100%; padding: 6px 10px; border: 1px solid var(--border); border-radius: 4px; font-size: 0.85rem; font-family: inherit; resize: vertical; min-height: 34px; }
+
   /* Coverage panel */
   .coverage-panel { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 16px 18px; margin-bottom: 14px; }
   .coverage-panel h3 { font-size: 0.85rem; font-weight: 600; margin-bottom: 10px; color: var(--muted); }
@@ -366,7 +385,117 @@ function statusColor(status) {
   return { pending:"var(--orange)", success:"var(--green)", warning:"var(--yellow)", error:"var(--red)" }[status];
 }
 
+// ─── CHECKLIST HELPERS ──────────────────────────────────────────────────────
+
+function getChecklistStatus(ctrl) {
+  const items = ctrl["checklist-items"] || [];
+  for (let i = 0; i < items.length; i++) {
+    const item = items[i];
+    if (item.type === "or-group") {
+      // At least one option in the group must be checked
+      const anyChecked = item.items.some((_, j) => answers[ctrl.id + "__ci_" + i + "_" + j] === true);
+      if (!anyChecked) return "pending";
+    } else if (!item.note) {
+      // Required item (no conditional note) — must be checked
+      if (!answers[ctrl.id + "__ci_" + i]) return "pending";
+    }
+    // Items with a note are conditional/optional — don't gate status
+  }
+  return "success";
+}
+
+function renderChecklistControl(ctrl, formRules) {
+  const visible = checkVisibility(ctrl.id, formRules);
+  const status = getChecklistStatus(ctrl);
+
+  const div = document.createElement("div");
+  div.className = "control checklist" + (visible ? "" : " hidden");
+  div.dataset.controlId = ctrl.id;
+
+  const items = ctrl["checklist-items"] || [];
+
+  const processTag = ctrl["process-id"] ? `<span class="process-tag">${ctrl["process-id"]}</span>` : "";
+  const conf = ctrl["mapping-confidence"];
+  let confidenceTag = "";
+  if (conf !== undefined && conf !== null) {
+    const confClass = conf >= 0.7 ? "conf-high" : conf >= 0.5 ? "conf-mid" : "conf-low";
+    confidenceTag = `<span class="confidence-tag ${confClass}">${Math.round(conf * 100)}%</span>`;
+  }
+  const sourceRules = (ctrl["source-rules"] || []).map(r => `<span class="source-rule">${r}</span>`).join("");
+
+  // Question label
+  const labelDiv = document.createElement("div");
+  labelDiv.className = "control-label";
+  labelDiv.style.cssText = "width:100%;margin-bottom:10px;";
+  labelDiv.innerHTML = `${ctrl.label}${processTag}${confidenceTag}${sourceRules}`;
+  div.appendChild(labelDiv);
+
+  // Checklist items container
+  const itemsDiv = document.createElement("div");
+  itemsDiv.className = "checklist-items";
+
+  items.forEach((item, i) => {
+    if (item.type === "or-group") {
+      const groupDiv = document.createElement("div");
+      groupDiv.className = "checklist-or-group";
+      item.items.forEach((subItem, j) => {
+        if (j > 0) {
+          groupDiv.insertAdjacentHTML("beforeend", `<div class="checklist-or-divider"><span>or</span></div>`);
+        }
+        const rowDiv = document.createElement("div");
+        rowDiv.className = "checklist-or-row";
+        const cbId = ctrl.id + "_ci_" + i + "_" + j;
+        const checked = answers[ctrl.id + "__ci_" + i + "_" + j] === true;
+        rowDiv.innerHTML = `
+          <input type="checkbox" id="${cbId}" ${checked ? "checked" : ""}>
+          <label for="${cbId}">${subItem.label}</label>
+        `;
+        rowDiv.querySelector("input").addEventListener("change", e => {
+          answers[ctrl.id + "__ci_" + i + "_" + j] = e.target.checked;
+          render();
+        });
+        groupDiv.appendChild(rowDiv);
+      });
+      itemsDiv.appendChild(groupDiv);
+    } else {
+      const itemDiv = document.createElement("div");
+      itemDiv.className = "checklist-item";
+      const cbId = ctrl.id + "_ci_" + i;
+      const checked = answers[ctrl.id + "__ci_" + i] === true;
+      const noteHtml = item.note ? `<span class="checklist-item-note">${item.note}</span>` : "";
+      itemDiv.innerHTML = `
+        <input type="checkbox" id="${cbId}" ${checked ? "checked" : ""}>
+        <label for="${cbId}" class="checklist-item-label">${item.label}${noteHtml}</label>
+      `;
+      itemDiv.querySelector("input").addEventListener("change", e => {
+        answers[ctrl.id + "__ci_" + i] = e.target.checked;
+        render();
+      });
+      itemsDiv.appendChild(itemDiv);
+    }
+  });
+
+  // "Other" free-text field
+  const otherDiv = document.createElement("div");
+  otherDiv.className = "checklist-other";
+  const otherVal = answers[ctrl.id + "__other"] || "";
+  otherDiv.innerHTML = `
+    <span class="checklist-other-label">Other:</span>
+    <textarea class="checklist-other-input" placeholder="Add any additional items your procedure covers...">${otherVal}</textarea>
+  `;
+  otherDiv.querySelector("textarea").addEventListener("input", e => {
+    answers[ctrl.id + "__other"] = e.target.value;
+  });
+  itemsDiv.appendChild(otherDiv);
+
+  div.appendChild(itemsDiv);
+  return div;
+}
+
+// ────────────────────────────────────────────────────────────────────────────
+
 function getControlStatus(ctrl) {
+  if (ctrl["checklist-items"]) return getChecklistStatus(ctrl);
   const answer = answers[ctrl.id];
   const detail = answers[ctrl.id + "_detail"];
   if (answer === undefined || answer === "") return "pending";
@@ -675,6 +804,7 @@ function renderGroup(group, controls, formRules) {
 }
 
 function renderControl(ctrl, formRules) {
+  if (ctrl["checklist-items"]) return renderChecklistControl(ctrl, formRules);
   const visible = checkVisibility(ctrl.id, formRules);
   const status = getControlStatus(ctrl);
 
