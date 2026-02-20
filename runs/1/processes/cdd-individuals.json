@@ -143,6 +143,30 @@
       "mapping-confidence": 1.0
     },
     {
+      "id": "4_2_10",
+      "group": "verification",
+      "label": "For medium or lower ML/TF risk customers, do you use the documentation-based safe harbour verification procedure?",
+      "detail-required": false,
+      "correct-option": "N/A",
+      "process-id": "PROC-AML-002b",
+      "source-rules": [
+        "4.2.10"
+      ],
+      "mapping-confidence": 1.0
+    },
+    {
+      "id": "4_2_12",
+      "group": "verification",
+      "label": "For medium or lower ML/TF risk customers, do you use the electronic-based safe harbour verification procedure?",
+      "detail-required": false,
+      "correct-option": "N/A",
+      "process-id": "PROC-AML-002b",
+      "source-rules": [
+        "4.2.12"
+      ],
+      "mapping-confidence": 1.0
+    },
+    {
       "id": "4_2_8",
       "group": "additional-kyc-assessment",
       "label": "Do you have appropriate risk-based systems and controls to determine whether to verify additional KYC information beyond the minimum requirements?",
