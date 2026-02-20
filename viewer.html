@@ -736,7 +736,7 @@ function render() {
     header.className = "ungrouped-header";
     header.textContent = "Other Controls";
     div.appendChild(header);
-    ungrouped.sort(sortById).forEach(ctrl => div.appendChild(renderControl(ctrl)));
+    ungrouped.sort(sortById).filter(ctrl => checkVisibility(ctrl.id)).forEach(ctrl => div.appendChild(renderControl(ctrl)));
     formEl.appendChild(div);
   }
 
@@ -798,7 +798,8 @@ function renderGroup(group, controls, formRules) {
     body.appendChild(desc);
   }
 
-  controls.forEach(ctrl => body.appendChild(renderControl(ctrl, formRules)));
+  controls.filter(ctrl => checkVisibility(ctrl.id, formRules))
+          .forEach(ctrl => body.appendChild(renderControl(ctrl, formRules)));
 
   div.appendChild(body);
   return div;
