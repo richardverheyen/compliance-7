@@ -23,15 +23,13 @@
       "label": "What types of customers does your business serve?",
       "multi": true,
       "options": [
-        { "key": "individuals",       "label": "Individuals",                "controlId": "4_1_4_1" },
-        { "key": "domestic_companies", "label": "Domestic Companies",         "controlId": "4_1_4_2" },
-        { "key": "foreign_companies",  "label": "Foreign Companies",          "controlId": "4_1_4_2" },
-        { "key": "trusts",            "label": "Trusts",                     "controlId": "4_1_4_3" },
-        { "key": "partnerships",      "label": "Partnerships",               "controlId": "4_1_4_4" },
-        { "key": "incorporated_assoc","label": "Incorporated Associations",  "controlId": "4_1_4_5" },
-        { "key": "unincorporated_assoc","label": "Unincorporated Associations","controlId": "4_1_4_5" },
-        { "key": "cooperatives",      "label": "Co-operatives",              "controlId": "4_1_4_6" },
-        { "key": "government_bodies", "label": "Government Bodies",          "controlId": "4_1_4_7" }
+        { "key": "individuals",       "label": "Individuals",      "controlId": "4_1_4_1" },
+        { "key": "companies",         "label": "Companies",        "controlId": "4_1_4_2" },
+        { "key": "trusts",            "label": "Trusts",           "controlId": "4_1_4_3" },
+        { "key": "partnerships",      "label": "Partnerships",     "controlId": "4_1_4_4" },
+        { "key": "associations",      "label": "Associations",     "controlId": "4_1_4_5" },
+        { "key": "cooperatives",      "label": "Co-operatives",    "controlId": "4_1_4_6" },
+        { "key": "government_bodies", "label": "Government Bodies","controlId": "4_1_4_7" }
       ]
     },
     "4_1_8": {

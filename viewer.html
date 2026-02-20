@@ -109,13 +109,12 @@
   .detail-row label { font-size: 0.82rem; color: var(--muted); display: block; margin-bottom: 4px; }
   .detail-row textarea { width: 100%; padding: 8px 10px; border: 1px solid var(--border); border-radius: 4px; font-size: 0.85rem; resize: vertical; min-height: 60px; font-family: inherit; }
 
-  /* Rules sidebar */
-  .rules-panel { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 16px 18px; margin-bottom: 14px; }
-  .rules-panel h3 { font-size: 0.85rem; font-weight: 600; margin-bottom: 10px; color: var(--muted); }
-  .rule-item { font-size: 0.8rem; padding: 4px 0; border-bottom: 1px solid #f0f4f8; display: flex; gap: 8px; align-items: center; }
-  .rule-item:last-child { border-bottom: none; }
-  .rule-arrow { color: var(--muted); }
-  .rule-badge { font-size: 0.65rem; font-weight: 700; padding: 1px 6px; border-radius: 8px; background: #ebf4ff; color: var(--accent); }
+  /* Rule content modal (shown on unmapped code hover) */
+  .rule-modal { position: fixed; z-index: 1000; background: #1a202c; color: #e2e8f0; border-radius: 8px; padding: 16px; max-width: 480px; font-size: 0.85rem; line-height: 1.6; box-shadow: 0 4px 24px rgba(0,0,0,0.5); border: 1px solid #2d3748; pointer-events: none; }
+  .rule-modal-code { font-weight: 700; color: #63b3ed; font-family: monospace; margin-bottom: 8px; font-size: 0.8rem; letter-spacing: 0.05em; }
+  .rule-modal-text { color: #cbd5e0; }
+  .unmapped-code { cursor: pointer; }
+  .unmapped-code:hover { background: #fed7d7 !important; color: #742a2a !important; }
 
   /* Ungrouped controls */
   .ungrouped { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; margin-bottom: 14px; overflow: hidden; }
@@ -146,6 +145,14 @@
   }
   .sub-scoping-btn:hover { background: #ebf8ff; border-color: #90cdf4; }
   .sub-scoping-btn.selected { background: #bee3f8; border-color: var(--accent); color: #2a4365; font-weight: 600; }
+
+  /* Gate prompt — shown when sub-scoping exists but nothing is selected yet */
+  .sub-type-gate-prompt {
+    text-align: center; padding: 48px 24px; margin-top: 8px;
+    border: 2px dashed #bee3f8; border-radius: 8px; background: #f7fbff;
+  }
+  .sub-type-gate-prompt p { font-size: 0.9rem; color: #4a5568; line-height: 1.6; }
+  .sub-type-gate-prompt .gate-arrow { font-size: 1.4rem; display: block; margin-bottom: 8px; color: #90cdf4; }
 
   /* Form-link inline expansion */
   .form-link-block { background: var(--surface); border: 1px solid #c6f6d5; border-radius: 8px; margin-left: 20px; margin-bottom: 14px; overflow: hidden; }
@@ -188,6 +195,8 @@
   </details>
 </div>
 
+<div id="rule-modal" class="rule-modal" style="display:none;"></div>
+
 <script>
 // ─── STATE ──────────────────────────────────────────────────────────────────
 let sectionData = null;
@@ -197,6 +206,7 @@ let introSelections = new Set(); // selected option keys (e.g. "domestic_compani
 let introData = null;         // loaded from data/introduction.json
 let coverageAudit = null;
 let subScopingSelections = {}; // sub-type toggle state for current form (reset on navigation)
+let nodesLookup = {};          // rule_code → node, loaded from runs/1/nodes.json
 
 const PROCESS_LABELS = {
   "cdd-individuals":        { title: "CDD — Individuals",         gated: true,  gatedBy: "4_1_4_1" },
@@ -218,6 +228,36 @@ const PROCESS_LABELS = {
 
 const PROCESSES_DIR = "runs/1/processes/";
 const INTRO_PATH = "data/introduction.json";
+
+// ─── NODES (for unmapped rule hover modal) ──────────────────────────────────
+
+async function loadNodes() {
+  try {
+    const resp = await fetch('runs/1/nodes.json');
+    if (!resp.ok) return;
+    const nodes = await resp.json();
+    nodes.forEach(n => { if (n.rule_code) nodesLookup[n.rule_code] = n; });
+  } catch { /* nodes.json not available */ }
+}
+
+function showRuleModal(ruleCode, targetEl) {
+  const modal = document.getElementById('rule-modal');
+  const node = nodesLookup[ruleCode];
+  const text = node ? node.text : 'No text available for this rule code.';
+  modal.innerHTML = `<div class="rule-modal-code">${ruleCode}</div><div class="rule-modal-text">${text}</div>`;
+  const rect = targetEl.getBoundingClientRect();
+  let left = rect.left;
+  let top = rect.bottom + 8;
+  if (left + 480 > window.innerWidth) left = Math.max(8, window.innerWidth - 496);
+  if (top + 220 > window.innerHeight) top = rect.top - 228;
+  modal.style.left = left + 'px';
+  modal.style.top = top + 'px';
+  modal.style.display = 'block';
+}
+
+function hideRuleModal() {
+  document.getElementById('rule-modal').style.display = 'none';
+}
 
 // ─── INTRODUCTION ───────────────────────────────────────────────────────────
 
@@ -281,24 +321,6 @@ function renderIntroPanel() {
       </div>`;
   }
 
-  // Derived fields display
-  let derivedHtml = "";
-  if (Object.keys(derived).length > 0) {
-    const items = Object.entries(derived).map(([id, def]) => {
-      const active = introAnswers[id] === "Yes";
-      const color = active ? "var(--green)" : "#cbd5e0";
-      return `<div class="intro-derived-item">
-        <span class="intro-derived-dot" style="background:${color};"></span>
-        <span>${def.label}: ${active ? "Active" : "Inactive"}</span>
-      </div>`;
-    }).join("");
-    derivedHtml = `<div class="intro-derived">${items}</div>`;
-  }
-
-  // Count active selections
-  const activeCount = Object.values(introAnswers).filter(v => v === "Yes").length;
-  const summaryHtml = `<div class="intro-summary">${activeCount} scope${activeCount !== 1 ? "s" : ""} active</div>`;
-
   el.innerHTML = `
     <div class="intro-panel">
       <div class="intro-header" id="intro-toggle">
@@ -307,8 +329,6 @@ function renderIntroPanel() {
       </div>
       <div class="intro-body" id="intro-body">
         ${groupsHtml}
-        ${derivedHtml}
-        ${summaryHtml}
       </div>
     </div>`;
 
@@ -514,7 +534,7 @@ function render() {
       const barColor = pct >= 90 ? "var(--green)" : pct >= 70 ? "var(--yellow)" : "var(--red)";
       let unmappedHtml = "";
       if (procReport.unmapped_codes && procReport.unmapped_codes.length > 0) {
-        unmappedHtml = `<div class="unmapped-list">Unmapped: ${procReport.unmapped_codes.map(c => `<code>${c}</code>`).join(" ")}</div>`;
+        unmappedHtml = `<div class="unmapped-list">Unmapped: ${procReport.unmapped_codes.map(c => `<code class="unmapped-code" data-rule="${c}">${c}</code>`).join(" ")}</div>`;
       }
       const lowConf = procReport.low_confidence || [];
       let lowConfHtml = "";
@@ -532,34 +552,30 @@ function render() {
         ${unmappedHtml}${lowConfHtml}
       `;
       formEl.appendChild(panel);
+      panel.querySelectorAll('.unmapped-code').forEach(code => {
+        code.addEventListener('mouseenter', () => showRuleModal(code.dataset.rule, code));
+        code.addEventListener('mouseleave', hideRuleModal);
+      });
     }
-  }
-
-  // Rules panel (only gating rules whose scope is outside this section AND not in intro)
-  const gatingRules = sectionData.rules.filter(r => {
-    return !sectionData.controls.find(c => c.id === r.scope) && !(r.scope in (introAnswers || {}));
-  });
-  if (gatingRules.length > 0) {
-    const panel = document.createElement("div");
-    panel.className = "rules-panel";
-    panel.innerHTML = `<h3>Gating Rules</h3>` +
-      gatingRules.map(r =>
-        `<div class="rule-item">
-          <span class="rule-badge">${r.effect}</span>
-          <span>${r.target}</span>
-          <span class="rule-arrow">when</span>
-          <span style="font-weight:600;">${r.scope}</span>
-          <span class="rule-arrow">=</span>
-          <span>"${r.schema.const}"</span>
-        </div>`
-      ).join("");
-    formEl.appendChild(panel);
   }
 
   // Sub-scoping panel (button group for sub-type selection)
   const subScoping = sectionData.sub_scoping || [];
-  if (subScoping.length > 0) {
+  const hasSubScoping = subScoping.length > 0;
+  const anySubSelected = hasSubScoping && subScoping.some(s => subScopingSelections[s.id]);
+
+  if (hasSubScoping) {
     formEl.appendChild(renderSubScopingPanel(subScoping));
+  }
+
+  // Gate: sub-type selection is required before any form questions are shown
+  if (hasSubScoping && !anySubSelected) {
+    statsEl.innerHTML = "";
+    const prompt = document.createElement("div");
+    prompt.className = "sub-type-gate-prompt";
+    prompt.innerHTML = `<span class="gate-arrow">↑</span><p>Select one or more sub-types above to view the relevant compliance questions.</p>`;
+    formEl.appendChild(prompt);
+    return;
   }
 
   // Render groups — use explicit control.group membership (not prefix matching)
@@ -613,7 +629,12 @@ function renderGroup(group, controls, formRules) {
   const scoreBg = score >= 1 ? "var(--success-bg)" : score >= 0.5 ? "var(--warning-bg)" : total === 0 ? "#edf2f7" : "var(--pending-bg)";
 
   const visible = checkVisibility(group.id, formRules);
-  if (!visible) div.style.display = "none";
+  if (!visible) {
+    div.style.display = "none";
+  } else if (controls.length > 0 && !controls.some(c => checkVisibility(c.id, formRules))) {
+    // Hide group if it has controls but none are visible (e.g. no matching sub-type selected)
+    div.style.display = "none";
+  }
 
   const subprocessBadge = (isSubprocess && group["subprocess-label"])
     ? `<span class="subprocess-label">${group["subprocess-label"]}</span>`
@@ -681,8 +702,6 @@ function renderControl(ctrl, formRules) {
   }
 
   div.innerHTML = `
-    <div class="status-dot" style="background:${statusColor(status)};"></div>
-    <span class="control-id">${ctrl.id}</span>
     <span class="control-label">${ctrl.label}${processTag}${correctTag}${confidenceTag}${sourceRules}</span>
     <div class="control-answer">
       <input type="radio" name="${ctrl.id}" id="${ctrl.id}_yes" value="Yes" ${answers[ctrl.id]==="Yes"?"checked":""}>
@@ -824,8 +843,8 @@ function renderFormLinkBlock(fl) {
 
 const hash = location.hash.replace("#", "");
 
-// Load introduction first, then build picker
-loadIntroduction().then(() => {
+// Load introduction + nodes in parallel, then build picker
+Promise.all([loadIntroduction(), loadNodes()]).then(() => {
   buildPicker().then(() => {
     const processId = hash.startsWith("process:") ? hash.replace("process:", "") : null;
     const initial = (processId && PROCESS_LABELS[processId]) ? processId : Object.keys(PROCESS_LABELS)[0];
