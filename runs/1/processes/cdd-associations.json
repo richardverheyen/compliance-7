@@ -295,7 +295,7 @@
     },
     {
       "target": "collection-kyc-incorporated",
-      "scope": "4_6_2",
+      "scope": "sub-incorporated",
       "effect": "SHOW",
       "schema": {
         "const": "Yes"
@@ -303,7 +303,7 @@
     },
     {
       "target": "collection-kyc-unincorporated",
-      "scope": "4_6_2",
+      "scope": "sub-unincorporated",
       "effect": "SHOW",
       "schema": {
         "const": "Yes"
@@ -311,7 +311,7 @@
     },
     {
       "target": "verification-incorporated",
-      "scope": "4_6_2",
+      "scope": "sub-incorporated",
       "effect": "SHOW",
       "schema": {
         "const": "Yes"
@@ -319,29 +319,22 @@
     },
     {
       "target": "verification-unincorporated",
-      "scope": "4_6_2",
-      "effect": "SHOW",
-      "schema": {
-        "const": "Yes"
-      }
-    },
-    {
-      "target": "verification-methods",
-      "scope": "4_6_2",
-      "effect": "SHOW",
-      "schema": {
-        "const": "Yes"
-      }
-    },
-    {
-      "target": "discrepancy-handling",
-      "scope": "4_6_2",
+      "scope": "sub-unincorporated",
       "effect": "SHOW",
       "schema": {
         "const": "Yes"
       }
     }
   ],
-  "sub_scoping": [],
+  "sub_scoping": [
+    {
+      "id": "sub-incorporated",
+      "label": "Incorporated Associations"
+    },
+    {
+      "id": "sub-unincorporated",
+      "label": "Unincorporated Associations"
+    }
+  ],
   "form_links": []
 }

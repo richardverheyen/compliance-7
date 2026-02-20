@@ -457,32 +457,16 @@
     },
     {
       "target": "trustees-beneficiaries-collection",
-      "scope": "sub-asic-mis",
-      "effect": "HIDE",
-      "schema": {
-        "const": "Yes"
-      }
-    },
-    {
-      "target": "trustees-beneficiaries-collection",
-      "scope": "sub-govt-super",
-      "effect": "HIDE",
+      "scope": "sub-private-trust",
+      "effect": "SHOW",
       "schema": {
         "const": "Yes"
       }
     },
     {
       "target": "trustees-beneficiaries-verification",
-      "scope": "sub-asic-mis",
-      "effect": "HIDE",
-      "schema": {
-        "const": "Yes"
-      }
-    },
-    {
-      "target": "trustees-beneficiaries-verification",
-      "scope": "sub-govt-super",
-      "effect": "HIDE",
+      "scope": "sub-private-trust",
+      "effect": "SHOW",
       "schema": {
         "const": "Yes"
       }
