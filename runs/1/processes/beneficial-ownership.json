@@ -68,7 +68,20 @@
         "4.12.1(1)(b)",
         "4.12.1(1)(c)"
       ],
-      "mapping-confidence": 1.0
+      "mapping-confidence": 1.0,
+      "checklist-items": [
+        {
+          "type": "or-group",
+          "items": [
+            {
+              "label": "Date of birth"
+            },
+            {
+              "label": "Residential address"
+            }
+          ]
+        }
+      ]
     },
     {
       "id": "4_12_3",
@@ -139,7 +152,23 @@
         "4.12.7(2)(i)",
         "4.12.7(2)(i)(ii)"
       ],
-      "mapping-confidence": 0.95
+      "mapping-confidence": 0.95,
+      "checklist-items": [
+        {
+          "label": "Full name"
+        },
+        {
+          "type": "or-group",
+          "items": [
+            {
+              "label": "Residential address"
+            },
+            {
+              "label": "Date of birth"
+            }
+          ]
+        }
+      ]
     },
     {
       "id": "4_12_7_3",
@@ -164,7 +193,23 @@
       "source-rules": [
         "4.12.7(4)"
       ],
-      "mapping-confidence": 1.0
+      "mapping-confidence": 1.0,
+      "checklist-items": [
+        {
+          "label": "Full name"
+        },
+        {
+          "type": "or-group",
+          "items": [
+            {
+              "label": "Residential address"
+            },
+            {
+              "label": "Date of birth"
+            }
+          ]
+        }
+      ]
     },
     {
       "id": "4_12_8",

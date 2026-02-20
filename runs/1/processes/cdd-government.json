@@ -66,7 +66,19 @@
         "4.8.5"
       ],
       "mapping-confidence": 0.95,
-      "process-id": "PROC-AML-002b"
+      "process-id": "PROC-AML-002b",
+      "checklist-items": [
+        {
+          "label": "Full name"
+        },
+        {
+          "label": "Principal place of operations address"
+        },
+        {
+          "label": "Jurisdiction",
+          "note": "Commonwealth, State, Territory, or foreign country"
+        }
+      ]
     },
     {
       "id": "4_8_6",
