@@ -96,7 +96,7 @@ class PDFScraper:
 
     # --- PDF excerpt generation -----------------------------------------------
 
-    def _generate_pdf_excerpt(self, page_num_0idx: int, block_bbox: list, node_index: int):
+    def _generate_pdf_excerpt(self, page_num_0idx: int, block_bbox: list, uid: str):
         """Full-width PDF crop with yellow highlight over the extracted text."""
         PADDING_VERT = 80
 
@@ -117,7 +117,7 @@ class PDFScraper:
         highlight_rect = fitz.Rect(x0, top - crop_top, x1, bottom - crop_top)
         new_page.draw_rect(highlight_rect, color=None, fill=(1, 1, 0), fill_opacity=0.3)
 
-        out_path = os.path.join(self.excerpts_dir, f"{node_index}.pdf")
+        out_path = os.path.join(self.excerpts_dir, f"{uid}.pdf")
         new_doc.save(out_path)
         new_doc.close()
 
@@ -169,12 +169,13 @@ class PDFScraper:
                 "type": "RULE" if buffer["rule_code"] else "TEXT",
             }
             self.results.append(node)
-            node_index += 1
 
             try:
-                self._generate_pdf_excerpt(buffer["page"] - 1, buffer["bbox"], node_index)
+                self._generate_pdf_excerpt(buffer["page"] - 1, buffer["bbox"], uid)
             except Exception as e:
                 logger.warning(f"Failed to generate excerpt for UID {uid}: {e}")
+
+            node_index += 1
 
             buffer["text_parts"] = []
             buffer["bbox"] = None
@@ -789,6 +790,91 @@ def run_enrich(nodes_path: str, groups_path: str):
     print(f"  Total text nodes assigned: {total_nodes}")
 
 
+def run_regen_excerpts(nodes_path: str, pdf_path: str):
+    """Regenerate excerpt PDFs for an existing run using text search.
+
+    Reads nodes.json, searches for each node's text on its page in the source
+    PDF, and writes correctly-positioned {uid}.pdf excerpts.  Overwrites any
+    existing excerpt files.
+    """
+    PADDING_VERT = 80
+
+    with open(nodes_path) as f:
+        nodes = json.load(f)
+
+    run_dir = os.path.dirname(os.path.abspath(nodes_path))
+    excerpts_dir = os.path.join(run_dir, "excerpts")
+    os.makedirs(excerpts_dir, exist_ok=True)
+
+    pdf_doc = fitz.open(pdf_path)
+    success = 0
+    failed = 0
+
+    for node in nodes:
+        uid = node["uid"]
+        page_num = node.get("page")  # 1-indexed
+        text = node.get("text", "").strip()
+        if not page_num or not text:
+            continue
+
+        page = pdf_doc[page_num - 1]  # 0-indexed for fitz
+
+        # Search for the start of the text to locate it on the page.
+        # Try progressively shorter prefixes until a hit is found.
+        hit = None
+        for length in (60, 40, 25):
+            snippet = text[:length]
+            hits = page.search_for(snippet)
+            if hits:
+                hit = hits[0]
+                break
+
+        if hit is None:
+            logger.warning(f"  Could not locate text on page {page_num} for uid={uid} — skipping")
+            failed += 1
+            continue
+
+        # Expand the bbox: find all subsequent hits for later parts of the text
+        # to estimate the full vertical extent of the node.
+        x0 = hit.x0
+        top = hit.y0
+        x1 = hit.x1
+        bottom = hit.y1
+
+        # Try to extend the bbox to cover a later snippet of the text.
+        if len(text) > 80:
+            tail_hits = page.search_for(text[len(text) // 2 : len(text) // 2 + 30])
+            if tail_hits:
+                tail = tail_hits[-1]  # last occurrence of middle snippet
+                if tail.y1 > bottom:
+                    x0 = min(x0, tail.x0)
+                    x1 = max(x1, tail.x1)
+                    bottom = tail.y1
+
+        page_width = page.rect.width
+        page_height = page.rect.height
+        crop_top = max(0, top - PADDING_VERT)
+        crop_bottom = min(page_height, bottom + PADDING_VERT)
+        clip_rect = fitz.Rect(0, crop_top, page_width, crop_bottom)
+
+        new_doc = fitz.open()
+        new_page = new_doc.new_page(width=clip_rect.width, height=clip_rect.height)
+        new_page.show_pdf_page(new_page.rect, pdf_doc, page_num - 1, clip=clip_rect)
+
+        highlight_rect = fitz.Rect(x0, top - crop_top, x1, bottom - crop_top)
+        new_page.draw_rect(highlight_rect, color=None, fill=(1, 1, 0), fill_opacity=0.3)
+
+        out_path = os.path.join(excerpts_dir, f"{uid}.pdf")
+        new_doc.save(out_path)
+        new_doc.close()
+        success += 1
+
+    pdf_doc.close()
+    logger.info(f"Regenerated {success} excerpts ({failed} not found).")
+    print(f"\nDone! Regenerated {success} excerpts, {failed} not found.")
+    print(f"  excerpts/ : {excerpts_dir}")
+
+
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Scrape a PDF and extract text nodes to JSON.")
     sub = parser.add_subparsers(dest="command")
@@ -806,10 +892,17 @@ if __name__ == "__main__":
     enrich_p.add_argument("nodes_json", help="Path to nodes.json")
     enrich_p.add_argument("groups_json", help="Path to groups.json")
 
+    # Regenerate excerpts for an existing run
+    regen_p = sub.add_parser("regen-excerpts", help="Regenerate excerpt PDFs for an existing run")
+    regen_p.add_argument("nodes_json", help="Path to nodes.json")
+    regen_p.add_argument("pdf", help="Path to the source PDF file")
+
     args = parser.parse_args()
     if args.command == "groups":
         run_groups(args.nodes_json)
     elif args.command == "enrich":
         run_enrich(args.nodes_json, args.groups_json)
+    elif args.command == "regen-excerpts":
+        run_regen_excerpts(args.nodes_json, args.pdf)
     else:
         run_pipeline(getattr(args, "pdf", "chapter4.pdf"))

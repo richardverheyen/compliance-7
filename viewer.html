@@ -129,10 +129,11 @@
   .detail-row label { font-size: 0.82rem; color: var(--muted); display: block; margin-bottom: 4px; }
   .detail-row textarea { width: 100%; padding: 8px 10px; border: 1px solid var(--border); border-radius: 4px; font-size: 0.85rem; resize: vertical; min-height: 60px; font-family: inherit; }
 
-  /* Rule content modal (shown on unmapped code hover) */
-  .rule-modal { position: fixed; z-index: 1000; background: #1a202c; color: #e2e8f0; border-radius: 8px; padding: 16px; max-width: 480px; font-size: 0.85rem; line-height: 1.6; box-shadow: 0 4px 24px rgba(0,0,0,0.5); border: 1px solid #2d3748; pointer-events: none; }
+  /* Rule content modal (shown on pill hover) */
+  .rule-modal { position: fixed; z-index: 1000; background: #1a202c; color: #e2e8f0; border-radius: 8px; padding: 14px 16px; max-width: 540px; font-size: 0.85rem; line-height: 1.6; box-shadow: 0 4px 24px rgba(0,0,0,0.5); border: 1px solid #2d3748; pointer-events: none; }
   .rule-modal-code { font-weight: 700; color: #63b3ed; font-family: monospace; margin-bottom: 8px; font-size: 0.8rem; letter-spacing: 0.05em; }
-  .rule-modal-text { color: #cbd5e0; }
+  .rule-modal-excerpt { width: 100%; height: 200px; border: none; border-radius: 4px; display: block; margin-bottom: 10px; background: #2d3748; }
+  .rule-modal-text { color: #cbd5e0; font-size: 0.82rem; }
   .unmapped-code { cursor: pointer; }
   .unmapped-code:hover { background: #fed7d7 !important; color: #742a2a !important; }
 
@@ -195,6 +196,41 @@
   .output { margin-top: 24px; }
   .output summary { font-weight: 600; cursor: pointer; color: var(--muted); font-size: 0.9rem; }
   .output pre { background: #1a202c; color: #a0aec0; padding: 16px; border-radius: 6px; font-size: 0.8rem; overflow-x: auto; margin-top: 8px; max-height: 400px; overflow-y: auto; }
+
+  /* Feedback header bar */
+  .feedback-bar { font-size: 0.78rem; color: var(--muted); background: #f7fafc; border: 1px solid var(--border); border-radius: 6px; padding: 6px 14px; margin-bottom: 10px; display: flex; align-items: center; gap: 8px; }
+  .feedback-bar a { color: var(--accent); text-decoration: none; }
+  .feedback-bar a:hover { text-decoration: underline; }
+
+  /* Clickable rule-code pills */
+  .source-rule { cursor: pointer; transition: opacity 0.12s; }
+  .source-rule:hover { opacity: 0.7; }
+
+  /* Pill comment indicator — coloured superscript dot */
+  .pill-noted::after { content: "●"; font-size: 0.45rem; vertical-align: super; margin-left: 1px; }
+  .pill-approved::after { color: var(--green); }
+  .pill-info::after    { color: #a0aec0; }
+  .pill-warning::after { color: var(--yellow); }
+  .pill-error::after   { color: var(--red); }
+
+  /* Floating comment popover */
+  .comment-popover { position: fixed; z-index: 2000; background: var(--surface); border: 1px solid var(--border); border-radius: 8px; box-shadow: 0 4px 20px rgba(0,0,0,0.18); padding: 12px 14px; width: 300px; display: none; }
+  .comment-popover-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+  .comment-popover-rule { font-family: monospace; font-size: 0.8rem; font-weight: 700; background: #fefcbf; color: #744210; padding: 2px 8px; border-radius: 4px; }
+  .comment-popover-close { background: none; border: none; cursor: pointer; font-size: 1.2rem; color: var(--muted); line-height: 1; padding: 0 2px; }
+  .comment-popover-close:hover { color: var(--text); }
+  .comment-popover-existing { padding: 6px 8px; border-radius: 4px; border-left: 3px solid #a0aec0; background: #f7fafc; margin-bottom: 8px; font-size: 0.8rem; line-height: 1.45; display: none; }
+  .comment-popover-existing.sev-approved { border-left-color: var(--green); background: #f0fff4; }
+  .comment-popover-existing.sev-info    { border-left-color: #a0aec0; background: #f7fafc; }
+  .comment-popover-existing.sev-warning { border-left-color: var(--yellow); background: #fffff0; }
+  .comment-popover-existing.sev-error   { border-left-color: var(--red); background: #fff5f5; }
+  .severity-select { font-size: 0.78rem; padding: 3px 6px; border: 1px solid var(--border); border-radius: 4px; font-family: inherit; background: white; width: 100%; margin-bottom: 6px; }
+  .comment-textarea { width: 100%; padding: 6px 8px; border: 1px solid var(--border); border-radius: 4px; font-size: 0.82rem; font-family: inherit; resize: vertical; min-height: 56px; margin-bottom: 6px; }
+  .comment-popover-actions { display: flex; gap: 6px; align-items: center; }
+  .comment-save-btn { font-size: 0.78rem; padding: 4px 12px; background: var(--accent); color: white; border: none; border-radius: 4px; cursor: pointer; }
+  .comment-save-btn:hover { background: #2b6cb0; }
+  .comment-cancel-btn { font-size: 0.78rem; padding: 4px 10px; background: var(--surface); border: 1px solid var(--border); border-radius: 4px; cursor: pointer; }
+  .comment-saved-flash { font-size: 0.75rem; color: var(--green); font-weight: 600; }
 </style>
 </head>
 <body>
@@ -217,6 +253,26 @@
 
 <div id="rule-modal" class="rule-modal" style="display:none;"></div>
 
+<div id="comment-popover" class="comment-popover">
+  <div class="comment-popover-header">
+    <span class="comment-popover-rule"></span>
+    <button class="comment-popover-close" title="Close">&#215;</button>
+  </div>
+  <div class="comment-popover-existing"></div>
+  <select class="severity-select">
+    <option value="approved">✓ Approved — correct, no change needed</option>
+    <option value="info">ℹ Info — neutral note</option>
+    <option value="warning" selected>⚠ Warning — needs attention</option>
+    <option value="error">✕ Error — incorrect, must fix</option>
+  </select>
+  <textarea class="comment-textarea" placeholder="Your comment on this rule…"></textarea>
+  <div class="comment-popover-actions">
+    <button class="comment-save-btn">Save</button>
+    <button class="comment-cancel-btn">Cancel</button>
+    <span class="comment-saved-flash" style="display:none;">Saved ✓</span>
+  </div>
+</div>
+
 <script>
 // ─── STATE ──────────────────────────────────────────────────────────────────
 let sectionData = null;
@@ -227,6 +283,10 @@ let introData = null;         // loaded from data/introduction.json
 let coverageAudit = null;
 let subScopingSelections = {}; // sub-type toggle state for current form (reset on navigation)
 let nodesLookup = {};          // rule_code → node, loaded from runs/1/nodes.json
+let feedbackData = {};         // loaded from /feedback/{form_id} on form load
+let currentSectionId = null;   // tracks the currently loaded form ID
+
+const FEEDBACK_API = "/feedback/";
 
 const PROCESS_LABELS = {
   "cdd-individuals":        { title: "CDD — Individuals",         gated: true,  gatedBy: "4_1_4_1" },
@@ -256,20 +316,34 @@ async function loadNodes() {
     const resp = await fetch('runs/1/nodes.json');
     if (!resp.ok) return;
     const nodes = await resp.json();
-    nodes.forEach(n => { if (n.rule_code) nodesLookup[n.rule_code] = n; });
+    // Accumulate into arrays so duplicate rule codes (cross-refs) are all preserved
+    nodes.forEach(n => {
+      if (n.rule_code) {
+        if (!nodesLookup[n.rule_code]) nodesLookup[n.rule_code] = [];
+        nodesLookup[n.rule_code].push(n);
+      }
+    });
   } catch { /* nodes.json not available */ }
 }
 
 function showRuleModal(ruleCode, targetEl) {
   const modal = document.getElementById('rule-modal');
-  const node = nodesLookup[ruleCode];
-  const text = node ? node.text : 'No text available for this rule code.';
-  modal.innerHTML = `<div class="rule-modal-code">${ruleCode}</div><div class="rule-modal-text">${text}</div>`;
+  const nodes = nodesLookup[ruleCode] || [];
+  const node = nodes[0]; // first match (duplicates are cross-references to same text)
+
+  const excerptHtml = node
+    ? `<iframe class="rule-modal-excerpt" src="runs/1/excerpts/${node.uid}.pdf" title="${ruleCode} excerpt"></iframe>`
+    : "";
+  const text = node ? node.text : "No text available for this rule code.";
+
+  modal.innerHTML = `<div class="rule-modal-code">${ruleCode}</div>${excerptHtml}<div class="rule-modal-text">${text}</div>`;
+
   const rect = targetEl.getBoundingClientRect();
+  const modalH = node ? 310 : 90;
   let left = rect.left;
   let top = rect.bottom + 8;
-  if (left + 480 > window.innerWidth) left = Math.max(8, window.innerWidth - 496);
-  if (top + 220 > window.innerHeight) top = rect.top - 228;
+  if (left + 540 > window.innerWidth) left = Math.max(8, window.innerWidth - 548);
+  if (top + modalH > window.innerHeight) top = Math.max(8, rect.top - modalH - 8);
   modal.style.left = left + 'px';
   modal.style.top = top + 'px';
   modal.style.display = 'block';
@@ -422,7 +496,7 @@ function renderChecklistControl(ctrl, formRules) {
     const confClass = conf >= 0.7 ? "conf-high" : conf >= 0.5 ? "conf-mid" : "conf-low";
     confidenceTag = `<span class="confidence-tag ${confClass}">${Math.round(conf * 100)}%</span>`;
   }
-  const sourceRules = (ctrl["source-rules"] || []).map(r => `<span class="source-rule">${r}</span>`).join("");
+  const sourceRules = (ctrl["source-rules"] || []).map(r => `<span class="source-rule${getPillClass(r)}" data-rule="${r}">${r}</span>`).join("");
 
   // Question label
   const labelDiv = document.createElement("div");
@@ -618,6 +692,13 @@ async function loadItem(itemId) {
     sectionData = await resp.json();
     answers = {};
     subScopingSelections = {};
+    currentSectionId = itemId;
+
+    // Load feedback for this form (non-fatal)
+    try {
+      const fbResp = await fetch(FEEDBACK_API + itemId);
+      feedbackData = fbResp.ok ? await fbResp.json() : {};
+    } catch { feedbackData = {}; }
 
     document.querySelectorAll(".picker button").forEach(b => {
       b.classList.toggle("active", b.dataset.sectionId === itemId);
@@ -664,7 +745,7 @@ function render() {
       const barColor = pct >= 90 ? "var(--green)" : pct >= 70 ? "var(--yellow)" : "var(--red)";
       let unmappedHtml = "";
       if (procReport.unmapped_codes && procReport.unmapped_codes.length > 0) {
-        unmappedHtml = `<div class="unmapped-list">Unmapped: ${procReport.unmapped_codes.map(c => `<code class="unmapped-code" data-rule="${c}">${c}</code>`).join(" ")}</div>`;
+        unmappedHtml = `<div class="unmapped-list">Unmapped: ${procReport.unmapped_codes.map(c => `<code class="unmapped-code${getPillClass(c)}" data-rule="${c}">${c}</code>`).join(" ")}</div>`;
       }
       const lowConf = procReport.low_confidence || [];
       let lowConfHtml = "";
@@ -682,11 +763,17 @@ function render() {
         ${unmappedHtml}${lowConfHtml}
       `;
       formEl.appendChild(panel);
-      panel.querySelectorAll('.unmapped-code').forEach(code => {
-        code.addEventListener('mouseenter', () => showRuleModal(code.dataset.rule, code));
-        code.addEventListener('mouseleave', hideRuleModal);
-      });
     }
+  }
+
+  // Feedback header bar
+  if (feedbackData && feedbackData.last_updated) {
+    const bar = document.createElement("div");
+    bar.className = "feedback-bar";
+    const d = new Date(feedbackData.last_updated);
+    const dateStr = d.toLocaleDateString(undefined, { year: "numeric", month: "short", day: "numeric", hour: "2-digit", minute: "2-digit" });
+    bar.innerHTML = `&#128172; Last feedback: <strong>${dateStr}</strong> &mdash; <a href="${FEEDBACK_API}${currentSectionId}" target="_blank">view JSON</a>`;
+    formEl.appendChild(bar);
   }
 
   // Sub-scoping panel (button group for sub-type selection)
@@ -823,7 +910,7 @@ function renderControl(ctrl, formRules) {
   const correctTag = `<span class="correct-tag ${correctClass}">expects ${co}</span>`;
 
   const sourceRules = (ctrl["source-rules"] || [])
-    .map(r => `<span class="source-rule">${r}</span>`)
+    .map(r => `<span class="source-rule${getPillClass(r)}" data-rule="${r}">${r}</span>`)
     .join("");
 
   const conf = ctrl["mapping-confidence"];
@@ -865,6 +952,192 @@ function renderControl(ctrl, formRules) {
   });
 
   return div;
+}
+
+// ─── FEEDBACK / COMMENT SYSTEM ──────────────────────────────────────────────
+// Feedback is keyed by rule code (dot notation, e.g. "4.2.3"), not control ID.
+// Clicking any rule-code pill opens a floating popover for that rule code.
+
+let _popoverRuleCode = null;  // rule code currently open in the popover
+let _saveTimer = null;        // single debounce timer (one popover at a time)
+
+function getPillClass(ruleCode) {
+  const note = (feedbackData.control_notes || {})[ruleCode];
+  if (!note || !note.comment) return "";
+  return ` pill-noted pill-${note.severity || "info"}`;
+}
+
+async function saveFeedback(ruleCode, severity, comment) {
+  const existing = feedbackData || {};
+  const updatedNotes = { ...(existing.control_notes || {}) };
+  if (comment.trim()) {
+    updatedNotes[ruleCode] = { comment: comment.trim(), severity };
+  } else {
+    delete updatedNotes[ruleCode];
+  }
+  const payload = {
+    ...existing,
+    form_id: currentSectionId,
+    last_updated: new Date().toISOString(),
+    control_notes: updatedNotes,
+  };
+  feedbackData = payload;
+  try {
+    await fetch(FEEDBACK_API + currentSectionId, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload),
+    });
+  } catch (e) {
+    console.warn("Failed to save feedback:", e);
+  }
+}
+
+function showCommentPopover(ruleCode, anchorEl) {
+  _popoverRuleCode = ruleCode;
+  const popover = document.getElementById("comment-popover");
+  const note = (feedbackData.control_notes || {})[ruleCode] || {};
+
+  popover.querySelector(".comment-popover-rule").textContent = ruleCode;
+
+  const existing = popover.querySelector(".comment-popover-existing");
+  if (note.comment) {
+    existing.className = `comment-popover-existing sev-${note.severity || "info"}`;
+    existing.textContent = note.comment;
+    existing.style.display = "block";
+  } else {
+    existing.style.display = "none";
+  }
+
+  popover.querySelector(".severity-select").value = note.severity || "warning";
+  popover.querySelector(".comment-textarea").value = note.comment || "";
+  popover.querySelector(".comment-saved-flash").style.display = "none";
+
+  // Position near the anchor pill, adjusted for viewport edges
+  const rect = anchorEl.getBoundingClientRect();
+  const pw = 300;
+  let left = rect.left;
+  let top = rect.bottom + 6;
+  if (left + pw > window.innerWidth - 8) left = Math.max(8, window.innerWidth - pw - 8);
+  if (top + 240 > window.innerHeight) top = Math.max(8, rect.top - 246);
+  popover.style.left = left + "px";
+  popover.style.top = top + "px";
+  popover.style.display = "block";
+  setTimeout(() => popover.querySelector(".comment-textarea").focus(), 10);
+}
+
+function hideCommentPopover() {
+  document.getElementById("comment-popover").style.display = "none";
+  _popoverRuleCode = null;
+  if (_saveTimer) { clearTimeout(_saveTimer); _saveTimer = null; }
+}
+
+function updatePillsForRule(ruleCode) {
+  // Update indicator dots on every pill for this rule code without a full re-render
+  document.querySelectorAll(`[data-rule="${ruleCode}"]`).forEach(pill => {
+    pill.className = pill.className.replace(/\bpill-\S+/g, "").trim();
+    const cls = getPillClass(ruleCode);
+    if (cls) pill.className += cls;
+  });
+}
+
+function updateFeedbackBar() {
+  if (!feedbackData.last_updated) return;
+  const d = new Date(feedbackData.last_updated);
+  const dateStr = d.toLocaleDateString(undefined, { year: "numeric", month: "short", day: "numeric", hour: "2-digit", minute: "2-digit" });
+  const html = `&#128172; Last feedback: <strong>${dateStr}</strong> &mdash; <a href="${FEEDBACK_API}${currentSectionId}" target="_blank">view JSON</a>`;
+  let bar = document.querySelector(".feedback-bar");
+  if (bar) {
+    bar.innerHTML = html;
+  } else {
+    bar = document.createElement("div");
+    bar.className = "feedback-bar";
+    bar.innerHTML = html;
+    const formEl = document.getElementById("form");
+    // Insert after coverage panel (first child) if present, else prepend
+    const ref = formEl.querySelector(".coverage-panel");
+    formEl.insertBefore(bar, ref ? ref.nextSibling : formEl.firstChild);
+  }
+}
+
+function initCommentPopover() {
+  const popover = document.getElementById("comment-popover");
+  const select = popover.querySelector(".severity-select");
+  const textarea = popover.querySelector(".comment-textarea");
+  const flash = popover.querySelector(".comment-saved-flash");
+
+  async function doSave() {
+    if (!_popoverRuleCode) return;
+    await saveFeedback(_popoverRuleCode, select.value, textarea.value);
+    updatePillsForRule(_popoverRuleCode);
+    updateFeedbackBar();
+    // Refresh the existing-comment display inside the popover
+    const note = (feedbackData.control_notes || {})[_popoverRuleCode] || {};
+    const existing = popover.querySelector(".comment-popover-existing");
+    if (note.comment) {
+      existing.className = `comment-popover-existing sev-${note.severity || "info"}`;
+      existing.textContent = note.comment;
+      existing.style.display = "block";
+    } else {
+      existing.style.display = "none";
+    }
+    flash.style.display = "inline";
+    setTimeout(() => { flash.style.display = "none"; }, 1500);
+  }
+
+  popover.querySelector(".comment-save-btn").addEventListener("click", doSave);
+  popover.querySelector(".comment-cancel-btn").addEventListener("click", hideCommentPopover);
+  popover.querySelector(".comment-popover-close").addEventListener("click", hideCommentPopover);
+
+  // Auto-save on blur with 800ms debounce
+  textarea.addEventListener("blur", () => {
+    if (_saveTimer) clearTimeout(_saveTimer);
+    _saveTimer = setTimeout(doSave, 800);
+  });
+
+  // Clicks inside the popover don't propagate to the document close handler
+  popover.addEventListener("click", e => e.stopPropagation());
+}
+
+// Document-level hover delegation: pill hover → rule excerpt modal
+document.addEventListener("mouseover", e => {
+  const pill = e.target.closest(".source-rule[data-rule], .unmapped-code[data-rule]");
+  if (pill) showRuleModal(pill.dataset.rule, pill);
+});
+
+document.addEventListener("mouseout", e => {
+  const pill = e.target.closest(".source-rule[data-rule], .unmapped-code[data-rule]");
+  if (pill && !pill.contains(e.relatedTarget)) hideRuleModal();
+});
+
+// Document-level delegation: pill click → popover; click outside → close
+document.addEventListener("click", e => {
+  const pill = e.target.closest(".source-rule[data-rule], .unmapped-code[data-rule]");
+  if (pill) {
+    e.stopPropagation();
+    hideRuleModal();
+    const ruleCode = pill.dataset.rule;
+    // Toggle: clicking the same pill again closes the popover
+    if (_popoverRuleCode === ruleCode) {
+      hideCommentPopover();
+    } else {
+      showCommentPopover(ruleCode, pill);
+    }
+    return;
+  }
+  // Click outside popover → close
+  const popover = document.getElementById("comment-popover");
+  if (popover.style.display !== "none" && !popover.contains(e.target)) {
+    hideCommentPopover();
+  }
+});
+
+function escapeHtml(str) {
+  return String(str)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;");
 }
 
 // ─── SUB-SCOPING PANEL ──────────────────────────────────────────────────────
@@ -974,6 +1247,9 @@ function renderFormLinkBlock(fl) {
 // ─── INIT ───────────────────────────────────────────────────────────────────
 
 const hash = location.hash.replace("#", "");
+
+// Initialise the comment popover (once, at startup)
+initCommentPopover();
 
 // Load introduction + nodes in parallel, then build picker
 Promise.all([loadIntroduction(), loadNodes()]).then(() => {

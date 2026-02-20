@@ -38,6 +38,8 @@ logger = logging.getLogger(__name__)
 ID_REGEX = re.compile(r"^4(_\d+)+(_[a-z])?$")
 SLUG_REGEX = re.compile(r"^[a-z][a-z0-9-]*$")
 
+FEEDBACK_DIR = "feedback"
+
 PROCESSES = {
     "PROC-AML-001": "Agent Management Program",
     "PROC-AML-002": "Customer Identification Procedure (General)",
@@ -78,7 +80,7 @@ PROCESS_FORMS = {
         "architect_notes": [
             "This form is already gated externally — the intro form has confirmed the entity serves individual customers. Do NOT generate a top-level scope gate question (e.g. 'Do you have individual customers?'). Begin directly with the KYC collection and verification obligations.",
             "Sub-types are pre-defined: Individuals (id: sub-individual) and Sole Traders (id: sub-sole-trader). Use these exact IDs in any gating rules. Gate the individuals-specific KYC collection control on sub-individual and the sole-trader-specific control on sub-sole-trader.",
-            "Safe harbour procedures (rules 4.2.10 through 4.2.14) are handled via form-links to the verification-documents and verification-electronic forms. Do NOT generate controls for these rules — they are excluded from this form.",
+            "Generate controls 4_2_10 and 4_2_12 in the verification group as N/A opt-in decision questions (correct-option: N/A). These gate the Documentary and Electronic Safe Harbour form-link expansions respectively. Do NOT generate controls for 4.2.11, 4.2.13, or 4.2.14 — those details live inside the linked forms.",
             "Pre-commencement customers (rule 4.1.2) are handled externally via an onboarding diagram. Do not generate a control for 4.1.2.",
         ],
     },
@@ -116,6 +118,7 @@ PROCESS_FORMS = {
             "Sub-types are pre-defined: Private Trusts (id: sub-private-trust), ASIC-registered MIS (id: sub-asic-mis), Government Superannuation Funds (id: sub-govt-super). Use these exact IDs in gating rules for simplified verification eligibility (4.4.8, 4.4.13).",
             "The simplified trustee verification procedure (4.4.8, 4.4.13) and the custodians/nominees of custodians section (4.4.18) should each be a group with variant 'subprocess'.",
             "Trustee composition distinctions (individual vs company trustees) should be addressed within controls, not as separate sub-types.",
+            "Use SHOW rules (never HIDE) for all conditional groups. Add SHOW rules scoped to sub-private-trust for the trustees/beneficiaries collection and verification groups — these should only appear when Private Trusts is selected.",
         ],
     },
     "cdd-partnerships": {
@@ -135,12 +138,17 @@ PROCESS_FORMS = {
         "title": "Customer Due Diligence — Associations",
         "source_groups": ["4_6"],
         "gated_by": "4_1_4_5",
-        "sub_types": [],
+        "sub_types": [
+            {"id": "sub-incorporated", "label": "Incorporated Associations"},
+            {"id": "sub-unincorporated", "label": "Unincorporated Associations"},
+        ],
         "form_links": [],
         "subprocess_groups": [],
         "architect_notes": [
             "This form is already gated externally. Do NOT generate a top-level scope gate question.",
-            "No sub-types are defined for associations. Member composition distinctions should be handled within controls.",
+            "Sub-types are pre-defined: Incorporated Associations (id: sub-incorporated) and Unincorporated Associations (id: sub-unincorporated). Use these exact IDs in SHOW rules to gate sub-type-specific controls.",
+            "Gate type-specific KYC collection and verification groups on sub-incorporated or sub-unincorporated as appropriate. Do NOT gate shared groups (general CDD obligation, additional KYC assessment, verification methods, discrepancy handling) — these apply to all associations.",
+            "Use SHOW rules (never HIDE rules) for all conditional visibility. Each sub-type-specific control or group should have a SHOW rule scoped to the relevant sub-type ID with schema.const = 'Yes'.",
         ],
     },
     "cdd-cooperatives": {
@@ -309,7 +317,7 @@ OUTPUT_TOOL = {
                     "properties": {
                         "target": {"type": "string", "description": "Control ID (4_x format) or group slug whose visibility is affected"},
                         "scope": {"type": "string", "description": "Control ID or sub-type ID whose answer determines visibility"},
-                        "effect": {"type": "string", "enum": ["SHOW", "HIDE"]},
+                        "effect": {"type": "string", "enum": ["SHOW"]},
                         "schema": {
                             "type": "object",
                             "properties": {"const": {"type": "string"}},
@@ -356,7 +364,7 @@ An organisational container representing a **process step**. Groups use semantic
 Conditional visibility logic:
 - target: The control ID (4_x format) or group slug whose visibility is affected.
 - scope: The control ID or sub-type ID whose answer determines visibility.
-- effect: "SHOW" or "HIDE".
+- effect: Always `"SHOW"`. The viewer does not support HIDE rules. To make content conditional on a sub-type, use a SHOW rule scoped to that sub-type's ID. To make content conditional on a prior answer, use a SHOW rule scoped to that control's ID. Never generate HIDE rules.
 - schema: {{ "const": "Yes" }} or similar.
 
 ## Sub-Type Gating
@@ -408,6 +416,76 @@ Group IDs MUST match: ^[a-z][a-z0-9-]*$
 """
 
 
+def load_feedback(run_dir: str, process_id: str) -> dict | None:
+    """Load feedback file for a process form, or None if absent."""
+    feedback_path = os.path.join(run_dir, FEEDBACK_DIR, f"{process_id}.json")
+    if not os.path.exists(feedback_path):
+        return None
+    try:
+        with open(feedback_path) as f:
+            data = json.load(f)
+        logger.info(f"  Loaded feedback for {process_id} (last_updated: {data.get('last_updated', 'unknown')})")
+        return data
+    except Exception as e:
+        logger.warning(f"  Could not load feedback for {process_id}: {e}")
+        return None
+
+
+def build_feedback_prompt_section(feedback: dict) -> str:
+    """Build a markdown prompt section from feedback notes and warning/error control notes."""
+    lines = []
+
+    form_notes = feedback.get("notes", [])
+    if form_notes:
+        lines.append("## SME Feedback — Form-Level Notes")
+        for note in form_notes:
+            lines.append(f"- {note}")
+        lines.append("")
+
+    control_notes = feedback.get("control_notes", {})
+    # Only send warning and error severity notes to the LLM (approved/info are viewer-only)
+    actionable = {
+        rule_code: note
+        for rule_code, note in control_notes.items()
+        if note.get("severity") in ("warning", "error")
+    }
+    if actionable:
+        lines.append("## SME Feedback — Per-Rule Guidance")
+        lines.append("The following regulation rules have been flagged by an SME and require attention in your output:")
+        for rule_code, note in actionable.items():
+            severity = note.get("severity", "warning").upper()
+            comment = note.get("comment", "")
+            lines.append(f"- [{severity}] Rule `{rule_code}`: {comment}")
+        lines.append("")
+
+    return "\n".join(lines)
+
+
+def apply_feedback_overrides(result: dict, feedback: dict) -> dict:
+    """Apply post-generation overrides from feedback: field patches and additional controls."""
+    control_overrides = feedback.get("control_overrides", {})
+    if control_overrides:
+        for ctrl in result.get("controls", []):
+            if ctrl["id"] in control_overrides:
+                overrides = control_overrides[ctrl["id"]]
+                ctrl.update(overrides)
+                logger.info(f"  Applied override for control {ctrl['id']}: {list(overrides.keys())}")
+
+    additional_controls = feedback.get("additional_controls", [])
+    if additional_controls:
+        result.setdefault("controls", []).extend(additional_controls)
+        logger.info(f"  Appended {len(additional_controls)} additional controls from feedback")
+
+    # Embed review metadata for viewer badge rendering
+    result["_review_metadata"] = {
+        "form_id": feedback.get("form_id", ""),
+        "last_updated": feedback.get("last_updated", ""),
+        "control_notes": feedback.get("control_notes", {}),
+    }
+
+    return result
+
+
 def gather_process_nodes(process_id: str, groups: list[dict]) -> list[dict]:
     """Gather all text nodes for a process form from its source groups."""
     form_def = PROCESS_FORMS[process_id]
@@ -422,7 +500,7 @@ def gather_process_nodes(process_id: str, groups: list[dict]) -> list[dict]:
     return all_nodes
 
 
-def build_process_user_message(process_id: str, form_def: dict, text_nodes: list[dict]) -> str:
+def build_process_user_message(process_id: str, form_def: dict, text_nodes: list[dict], feedback: dict | None = None) -> str:
     """Build the user message for a process-mode LLM call."""
     # Format text nodes
     nodes_text = ""
@@ -488,9 +566,14 @@ The following sub-processes are handled via links to separate forms. Do NOT gene
 {notes_lines}
 """
 
+    # SME feedback section (injected after architect notes, before regulatory text)
+    feedback_section = ""
+    if feedback:
+        feedback_section = build_feedback_prompt_section(feedback)
+
     return f"""## Process Form: {form_def['title']}
 Process ID: {process_id}
-{gating_section}{sub_types_section}{subprocess_section}{form_links_section}{notes_section}
+{gating_section}{sub_types_section}{subprocess_section}{form_links_section}{notes_section}{feedback_section}
 ## Regulatory Text ({len(text_nodes)} text nodes)
 {nodes_text}
 Analyse the regulatory text above and produce the controls, groups, and rules for the "{form_def['title']}" process form. Remember:
@@ -590,9 +673,10 @@ def call_process_architect(
     text_nodes: list[dict],
     model: str,
     dry_run: bool = False,
+    feedback: dict | None = None,
 ) -> dict | None:
     """Call the LLM for a process form and return parsed SectionData."""
-    user_msg = build_process_user_message(process_id, form_def, text_nodes)
+    user_msg = build_process_user_message(process_id, form_def, text_nodes, feedback)
 
     if dry_run:
         print(f"\n{'='*60}")
@@ -690,8 +774,11 @@ def run_process_architect(run_dir: str, single_process: str | None = None,
 
         logger.info(f"[{i}/{total}] Processing {process_id} ({len(text_nodes)} nodes, model={model.split('-')[1] if '-' in model else model})")
 
+        # Load feedback if available
+        feedback = load_feedback(run_dir, process_id)
+
         result = call_process_architect(
-            client, process_id, form_def, text_nodes, model, dry_run,
+            client, process_id, form_def, text_nodes, model, dry_run, feedback,
         )
 
         if result is None:
@@ -699,6 +786,10 @@ def run_process_architect(run_dir: str, single_process: str | None = None,
 
         # Inject static fields (sub_scoping, form_links)
         result = inject_static_fields(result, form_def)
+
+        # Apply feedback overrides (post-LLM, not sent to LLM)
+        if feedback:
+            result = apply_feedback_overrides(result, feedback)
 
         # Coverage audit
         report = compute_coverage_report(process_id, text_nodes, result)

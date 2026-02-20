@@ -47,14 +47,20 @@ flowchart TB
     %% =========================================================================
     subgraph S3["Stage 3: Process Architect (architect.py)"]
         direction TB
+        FEEDBACK_FILES[("runs/1/feedback/<br/>*.json<br/>SME comments + overrides")]
         PROC_GATHER["gather_process_nodes()<br/>Collect text nodes per<br/>PROCESS_FORMS definition"]
+        PROC_FEEDBACK["load_feedback()<br/>Notes → LLM prompt<br/>Warnings/errors → guidance"]
         PROC_LLM["call_process_architect()<br/>1 LLM call per process form<br/>max_tokens=8192"]
         PROC_VALIDATE["validate_output() + strip_invalid_items()<br/>Slug group IDs · control.group refs · orphan groups"]
         PROC_INJECT["inject_static_fields()<br/>Overwrite sub_scoping + form_links<br/>with PROCESS_FORMS static values"]
+        PROC_OVERRIDES["apply_feedback_overrides()<br/>control_overrides · additional_controls<br/>control_notes → _review_metadata"]
         PROC_GATE["Inject gating rules<br/>from PROCESS_FORMS.gated_by"]
         PROC_OUT[("processes/<br/>15 JSON files<br/>cdd-individuals.json<br/>cdd-companies.json<br/>risk-assessment.json<br/>...")]
 
-        PROC_GATHER --> PROC_LLM --> PROC_VALIDATE --> PROC_INJECT --> PROC_GATE --> PROC_OUT
+        PROC_GATHER --> PROC_LLM
+        FEEDBACK_FILES --> PROC_FEEDBACK --> PROC_LLM
+        PROC_LLM --> PROC_VALIDATE --> PROC_INJECT --> PROC_OVERRIDES --> PROC_GATE --> PROC_OUT
+        FEEDBACK_FILES --> PROC_OVERRIDES
     end
 
     GROUPS_ENRICHED --> PROC_GATHER
@@ -134,6 +140,8 @@ flowchart TB
         SUBPROCESS_GRP["Subprocess Groups<br/>Visually nested with<br/>purple left border + tinted bg"]
         FORM_LINKS["Form-link Blocks<br/>Inline collapsible expansion<br/>of linked process forms"]
         COVERAGE_PANEL["Coverage panel<br/>Progress bar +<br/>unmapped codes"]
+        FEEDBACK_UI["Inline comment system<br/>Per-control comments<br/>approved | info | warning | error"]
+        FEEDBACK_WRITE["POST /feedback/{form}<br/>serve.py write endpoint"]
 
         VIEWER --> INTRO_PANEL
         VIEWER --> SUBSCOPING
@@ -143,6 +151,9 @@ flowchart TB
         FORM_RENDER --> SUBPROCESS_GRP
         VIEWER --> FORM_LINKS
         VIEWER --> COVERAGE_PANEL
+        VIEWER --> FEEDBACK_UI
+        FEEDBACK_UI --> FEEDBACK_WRITE
+        FEEDBACK_WRITE --> FEEDBACK_FILES
     end
 
     PROC_OUT --> VIEWER
@@ -156,11 +167,11 @@ flowchart TB
     classDef output fill:#744210,stroke:#975a16,color:#fefcbf
     classDef viewer fill:#1a365d,stroke:#2b6cb0,color:#bee3f8
 
-    class PDF,NODES,EXCERPTS,GROUPS_JSON,GROUPS_SVG,GROUPS_ENRICHED,INTRO_JSON dataFile
+    class PDF,NODES,EXCERPTS,GROUPS_JSON,GROUPS_SVG,GROUPS_ENRICHED,INTRO_JSON,FEEDBACK_FILES dataFile
     class PROC_OUT,AUDIT_OUT,REVIEW_OUT output
     class PROC_LLM,REV_CALL llmCall
-    class FILTER_SEQ,PROC_VALIDATE,COMPUTE,LOW_CONF,EXTRACT_IN,EXTRACT_OUT deterministic
-    class VIEWER,INTRO_PANEL,SUBSCOPING,FORM_RENDER,STATUS,BADGES,SUBPROCESS_GRP,FORM_LINKS,COVERAGE_PANEL viewer
+    class FILTER_SEQ,PROC_VALIDATE,COMPUTE,LOW_CONF,EXTRACT_IN,EXTRACT_OUT,PROC_FEEDBACK,PROC_OVERRIDES,FEEDBACK_WRITE deterministic
+    class VIEWER,INTRO_PANEL,SUBSCOPING,FORM_RENDER,STATUS,BADGES,SUBPROCESS_GRP,FORM_LINKS,COVERAGE_PANEL,FEEDBACK_UI viewer
 ```
 
 ## Process Summary
@@ -170,9 +181,10 @@ flowchart TB
 | 1 | `main.py scrape` | No | PDF text extraction with rule code detection, boilerplate filtering, excerpt generation |
 | 2 | `main.py groups` / `enrich` | No | Group inference from rule codes + indent clustering, text node enrichment |
 | 3 | `architect.py` | Yes | One LLM call per business process form (~15 calls), organised by process steps |
+| 3.5 | `runs/1/feedback/*.json` | No | Human-in-the-loop: SME comments feed into next LLM run; overrides applied post-gen |
 | 4 | (automatic after stage 3) | No | Deterministic set-diff of input vs output rule codes, flags unmapped rules + low confidence |
 | 5 | `architect.py --review` | Yes | Independent Haiku LLM validates each mapping quality + assesses unmapped rules |
-| 6 | `viewer.html` | No | Interactive compliance form app with gating, sub-scoping, subprocess nesting, form-links |
+| 6 | `viewer.html` + `serve.py` | No | Interactive compliance form app with gating, sub-scoping, subprocess nesting, form-links, inline SME comments |
 
 ## Process Form Schema (Stage 3 output)
 
@@ -208,7 +220,7 @@ Each `processes/<form-id>.json` file produced by the architect has the following
     {
       "target": "4_2_3_1",      // Control or group ID this rule gates
       "scope": "sub-domestic",  // Answer ID to check (intro answer or sub-type ID)
-      "effect": "SHOW",         // "SHOW" | "HIDE"
+      "effect": "SHOW",         // Always "SHOW" — viewer does not support HIDE
       "schema": { "const": "Yes" }
     }
   ],
@@ -219,7 +231,16 @@ Each `processes/<form-id>.json` file produced by the architect has the following
   ],
   "form_links": [               // Linked sub-process forms (from PROCESS_FORMS)
     { "target": "verification-documents", "label": "Documentary Safe Harbour", "gated_by": "4_2_10" }
-  ]
+  ],
+
+  // Populated by apply_feedback_overrides() when a feedback file exists
+  "_review_metadata": {         // For viewer badge rendering; not sent to LLM
+    "form_id": "cdd-individuals",
+    "last_updated": "2026-02-20T10:30:00Z",
+    "control_notes": {
+      "4_2_3": { "comment": "Good — no change needed.", "severity": "approved" }
+    }
+  }
 }
 ```
 
@@ -231,9 +252,11 @@ Each `processes/<form-id>.json` file produced by the architect has the following
 | Group IDs | Must match `^[a-z][a-z0-9-]*$` (semantic slugs, never `4_x` numbers) |
 | `control.group` | Must reference a slug present in the `groups` array |
 | `group.variant` | `"main"` for standard groups, `"subprocess"` for optional/secondary paths |
+| `rule.effect` | Always `"SHOW"` — the viewer does not support `"HIDE"` rules |
 | Scope gate questions | Never generated — forms are gated externally by the intro form |
 | Sub-type gating | SHOW rules use `scope = <sub-type-id>` with `schema.const = "Yes"` |
 | Form-links | Static — defined in `PROCESS_FORMS`, overwrite any LLM-generated values |
+| `_review_metadata` | Injected by `apply_feedback_overrides()` when a feedback file exists; not sent to LLM |
 
 ## PROCESS_FORMS Configuration
 
@@ -256,6 +279,7 @@ Each entry in `PROCESS_FORMS` (in `architect.py`) defines a process form with:
 | `cdd-individuals` | Individuals (`sub-individual`), Sole Traders (`sub-sole-trader`) |
 | `cdd-companies` | Domestic (`sub-domestic`), Registered Foreign (`sub-reg-foreign`), Unregistered Foreign (`sub-unreg-foreign`) |
 | `cdd-trusts` | Private Trusts (`sub-private-trust`), ASIC MIS (`sub-asic-mis`), Govt Super (`sub-govt-super`) |
+| `cdd-associations` | Incorporated Associations (`sub-incorporated`), Unincorporated Associations (`sub-unincorporated`) |
 | `cdd-government` | Domestic Govt Bodies (`sub-domestic-govt`), Foreign Govt Bodies (`sub-foreign-govt`) |
 | Others | No sub-types (rules apply uniformly) |
 
@@ -267,6 +291,54 @@ Each entry in `PROCESS_FORMS` (in `architect.py`) defines a process form with:
 | `cdd-companies` | **Inline subprocess groups** — `safe-harbour-listed`, `foreign-listed`, `disclosure-certificates` |
 | `cdd-trusts` | **Inline subprocess groups** — `simplified-trustee-verification`, `custodians-nominees` |
 | `cdd-government` | **Inline subprocess group** — `foreign-government-entities` |
+
+## Stage 3.5: Human-in-the-Loop Feedback
+
+Each process form can have an optional feedback file at `runs/1/feedback/{form_id}.json`. This file is read by `load_feedback()` before each LLM call and applied post-generation by `apply_feedback_overrides()`.
+
+### Feedback file structure
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `form_id` | str | Process form ID this feedback belongs to |
+| `last_updated` | ISO datetime | Set automatically on each write |
+| `notes` | list[str] | Form-level notes appended to architect_notes in the LLM prompt |
+| `control_notes` | dict | Per-control SME comments keyed by control ID |
+| `control_overrides` | dict | Post-generation field patches (not sent to LLM) |
+| `additional_controls` | list | Extra controls appended after LLM generation |
+
+### What goes where
+
+| Data | Sent to LLM? | Post-gen? | Viewer display? |
+|------|:---:|:---:|:---:|
+| `notes` | Yes | No | No |
+| `control_notes` with `severity: "warning"` or `"error"` | Yes | No | Yes (badge) |
+| `control_notes` with `severity: "approved"` or `"info"` | No | No | Yes (badge) |
+| `control_overrides` | No | Yes | Reflected in rendered control |
+| `additional_controls` | No | Yes | Rendered as normal controls |
+| `_review_metadata` (generated) | No | Written | Yes (feedback bar timestamp) |
+
+### Severity semantics
+
+| Severity | Colour | Meaning |
+|----------|--------|---------|
+| `approved` | Green | SME confirms correct, no change needed |
+| `info` | Grey | Neutral note for future reference |
+| `warning` | Amber | Needs attention before next regeneration — sent to LLM |
+| `error` | Red | Incorrect, must be fixed — sent to LLM |
+
+### SME Workflow
+
+1. Run `python serve.py` and open the viewer in a browser
+2. Select a process form (e.g. CDD — Individuals)
+3. Review each control — click **"+ Add comment"** below any control
+4. Select a severity (approved / info / warning / error) and type your comment
+5. Click **Save** (or click away — auto-saves after 800ms)
+6. The comment is written to `runs/1/feedback/{form_id}.json` immediately
+7. When warnings/errors have been noted, re-run: `python architect.py runs/1 --process {form_id}`
+8. The LLM receives the flagged control notes as targeted guidance and regenerates
+9. Reload the viewer — verify the regenerated controls address the feedback
+10. Update severity to `approved` once correct
 
 ## Viewer Rendering (Stage 6)
 
