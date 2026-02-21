@@ -2,10 +2,22 @@
   "controls": [
     {
       "id": "4_1_3",
-      "group": "risk-factors-assessment",
-      "label": "Does your ML/TF risk assessment consider customer types (including beneficial owners and PEPs)?",
+      "group": "risk-assessment-factors",
+      "label": "Have you identified and documented the ML/TF risk factors relevant to your business as required by Rule 4.1.3?",
       "detail-required": true,
-      "detail-label": "Describe how you assess customer types, beneficial owners, and politically exposed persons in your ML/TF risk framework",
+      "detail-label": "Describe your ML/TF risk identification process and the factors you have assessed.",
+      "correct-option": "Yes",
+      "process-id": "PROC-AML-002c",
+      "source-rules": [
+        "4.1.3"
+      ],
+      "mapping-confidence": 0.95
+    },
+    {
+      "id": "4_1_3_1",
+      "group": "risk-assessment-factors",
+      "label": "Have you assessed customer types (including beneficial owners and PEPs) as part of your ML/TF risk identification?",
+      "detail-required": false,
       "correct-option": "Yes",
       "process-id": "PROC-AML-002c",
       "source-rules": [
@@ -17,10 +29,9 @@
     },
     {
       "id": "4_1_3_2",
-      "group": "risk-factors-assessment",
-      "label": "Does your ML/TF risk assessment consider customers' sources of funds and wealth?",
-      "detail-required": true,
-      "detail-label": "Describe how you assess sources of funds and wealth in your ML/TF risk evaluation",
+      "group": "risk-assessment-factors",
+      "label": "Have you assessed customers' sources of funds and wealth as part of your ML/TF risk identification?",
+      "detail-required": false,
       "correct-option": "Yes",
       "process-id": "PROC-AML-002c",
       "source-rules": [
@@ -30,23 +41,22 @@
     },
     {
       "id": "4_1_3_3",
-      "group": "risk-factors-assessment",
-      "label": "Does your ML/TF risk assessment consider the nature and purpose of business relationships with customers?",
+      "group": "risk-assessment-factors",
+      "label": "Have you assessed the nature and purpose of business relationships with customers as part of your ML/TF risk identification?",
       "detail-required": true,
-      "detail-label": "Describe how you evaluate the nature, purpose, and collect relevant information about customer business relationships",
+      "detail-label": "Describe how you collect and assess information about the nature and purpose of customer relationships.",
       "correct-option": "Yes",
       "process-id": "PROC-AML-002c",
       "source-rules": [
         "4.1.3(3)"
       ],
-      "mapping-confidence": 0.95
+      "mapping-confidence": 0.9
     },
     {
       "id": "4_1_3_4",
-      "group": "risk-factors-assessment",
-      "label": "Does your ML/TF risk assessment consider the control structure of non-individual customers?",
-      "detail-required": true,
-      "detail-label": "Describe how you assess the control structure of company, trust, partnership, and association customers",
+      "group": "risk-assessment-factors",
+      "label": "Have you assessed the control structure of non-individual customers as part of your ML/TF risk identification?",
+      "detail-required": false,
       "correct-option": "Yes",
       "process-id": "PROC-AML-002c",
       "source-rules": [
@@ -56,10 +66,9 @@
     },
     {
       "id": "4_1_3_5",
-      "group": "risk-factors-assessment",
-      "label": "Does your ML/TF risk assessment consider the types of designated services you provide?",
-      "detail-required": true,
-      "detail-label": "Describe how you incorporate service types into your ML/TF risk assessment",
+      "group": "risk-assessment-factors",
+      "label": "Have you assessed the types of designated services you provide as part of your ML/TF risk identification?",
+      "detail-required": false,
       "correct-option": "Yes",
       "process-id": "PROC-AML-002c",
       "source-rules": [
@@ -69,10 +78,9 @@
     },
     {
       "id": "4_1_3_6",
-      "group": "risk-factors-assessment",
-      "label": "Does your ML/TF risk assessment consider the methods by which you deliver designated services?",
-      "detail-required": true,
-      "detail-label": "Describe how you evaluate delivery methods (e.g. branch, online, third party) in your ML/TF risk assessment",
+      "group": "risk-assessment-factors",
+      "label": "Have you assessed the methods by which you deliver designated services as part of your ML/TF risk identification?",
+      "detail-required": false,
       "correct-option": "Yes",
       "process-id": "PROC-AML-002c",
       "source-rules": [
@@ -82,10 +90,9 @@
     },
     {
       "id": "4_1_3_7",
-      "group": "risk-factors-assessment",
-      "label": "Does your ML/TF risk assessment consider the foreign jurisdictions with which you deal?",
-      "detail-required": true,
-      "detail-label": "Describe how you assess ML/TF risk relating to foreign jurisdictions in your dealings",
+      "group": "risk-assessment-factors",
+      "label": "Have you assessed the foreign jurisdictions with which you deal as part of your ML/TF risk identification?",
+      "detail-required": false,
       "correct-option": "Yes",
       "process-id": "PROC-AML-002c",
       "source-rules": [
@@ -94,184 +101,92 @@
       "mapping-confidence": 0.95
     },
     {
-      "id": "4_1_4",
-      "group": "program-scope",
-      "label": "Does your AML/CTF program specify different requirements for Individuals (Part 4.2)?",
-      "detail-required": false,
-      "correct-option": "Yes",
-      "process-id": "PROC-AML-002",
-      "source-rules": [
-        "4.1.4(1)"
-      ],
-      "mapping-confidence": 0.85
-    },
-    {
-      "id": "4_1_4_2",
-      "group": "program-scope",
-      "label": "Does your AML/CTF program specify different requirements for Companies (Part 4.3)?",
-      "detail-required": false,
-      "correct-option": "Yes",
-      "process-id": "PROC-AML-002",
-      "source-rules": [
-        "4.1.4(2)"
-      ],
-      "mapping-confidence": 0.85
-    },
-    {
-      "id": "4_1_4_3",
-      "group": "program-scope",
-      "label": "Does your AML/CTF program specify different requirements for Trustee customers (Part 4.4)?",
-      "detail-required": false,
-      "correct-option": "Yes",
-      "process-id": "PROC-AML-002",
-      "source-rules": [
-        "4.1.4(3)"
-      ],
-      "mapping-confidence": 0.85
-    },
-    {
-      "id": "4_1_4_4",
-      "group": "program-scope",
-      "label": "Does your AML/CTF program specify different requirements for Partnership member customers (Part 4.5)?",
-      "detail-required": false,
-      "correct-option": "Yes",
-      "process-id": "PROC-AML-002",
-      "source-rules": [
-        "4.1.4(4)"
-      ],
-      "mapping-confidence": 0.85
-    },
-    {
-      "id": "4_1_4_5",
-      "group": "program-scope",
-      "label": "Does your AML/CTF program specify different requirements for Incorporated or unincorporated associations (Part 4.6)?",
-      "detail-required": false,
-      "correct-option": "Yes",
-      "process-id": "PROC-AML-002",
-      "source-rules": [
-        "4.1.4(5)"
-      ],
-      "mapping-confidence": 0.85
-    },
-    {
-      "id": "4_1_4_6",
-      "group": "program-scope",
-      "label": "Does your AML/CTF program specify different requirements for Registered co-operatives (Part 4.7)?",
-      "detail-required": false,
-      "correct-option": "Yes",
-      "process-id": "PROC-AML-002",
-      "source-rules": [
-        "4.1.4(6)"
-      ],
-      "mapping-confidence": 0.85
-    },
-    {
-      "id": "4_1_4_7",
-      "group": "program-scope",
-      "label": "Does your AML/CTF program specify different requirements for Government bodies (Part 4.8)?",
-      "detail-required": false,
-      "correct-option": "Yes",
-      "process-id": "PROC-AML-002",
-      "source-rules": [
-        "4.1.4(7)"
-      ],
-      "mapping-confidence": 0.85
-    },
-    {
-      "id": "4_1_5",
-      "group": "beneficial-owners-peps",
-      "label": "Does your AML/CTF program specify different requirements for beneficial owners (Part 4.12)?",
-      "detail-required": false,
-      "correct-option": "Yes",
-      "process-id": "PROC-AML-003a",
-      "source-rules": [
-        "4.1.5(1)"
-      ],
-      "mapping-confidence": 0.85
-    },
-    {
-      "id": "4_1_5_2",
-      "group": "beneficial-owners-peps",
-      "label": "Does your AML/CTF program specify different requirements for politically exposed persons (Part 4.13)?",
-      "detail-required": false,
-      "correct-option": "Yes",
-      "process-id": "PROC-AML-003b",
-      "source-rules": [
-        "4.1.5(2)"
-      ],
-      "mapping-confidence": 0.85
-    },
-    {
-      "id": "4_1_7",
-      "group": "verification-compliance",
-      "label": "Does your AML/CTF program comply with document-based verification requirements (Part 4.9)?",
-      "detail-required": false,
-      "correct-option": "Yes",
-      "process-id": "PROC-AML-002b",
-      "source-rules": [
-        "4.1.7"
-      ],
-      "mapping-confidence": 0.9
-    },
-    {
-      "id": "4_1_7_2",
-      "group": "verification-compliance",
-      "label": "Does your AML/CTF program comply with verification from electronic data requirements (Part 4.10)?",
-      "detail-required": false,
-      "correct-option": "Yes",
-      "process-id": "PROC-AML-002b",
-      "source-rules": [
-        "4.1.7"
-      ],
-      "mapping-confidence": 0.9
-    },
-    {
-      "id": "4_1_8",
-      "group": "agent-requirements",
-      "label": "Does your AML/CTF program comply with agent requirements (Part 4.11) for agents authorised to act on behalf of customers?",
+      "id": "4_1_6",
+      "group": "risk-assessment-application",
+      "label": "If you have customers who became customers after 1 June 2014, have you applied the enhanced requirements for beneficial owners (Part 4.12) and PEPs (Part 4.13) to those customers?",
       "detail-required": true,
-      "detail-label": "Describe how you manage ML/TF risk and verify agents authorised to act for or on behalf of customers",
+      "detail-label": "Describe how you determine customer commencement dates and apply enhanced requirements to post-1 June 2014 customers.",
       "correct-option": "Yes",
-      "process-id": "PROC-AML-001",
+      "process-id": "PROC-AML-002c",
       "source-rules": [
-        "4.1.8"
+        "4.1.6"
       ],
-      "mapping-confidence": 0.9
+      "mapping-confidence": 0.85
     }
   ],
   "groups": [
     {
-      "id": "risk-factors-assessment",
-      "title": "ML/TF Risk Factors Assessment",
-      "description": "Evaluation of the key risk factors your reporting entity must consider when identifying ML/TF risk, including customer types, sources of funds, business relationships, and delivery methods.",
+      "id": "risk-assessment-factors",
+      "title": "ML/TF Risk Identification Factors",
+      "description": "Assessment of the key risk factors a reporting entity must consider when identifying, managing and mitigating money laundering or terrorism financing risk.",
       "variant": "main"
     },
     {
-      "id": "program-scope",
-      "title": "Program Scope by Customer Type",
-      "description": "Confirmation that your AML/CTF program addresses different requirements for each customer type you serve.",
-      "variant": "main"
-    },
-    {
-      "id": "beneficial-owners-peps",
-      "title": "Beneficial Owners and Politically Exposed Persons",
-      "description": "Special requirements for beneficial owner and PEP identification and assessment within your AML/CTF program.",
-      "variant": "main"
-    },
-    {
-      "id": "verification-compliance",
-      "title": "Verification Compliance",
-      "description": "Confirmation that your AML/CTF program complies with document-based and electronic data verification requirements.",
-      "variant": "main"
-    },
-    {
-      "id": "agent-requirements",
-      "title": "Agent Risk Management",
-      "description": "ML/TF risk management and verification requirements for agents authorised to act on behalf of customers.",
+      "id": "risk-assessment-application",
+      "title": "Application of Enhanced Requirements",
+      "description": "Special application rules for customers acquired after transition dates and the applicability of enhanced due diligence requirements.",
       "variant": "main"
     }
   ],
   "rules": [],
   "sub_scoping": [],
-  "form_links": []
+  "form_links": [],
+  "_review_metadata": {
+    "form_id": "risk-assessment",
+    "last_updated": "2026-02-21T22:03:30.009Z",
+    "control_notes": {
+      "4.1.1": {
+        "comment": "Good, we infer that all processes are for post-commencement customers through our visual diagrams.",
+        "severity": "approved"
+      },
+      "4.1.2": {
+        "comment": "Good, we infer that all processes are for post-commencement customers through our visual diagrams.",
+        "severity": "approved"
+      },
+      "4.1.4(1)": {
+        "comment": "No need to display this as it is covered in the introduction and in the Individuals process",
+        "severity": "error"
+      },
+      "4.1.4(2)": {
+        "comment": "No need to display this as it is covered in the introduction and in the companies process",
+        "severity": "error"
+      },
+      "4.1.4(3)": {
+        "comment": "No need to display this as it is covered in the introduction and in the Trustee process",
+        "severity": "error"
+      },
+      "4.1.4(4)": {
+        "comment": "No need to display this as it is covered in the introduction and in the Partnership process",
+        "severity": "error"
+      },
+      "4.1.4(5)": {
+        "comment": "No need to display this as it is covered in the introduction and in the Associations process",
+        "severity": "error"
+      },
+      "4.1.4(6)": {
+        "comment": "No need to display this as it is covered in the introduction and in the Co-operatives process",
+        "severity": "error"
+      },
+      "4.1.4(7)": {
+        "comment": "No need to display this as it is covered in the introduction and in the Governments process",
+        "severity": "error"
+      },
+      "4.1.5(1)": {
+        "comment": "No need to show this, it's covered by the Beneficial Owners process",
+        "severity": "error"
+      },
+      "4.1.5(2)": {
+        "comment": "No need to show this as it's covered by the PEP process",
+        "severity": "error"
+      },
+      "4.1.7": {
+        "comment": "No need to show this as it is covered by the Document and Electronic-based verification sub-processes",
+        "severity": "error"
+      },
+      "4.1.8": {
+        "comment": "no need to show this as it is covered by the introduction form's reference to Agents",
+        "severity": "error"
+      }
+    }
+  }
 }
