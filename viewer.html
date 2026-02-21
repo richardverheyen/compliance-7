@@ -176,7 +176,7 @@
   .sub-type-gate-prompt .gate-arrow { font-size: 1.4rem; display: block; margin-bottom: 8px; color: #90cdf4; }
 
   /* Form-link inline expansion */
-  .form-link-block { background: var(--surface); border: 1px solid #c6f6d5; border-radius: 8px; margin-left: 20px; margin-bottom: 14px; overflow: hidden; }
+  .form-link-block { background: #f0fff4; border: 1px solid #9ae6b4; border-left: 4px solid #48bb78; border-radius: 0 8px 8px 0; margin-left: 32px; margin-bottom: 14px; overflow: hidden; }
   .form-link-header { display: flex; justify-content: space-between; align-items: center; padding: 12px 18px; cursor: pointer; user-select: none; background: #f0fff4; border-bottom: 1px solid #c6f6d5; }
   .form-link-header:hover { background: #e6ffed; }
   .form-link-title { font-size: 0.9rem; font-weight: 600; color: #22543d; display: flex; align-items: center; gap: 8px; }
@@ -185,7 +185,7 @@
   .form-link-chevron.open { transform: rotate(90deg); }
   .form-link-badge { font-size: 0.65rem; background: #c6f6d5; color: #22543d; padding: 1px 7px; border-radius: 10px; font-weight: 700; }
   .form-link-body { display: none; }
-  .form-link-body.open { display: block; }
+  .form-link-body.open { display: block; padding: 10px 10px 6px; }
   .form-link-loading { padding: 14px 18px; font-size: 0.85rem; color: var(--muted); }
   .form-link-hidden { display: none; }
 
@@ -285,6 +285,8 @@ let subScopingSelections = {}; // sub-type toggle state for current form (reset 
 let nodesLookup = {};          // rule_code → node, loaded from runs/1/nodes.json
 let feedbackData = {};         // loaded from /feedback/{form_id} on form load
 let currentSectionId = null;   // tracks the currently loaded form ID
+let formLinkOpenState = {};    // fl.target → boolean (persists across re-renders, reset on navigation)
+let formLinkDataCache = {};    // fl.target → fetched JSON data
 
 const FEEDBACK_API = "/feedback/";
 
@@ -692,6 +694,8 @@ async function loadItem(itemId) {
     sectionData = await resp.json();
     answers = {};
     subScopingSelections = {};
+    formLinkOpenState = {};
+    formLinkDataCache = {};
     currentSectionId = itemId;
 
     // Load feedback for this form (non-fatal)
@@ -823,14 +827,21 @@ function render() {
     header.className = "ungrouped-header";
     header.textContent = "Other Controls";
     div.appendChild(header);
-    ungrouped.sort(sortById).filter(ctrl => checkVisibility(ctrl.id)).forEach(ctrl => div.appendChild(renderControl(ctrl)));
+    ungrouped.sort(sortById).filter(ctrl => checkVisibility(ctrl.id)).forEach(ctrl => {
+      div.appendChild(renderControl(ctrl));
+      const inlineLinks = (sectionData.form_links || []).filter(fl => fl.gated_by === ctrl.id);
+      inlineLinks.forEach(fl => div.appendChild(renderFormLinkBlock(fl)));
+    });
     formEl.appendChild(div);
   }
 
-  // Form-link inline expansions (e.g. safe harbour via verification-documents form)
+  // Form-link expansions not already rendered inline (those without a gated_by control in this form)
+  const controlIds = new Set(sectionData.controls.map(c => c.id));
   const formLinks = sectionData.form_links || [];
   for (const fl of formLinks) {
-    formEl.appendChild(renderFormLinkBlock(fl));
+    if (!fl.gated_by || !controlIds.has(fl.gated_by)) {
+      formEl.appendChild(renderFormLinkBlock(fl));
+    }
   }
 
   document.getElementById("json-output").textContent = JSON.stringify(sectionData, null, 2);
@@ -886,7 +897,12 @@ function renderGroup(group, controls, formRules) {
   }
 
   controls.filter(ctrl => checkVisibility(ctrl.id, formRules))
-          .forEach(ctrl => body.appendChild(renderControl(ctrl, formRules)));
+          .forEach(ctrl => {
+            body.appendChild(renderControl(ctrl, formRules));
+            // Render any form-link blocks gated by this control, directly underneath it
+            const inlineLinks = (sectionData && sectionData.form_links || []).filter(fl => fl.gated_by === ctrl.id);
+            inlineLinks.forEach(fl => body.appendChild(renderFormLinkBlock(fl)));
+          });
 
   div.appendChild(body);
   return div;
@@ -1181,6 +1197,7 @@ function renderFormLinkBlock(fl) {
 
   // Visibility: if gated_by is set, show only when that control is "Yes"
   const isVisible = !fl.gated_by || answers[fl.gated_by] === "Yes";
+  const isOpen = !!formLinkOpenState[fl.target];
   block.className = "form-link-block" + (isVisible ? "" : " form-link-hidden");
 
   block.innerHTML = `
@@ -1190,58 +1207,75 @@ function renderFormLinkBlock(fl) {
         ${fl.label}
         <span class="form-link-badge">${fl.target}</span>
       </div>
-      <span class="form-link-chevron">&#9654;</span>
+      <span class="form-link-chevron${isOpen ? " open" : ""}">&#9654;</span>
     </div>
-    <div class="form-link-body">
+    <div class="form-link-body${isOpen ? " open" : ""}">
       <div class="form-link-loading">Loading...</div>
     </div>
   `;
 
-  let loaded = false;
   const header = block.querySelector(".form-link-header");
   const body = block.querySelector(".form-link-body");
   const chevron = block.querySelector(".form-link-chevron");
 
+  // Restore content immediately from cache if block was previously open
+  if (isOpen) {
+    if (formLinkDataCache[fl.target]) {
+      renderFormLinkContent(body, formLinkDataCache[fl.target]);
+    } else {
+      fetchAndRenderFormLink(fl.target, body);
+    }
+  }
+
   header.addEventListener("click", async () => {
-    const isOpen = body.classList.toggle("open");
-    chevron.classList.toggle("open", isOpen);
+    const nowOpen = !body.classList.contains("open");
+    body.classList.toggle("open", nowOpen);
+    chevron.classList.toggle("open", nowOpen);
+    formLinkOpenState[fl.target] = nowOpen;
 
-    if (isOpen && !loaded) {
-      loaded = true;
-      try {
-        const resp = await fetch(PROCESSES_DIR + fl.target + ".json");
-        if (!resp.ok) throw new Error("Not found");
-        const linkedData = await resp.json();
-        body.innerHTML = "";
-
-        // Render linked form groups using the linked form's own rules
-        const linkedGroups = linkedData.groups || [];
-        const linkedControls = linkedData.controls || [];
-        const linkedRules = linkedData.rules || [];
-
-        const byGroup = {};
-        linkedGroups.forEach(g => { byGroup[g.id] = []; });
-        linkedControls.forEach(ctrl => {
-          const gid = ctrl.group;
-          if (gid && byGroup.hasOwnProperty(gid)) byGroup[gid].push(ctrl);
-        });
-
-        if (linkedGroups.length === 0 && linkedControls.length > 0) {
-          // Fallback: render controls directly
-          linkedControls.forEach(ctrl => body.appendChild(renderControl(ctrl, linkedRules)));
-        } else {
-          linkedGroups.forEach(group => {
-            const controls = (byGroup[group.id] || []).sort(sortById);
-            body.appendChild(renderGroup(group, controls, linkedRules));
-          });
-        }
-      } catch (e) {
-        body.innerHTML = `<div class="form-link-loading" style="color:var(--red);">Could not load ${fl.target}.</div>`;
-      }
+    if (nowOpen && !formLinkDataCache[fl.target]) {
+      await fetchAndRenderFormLink(fl.target, body);
+    } else if (nowOpen) {
+      renderFormLinkContent(body, formLinkDataCache[fl.target]);
     }
   });
 
   return block;
+}
+
+async function fetchAndRenderFormLink(target, body) {
+  try {
+    const resp = await fetch(PROCESSES_DIR + target + ".json");
+    if (!resp.ok) throw new Error("Not found");
+    const linkedData = await resp.json();
+    formLinkDataCache[target] = linkedData;
+    renderFormLinkContent(body, linkedData);
+  } catch (e) {
+    body.innerHTML = `<div class="form-link-loading" style="color:var(--red);">Could not load ${target}.</div>`;
+  }
+}
+
+function renderFormLinkContent(body, linkedData) {
+  body.innerHTML = "";
+  const linkedGroups = linkedData.groups || [];
+  const linkedControls = linkedData.controls || [];
+  const linkedRules = linkedData.rules || [];
+
+  const byGroup = {};
+  linkedGroups.forEach(g => { byGroup[g.id] = []; });
+  linkedControls.forEach(ctrl => {
+    const gid = ctrl.group;
+    if (gid && byGroup.hasOwnProperty(gid)) byGroup[gid].push(ctrl);
+  });
+
+  if (linkedGroups.length === 0 && linkedControls.length > 0) {
+    linkedControls.forEach(ctrl => body.appendChild(renderControl(ctrl, linkedRules)));
+  } else {
+    linkedGroups.forEach(group => {
+      const controls = (byGroup[group.id] || []).sort(sortById);
+      body.appendChild(renderGroup(group, controls, linkedRules));
+    });
+  }
 }
 
 // ─── INIT ───────────────────────────────────────────────────────────────────

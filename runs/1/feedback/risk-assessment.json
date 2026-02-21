@@ -1,5 +1,58 @@
 {
   "form_id": "risk-assessment",
-  "last_updated": "2026-02-20T06:09:48.903Z",
-  "control_notes": {}
+  "last_updated": "2026-02-21T22:03:30.009Z",
+  "control_notes": {
+    "4.1.1": {
+      "comment": "Good, we infer that all processes are for post-commencement customers through our visual diagrams.",
+      "severity": "approved"
+    },
+    "4.1.2": {
+      "comment": "Good, we infer that all processes are for post-commencement customers through our visual diagrams.",
+      "severity": "approved"
+    },
+    "4.1.4(1)": {
+      "comment": "No need to display this as it is covered in the introduction and in the Individuals process",
+      "severity": "error"
+    },
+    "4.1.4(2)": {
+      "comment": "No need to display this as it is covered in the introduction and in the companies process",
+      "severity": "error"
+    },
+    "4.1.4(3)": {
+      "comment": "No need to display this as it is covered in the introduction and in the Trustee process",
+      "severity": "error"
+    },
+    "4.1.4(4)": {
+      "comment": "No need to display this as it is covered in the introduction and in the Partnership process",
+      "severity": "error"
+    },
+    "4.1.4(5)": {
+      "comment": "No need to display this as it is covered in the introduction and in the Associations process",
+      "severity": "error"
+    },
+    "4.1.4(6)": {
+      "comment": "No need to display this as it is covered in the introduction and in the Co-operatives process",
+      "severity": "error"
+    },
+    "4.1.4(7)": {
+      "comment": "No need to display this as it is covered in the introduction and in the Governments process",
+      "severity": "error"
+    },
+    "4.1.5(1)": {
+      "comment": "No need to show this, it's covered by the Beneficial Owners process",
+      "severity": "error"
+    },
+    "4.1.5(2)": {
+      "comment": "No need to show this as it's covered by the PEP process",
+      "severity": "error"
+    },
+    "4.1.7": {
+      "comment": "No need to show this as it is covered by the Document and Electronic-based verification sub-processes",
+      "severity": "error"
+    },
+    "4.1.8": {
+      "comment": "no need to show this as it is covered by the introduction form's reference to Agents",
+      "severity": "error"
+    }
+  }
 }
