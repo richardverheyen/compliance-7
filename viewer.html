@@ -201,6 +201,8 @@
   .feedback-bar { font-size: 0.78rem; color: var(--muted); background: #f7fafc; border: 1px solid var(--border); border-radius: 6px; padding: 6px 14px; margin-bottom: 10px; display: flex; align-items: center; gap: 8px; }
   .feedback-bar a { color: var(--accent); text-decoration: none; }
   .feedback-bar a:hover { text-decoration: underline; }
+  .download-feedback-btn { font-size: 0.78rem; color: var(--accent); background: none; border: none; padding: 0; cursor: pointer; font-family: inherit; text-decoration: none; }
+  .download-feedback-btn:hover { text-decoration: underline; }
 
   /* Clickable rule-code pills */
   .source-rule { cursor: pointer; transition: opacity 0.12s; }
@@ -698,11 +700,17 @@ async function loadItem(itemId) {
     formLinkDataCache = {};
     currentSectionId = itemId;
 
-    // Load feedback for this form (non-fatal)
+    // Load feedback for this form — try API first, fall back to localStorage
     try {
       const fbResp = await fetch(FEEDBACK_API + itemId);
       feedbackData = fbResp.ok ? await fbResp.json() : {};
     } catch { feedbackData = {}; }
+    if (!feedbackData || !feedbackData.last_updated) {
+      try {
+        const stored = localStorage.getItem(`compliance_feedback:${itemId}`);
+        if (stored) feedbackData = JSON.parse(stored) || {};
+      } catch { /* localStorage unavailable */ }
+    }
 
     document.querySelectorAll(".picker button").forEach(b => {
       b.classList.toggle("active", b.dataset.sectionId === itemId);
@@ -776,7 +784,7 @@ function render() {
     bar.className = "feedback-bar";
     const d = new Date(feedbackData.last_updated);
     const dateStr = d.toLocaleDateString(undefined, { year: "numeric", month: "short", day: "numeric", hour: "2-digit", minute: "2-digit" });
-    bar.innerHTML = `&#128172; Last feedback: <strong>${dateStr}</strong> &mdash; <a href="${FEEDBACK_API}${currentSectionId}" target="_blank">view JSON</a>`;
+    bar.innerHTML = `&#128172; Last feedback: <strong>${dateStr}</strong> &mdash; <button class="download-feedback-btn" onclick="downloadFeedback()">Download feedback</button>`;
     formEl.appendChild(bar);
   }
 
@@ -998,15 +1006,30 @@ async function saveFeedback(ruleCode, severity, comment) {
     control_notes: updatedNotes,
   };
   feedbackData = payload;
+  // Always persist to localStorage (works without a server on Vercel)
+  try {
+    localStorage.setItem(`compliance_feedback:${currentSectionId}`, JSON.stringify(payload));
+  } catch { /* localStorage unavailable */ }
+  // Also try to POST to the local dev server (serve.py); harmless 404 on Vercel
   try {
     await fetch(FEEDBACK_API + currentSectionId, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(payload),
     });
-  } catch (e) {
-    console.warn("Failed to save feedback:", e);
-  }
+  } catch { /* API not available — localStorage is the source of truth */ }
+}
+
+function downloadFeedback() {
+  if (!feedbackData || !feedbackData.last_updated) return;
+  const json = JSON.stringify(feedbackData, null, 2);
+  const blob = new Blob([json], { type: "application/json" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = currentSectionId + ".json";
+  a.click();
+  URL.revokeObjectURL(url);
 }
 
 function showCommentPopover(ruleCode, anchorEl) {
@@ -1061,7 +1084,7 @@ function updateFeedbackBar() {
   if (!feedbackData.last_updated) return;
   const d = new Date(feedbackData.last_updated);
   const dateStr = d.toLocaleDateString(undefined, { year: "numeric", month: "short", day: "numeric", hour: "2-digit", minute: "2-digit" });
-  const html = `&#128172; Last feedback: <strong>${dateStr}</strong> &mdash; <a href="${FEEDBACK_API}${currentSectionId}" target="_blank">view JSON</a>`;
+  const html = `&#128172; Last feedback: <strong>${dateStr}</strong> &mdash; <button class="download-feedback-btn" onclick="downloadFeedback()">Download feedback</button>`;
   let bar = document.querySelector(".feedback-bar");
   if (bar) {
     bar.innerHTML = html;
